@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="btnCreateAccount">Crée un compte</string>
+    <string name="hintUsername">Login</string>
+    <string name="hintFirstname">Prénom</string>
+    <string name="hintLastname">Nom</string>
+    <string name="hintMail">Mail</string>
+    <string name="hintConfirmMail">Confirme mail</string>
+    <string name="hintPassword">MotDePasse</string>
+    <string name="hintConfirmPassword">Confirme MotDePasse</string>
+    <string name="loginDefaultInfo">Entrez vos identifiants:</string>
+    <string name="loginLostPassword">Mot de passe oublié</string>
+</resources>
