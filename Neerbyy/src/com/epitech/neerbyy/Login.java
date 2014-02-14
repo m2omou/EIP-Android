@@ -124,7 +124,12 @@ public class Login extends Activity {
 							{
 								try {
 								//user = gson.fromJson(readerResp, User.class);
-								user = gson.fromJson(ret, User.class);
+							    ResponseWS rep;
+								//user = gson.fromJson(ret, User.class);
+								rep = gson.fromJson(ret, ResponseWS.class);
+								System.out.println("jai recup " + rep.result );
+								return;
+								
 								}
 								catch(JsonParseException e)
 							    {
