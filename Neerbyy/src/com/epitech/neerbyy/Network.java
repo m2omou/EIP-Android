@@ -80,6 +80,7 @@ public class Network {
 	        	{        		
 		        	getRequestPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		        	getRequestPut.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		        	//Log.w("Network ", "ENTITY : " + nameValuePairs.);
 	        	}
 		        if (USER != null)
 		        {	
@@ -103,8 +104,8 @@ public class Network {
 	            	Log.w("Network ", "Error " + statusCode + " for URL " + url);  // before = getClass().getSimpleName()
 	            	if (statusCode != 422)  //  Enlever ca plus tard !!!  erreur webservice connection
 	            		return null;
-	           }
-	           
+	            }
+	       
 	           if (mode == 2)
 	        	   return null;
 	           HttpEntity getResponseEntity = getResponse.getEntity();

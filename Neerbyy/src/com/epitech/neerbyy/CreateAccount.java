@@ -103,13 +103,12 @@ public class CreateAccount extends Activity {
 		            	Message myMessage, msgPb;
 		            	msgPb = myHandler.obtainMessage(0, (Object) "Try Connecting");	 
 		                myHandler.sendMessage(msgPb);
-		                 
-						InputStream input = Network.retrieveStream(url, 1, nameValuePairs);
-						
+		                 	
 						Bundle messageBundle = new Bundle();
-				        myMessage=myHandler.obtainMessage();	
+				        myMessage=myHandler.obtainMessage();					        
+				        messageBundle.putInt("action", Network.CREATE_ACCOUNT);	
 				        
-				        messageBundle.putInt("action", Network.CREATE_ACCOUNT);			        
+				        InputStream input = Network.retrieveStream(url, 1, nameValuePairs);
 						if (input == null)
 							messageBundle.putInt("error", 1);
 						else

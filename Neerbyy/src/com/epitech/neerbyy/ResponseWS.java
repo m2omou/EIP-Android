@@ -1,5 +1,7 @@
 package com.epitech.neerbyy;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -16,9 +18,19 @@ public class ResponseWS {
 	
 	public <T> T getValue(Class<T> obj)
 	{
-		Gson gson = new Gson();
-		if (responseCode != 1 )
-			return gson.fromJson(responseMessage, obj);
+		try {
+			Gson gson = new Gson();
+			if (responseCode != 1 )
+				{
+					//Log.w("RECUS OBJ", "receiveOBJ =  ::::::::::::::::::::::::: " + gson.toJson(result));
+					return gson.fromJson(gson.toJson(result), obj);
+				}
+			}
+		catch(JsonParseException e)
+		{
+			System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
+		}		
 		return null;
 	}
 }
+

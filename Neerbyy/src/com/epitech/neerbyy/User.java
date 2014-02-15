@@ -26,8 +26,8 @@ public class User implements Serializable{
 	public String mail;
 	@SerializedName("password")
 	public String password;
-	@SerializedName("avatar")
-	public String avatar;
+	//@SerializedName("avatar")
+	//public String avatar;
 	@SerializedName("error")
 	public int error;
 	@SerializedName("message")
@@ -50,7 +50,7 @@ public class User implements Serializable{
 		lastname = L;
 		mail = M;
 		password = P;
-		avatar = A;
+		//avatar = A;
 		error = E;
 		errorMsg = ME;
 		token = null;
