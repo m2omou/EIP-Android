@@ -28,8 +28,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.epitech.neerbyy.Network;
-
 public class Login extends Activity {
 
 	Button createAccount;
@@ -44,6 +42,8 @@ public class Login extends Activity {
 	User user;
 	
 	ProgressDialog mProgressDialog;
+	
+	ResponseWS rep;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,24 +94,26 @@ public class Login extends Activity {
 				Thread thread1 = new Thread(){
 			        public void run(){	        	      
 					try {	
-		            	Gson gson = new Gson(); // http://neerbyy.com/webservice-login
-		            	String url = Network.URL + Network.PORT + "/sessions.json?email=" + loginMail.getText() + "&password=" + password.getText();
-		            	//Log.w("Error", "jenvoie  :::::::::::::::::::::::::::::: " + url);
+		            	Gson gson = new Gson();
+		            	String url = Network.URL + Network.PORT + "/sessions.json";
+		            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		            	
-		            	 Message myMessage, msgPb;
-		            	 msgPb = myHandler.obtainMessage(0, (Object) "Try Connecting");	 
-		                 myHandler.sendMessage(msgPb);
-		              	
-						InputStream input = Network.retrieveStream(url, 1, null);
-						
+		            	nameValuePairs.add(new BasicNameValuePair("email", loginMail.getText().toString()));
+		            	nameValuePairs.add(new BasicNameValuePair("password", password.getText().toString()));
+		            	
+		            	Message myMessage, msgPb;
+		            	msgPb = myHandler.obtainMessage(0, (Object) "Try Connecting");	 
+		                myHandler.sendMessage(msgPb);
+				
 						Bundle messageBundle = new Bundle();
 						messageBundle.putInt("action", Network.LOGIN);
 				        myMessage = myHandler.obtainMessage();	
    		        
+				        InputStream input = Network.retrieveStream(url, 1, nameValuePairs);
 						if (input == null)
 							messageBundle.putInt("error", 1);
 						else
-						{
+						{	
 							Reader readerResp = new InputStreamReader(input);
 							String ret = Network.checkInputStream(readerResp);
 							
@@ -122,26 +124,22 @@ public class Login extends Activity {
 							}
 							else
 							{
-								try {
-								//user = gson.fromJson(readerResp, User.class);
-							    ResponseWS rep;
-								//user = gson.fromJson(ret, User.class);
-								rep = gson.fromJson(ret, ResponseWS.class);
-								System.out.println("jai recup " + rep.result );
-								return;
-								
+								try {		    
+									rep = gson.fromJson(ret, ResponseWS.class);
+									user = rep.getValue(User.class);						
 								}
 								catch(JsonParseException e)
 							    {
 							        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
 							    }
 								
-								messageBundle.putSerializable("user", (Serializable) user);
-							
-								if (user.error == 1)
+								if (user == null)
+								{
 									messageBundle.putInt("error", 2);
+									messageBundle.putString("msgError", rep.responseMessage);
+								}
 								else		  	                   
-				                    messageBundle.putInt("error", 0);	
+									messageBundle.putSerializable("user", (Serializable) user);	
 							}
 						}						
 						myMessage.setData(messageBundle);
@@ -224,25 +222,23 @@ public class Login extends Activity {
 	    	{
 		    	case Network.LOGIN:    		
 		    		info = (TextView)findViewById(R.id.txtLoginInfo);
-		    		info.setText("");	
-			    	int Error = pack.getInt("error");
-			    	
+		    		info.setText("");
+		    		
+			    	int Error = pack.getInt("error");		    	
 			    	if (Error == 1)
 			    		info.setText("Error: connection with WS fail");
 			    	else if (Error == 2)
 			    	{
-			    		user = (User)pack.getSerializable("user");
-			    		info.setText("Login error :\n" + user.errorMsg);
+			    		info.setText("Login error :\n" + pack.getString("msgError"));
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Login error :\n" + pack.getString("msgError"));
+			    		info.setText("Ws error :\n" + pack.getString("msgError"));
 			    	else
 			    	{
 			    		user = (User)pack.getSerializable("user");
 			    		info.setText("Login success with id : " + user.id + " and token : " + user.token);
 			    		login.setEnabled(false);
-			    		msg.obj = user;
-			    		
+			    		msg.obj = user;    		
 			    		Network.USER = user;
 			    	}
 	    	} 	
