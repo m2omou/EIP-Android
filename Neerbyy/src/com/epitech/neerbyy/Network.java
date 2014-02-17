@@ -49,6 +49,8 @@ public class Network {
 	static final public int LOGIN = 3;
 	static final public int CREATE_ACCOUNT = 4;
 	static final public int EDIT_USER = 5;
+	static final public int GET_PLACES = 6;
+	
 	static final public String URL = "http://neerbyy.com:";  //  keep : !?
 	static final public int PORT = 80;
 	

@@ -24,36 +24,24 @@ public class User implements Serializable{
 	public String lastname;
 	@SerializedName("email")
 	public String mail;
-	@SerializedName("password")
-	public String password;
-	//@SerializedName("avatar")
-	//public String avatar;
-	@SerializedName("error")
-	public int error;
-	@SerializedName("message")
-	public String errorMsg;
+	@SerializedName("avatar")
+	public Avatar avatar;
+	@SerializedName("created_at")
+	public String created_at;
+	@SerializedName("updated_at")
+	public String updated_at;
 	@SerializedName("auth_token")
 	public String token;
 	
-	static public double lat = 39.948518;
-	static public double lon = 116.3371423;
-	static public float alt;
-	
-	
-	
-	public User(int ID, String U, String F,String L,String M,String P,String A, int E, String ME)
-	{
-		super();
-		id = ID;
-		username = U;
-		firstname = F;
-		lastname = L;
-		mail = M;
-		password = P;
-		//avatar = A;
-		error = E;
-		errorMsg = ME;
-		token = null;
+	public class Avatar {
+		@SerializedName("url")
+		public String url;
+		@SerializedName("thumb")
+		public Thumb thumb;
 	}
 	
+	public class Thumb {
+		@SerializedName("url")
+		public String url;
+	}
 }

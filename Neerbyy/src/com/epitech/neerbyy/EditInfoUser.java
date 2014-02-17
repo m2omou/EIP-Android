@@ -48,7 +48,7 @@ public class EditInfoUser extends Activity {
 		firstname = (EditText)findViewById(R.id.txtEditFirstname);
 		lastname = (EditText)findViewById(R.id.txtEditLastname);
 		mail = (EditText)findViewById(R.id.txtEditMail);
-		password = (EditText)findViewById(R.id.txtEditPassword);
+	//	password = (EditText)findViewById(R.id.txtEditPassword);
 		
 		Bundle b  = this.getIntent().getExtras();		
 		if (b == null)
@@ -64,7 +64,7 @@ public class EditInfoUser extends Activity {
 		firstname.setText(user.firstname);
 		lastname.setText(user.lastname);
 		mail.setText(user.mail);
-		password.setText(user.password);
+//		password.setText(user.password);
 
 		
 		btnOk.setOnClickListener(new View.OnClickListener() {
@@ -104,10 +104,6 @@ public class EditInfoUser extends Activity {
 							Reader readerResp = new InputStreamReader(input);				
 							User user = gson.fromJson(readerResp, User.class);
 							messageBundle.putSerializable("user", (Serializable) user);
-							if (user.error == 1)
-								messageBundle.putInt("error", 2);
-							else                   
-			                    messageBundle.putInt("error", 0);
 						}						
 						myMessage.setData(messageBundle);
 	                    myHandler.sendMessage(myMessage);	
@@ -139,8 +135,6 @@ public class EditInfoUser extends Activity {
 			    		//Toast.makeText(getApplicationContext(), "Modified account success", Toast.LENGTH_SHORT).show();
 			    		info.setText("Modified account success");
 			    	}
-			    	else if (Error == 2)
-			    		info.setText("Modify info user error : " + user.errorMsg);
 			    	else
 			    	{
 			    		info.setText("Modify info user success for : " + user.username);

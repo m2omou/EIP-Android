@@ -133,12 +133,6 @@ public class CreateAccount extends Activity {
 							    }
 								
 							messageBundle.putSerializable("user", (Serializable) user);
-							if (user.error == 1)
-								messageBundle.putInt("error", 2);
-							else
-							{  	                   
-			                    messageBundle.putInt("error", 0);
-							}
 						}						
 						myMessage.setData(messageBundle);
 	                    myHandler.sendMessage(myMessage);
@@ -226,8 +220,6 @@ public class CreateAccount extends Activity {
 			    	int Error = pack.getInt("error");
 			    	if (Error == 1)
 			    		info.setText("Error: connection with WS fail");
-			    	else if (Error == 2)
-			    		info.setText("Create Account error : " + user.errorMsg);
 			    	else if (Error == 3)
 			    		info.setText("Login error :\n" + pack.getString("msgError"));
 			    	else
