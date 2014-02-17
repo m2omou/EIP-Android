@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Place {
 	@SerializedName("id")
-	public int id;
+	public String id;
 	@SerializedName("longitude")
 	public double lon;
 	@SerializedName("latitude")

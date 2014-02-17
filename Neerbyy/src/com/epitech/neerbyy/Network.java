@@ -82,7 +82,6 @@ public class Network {
 	        	{        		
 		        	getRequestPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		        	getRequestPut.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		        	//Log.w("Network ", "ENTITY : " + nameValuePairs.);
 	        	}
 		        if (USER != null)
 		        {	
@@ -92,7 +91,10 @@ public class Network {
 		        }
 	        	        	
 	        	HttpResponse getResponse;
-	        	Log.w("Network ", "JENVOIE : " + getRequestPost.getMethod() + " -- " + getRequestPost.getRequestLine());
+	        	if (mode == 0)
+	        		Log.w("Network ", "JENVOIE : " + getRequestGet.getMethod() + " -- " + getRequestGet.getRequestLine());
+	        	else if(mode == 2)
+	        		Log.w("Network ", "JENVOIE : " + getRequestPost.getMethod() + " -- " + getRequestPost.getRequestLine());
 	        	
 	        	if (mode == 0)
 	        		getResponse = client.execute(getRequestGet);

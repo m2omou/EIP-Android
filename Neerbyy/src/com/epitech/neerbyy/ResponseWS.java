@@ -1,8 +1,12 @@
 package com.epitech.neerbyy;
 
+import java.lang.reflect.Type;
+import java.util.List;
+
 import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
@@ -22,13 +26,34 @@ public class ResponseWS {
 			Gson gson = new Gson();
 			if (responseCode != 1 )
 				{
-					//Log.w("RECUS OBJ", "receiveOBJ =  ::::::::::::::::::::::::: " + gson.toJson(result));
+					Log.w("RECUS OBJ", "receiveOBJ =  ::::::::::::::::::::::::: " + gson.toJson(result));
 					return gson.fromJson(gson.toJson(result), obj);
 				}
 			}
 		catch(JsonParseException e)
 		{
 			System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
+		}		
+		return null;
+	}
+	
+	public <T> T[] getTabValue(Class<T> obj)
+	{
+		try {
+			Gson gson = new Gson();
+			if (responseCode != 1 )
+				{
+					Log.w("RECUS OBJ", "receiveOBJ =  ::::::::::::::::::::::::: " + gson.toJson(result));
+				
+					Type collectionType = new TypeToken<List<T>>(){}.getType();
+					List<T> lcs = (List<T>)	new Gson().fromJson(gson.toJson(result) , collectionType);
+					
+					return gson.fromJson(gson.toJson(result), collectionType);
+				}
+			}
+		catch(JsonParseException e)
+		{
+			System.out.println("Exception in synthaxe Json :: "+e.toString());
 		}		
 		return null;
 	}

@@ -52,7 +52,7 @@ public class MapView extends FragmentActivity implements LocationListener{
         
         
         gMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-        marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
+        marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(45.75, -0.633333)));
        
         //mMap.setMyLocationEnabled(true);
     }
@@ -72,6 +72,8 @@ public class MapView extends FragmentActivity implements LocationListener{
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             abonnementGPS();
         }
+        
+       // onLocationChanged(null);  //  a   enleverrrrrr
     }
     
     @Override
@@ -111,17 +113,19 @@ public class MapView extends FragmentActivity implements LocationListener{
     @Override
     public void onLocationChanged(final Location location) {
         //On affiche dans un Toat la nouvelle Localisation
-        final StringBuilder msg = new StringBuilder("lat : ");
-        msg.append(location.getLatitude());
-        msg.append( "; lng : ");
-        msg.append(location.getLongitude());
- 
-        locat = location;
-        
-        Log.w("GEOLOC", msg.toString());
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
-        marker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
-        tGetPlace.start();
+    	if (location != null)
+    	{
+    		final StringBuilder msg = new StringBuilder("lat : ");
+    		msg.append(location.getLatitude());
+    		msg.append( "; lng : ");
+    		msg.append(location.getLongitude());
+    		Log.w("GEOLOC", msg.toString());
+    		gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
+            marker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+            locat = location;
+            if (!tGetPlace.isAlive())
+            	tGetPlace.start();
+    	}
     }
  
     @Override
@@ -161,14 +165,19 @@ public class MapView extends FragmentActivity implements LocationListener{
         public void run(){
         	try {
 	        	Gson gson = new Gson();
-	        	String url = Network.URL + Network.PORT + "/places.json?latitude=" + locat.getLatitude() + "&longitude=" + locat.getLongitude();
-	        	
+	        	String url;
+	        	if (locat != null){
+	        		url = Network.URL + Network.PORT + "/places.json?latitude=" + locat.getLatitude() + "&longitude=" + locat.getLongitude();
+	        	}
+	        	else {        		
+	        		url = Network.URL + Network.PORT + "/places.json?latitude=45.75&longitude=-0.633333";
+	        	}
 	        	Message myMessage;
 	        	Bundle messageBundle = new Bundle();
 				messageBundle.putInt("action", Network.GET_PLACES);
 		        myMessage = myHandler.obtainMessage();	
 	       
-		        InputStream input = Network.retrieveStream(url, 1, null);
+		        InputStream input = Network.retrieveStream(url, 0, null);
 	        	
 		        if (input == null)
 					messageBundle.putInt("error", 1);
@@ -186,7 +195,8 @@ public class MapView extends FragmentActivity implements LocationListener{
 					{
 						try {		    
 							rep = gson.fromJson(ret, ResponseWS.class);
-							places = rep.getValue(Place[].class);						
+							places = rep.getTabValue(Place.class);
+							Log.w("RECUP", "JAI RECUP " + places.length + " places");
 						}
 						catch(JsonParseException e)
 					    {
