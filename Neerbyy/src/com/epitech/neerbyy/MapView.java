@@ -1,12 +1,20 @@
 package com.epitech.neerbyy;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.epitech.neerbyy.R.drawable;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -17,6 +25,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -35,25 +46,25 @@ import android.widget.Toast;
 
 public class MapView extends FragmentActivity implements LocationListener{
 	
-	private LatLng pos;
 	private LocationManager locationManager;
 	private GoogleMap gMap;
-	private Marker marker;
-	private Location locat = null;
+	private Marker posMarker;
+	private List<Marker> listAllPlace;
+	public Location locat = null;
+	public Place places;
+	public ResponseWS rep;
 	
-	private Place[] places;
-	
-	private ResponseWS rep;
+	boolean isRun;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
         
-        
+        isRun = false;
         gMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-        marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(45.75, -0.633333)));
-       
+        posMarker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(45.75, -0.633333)));
+        listAllPlace = new ArrayList<Marker>();
         //mMap.setMyLocationEnabled(true);
     }
     
@@ -121,11 +132,17 @@ public class MapView extends FragmentActivity implements LocationListener{
     		msg.append(location.getLongitude());
     		Log.w("GEOLOC", msg.toString());
     		gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
-            marker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+            posMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
             locat = location;
-            if (!tGetPlace.isAlive())
-            	tGetPlace.start();
-    	}
+            
+            //if (!tGetPlace.isAlive())
+            	//tGetPlace.start();
+            if (!isRun)
+            {
+            	new ThreadPlaces(this).start();
+            	//isRun = true;
+            }
+        }
     }
  
     @Override
@@ -163,59 +180,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     
     private Thread tGetPlace = new Thread(){
         public void run(){
-        	try {
-	        	Gson gson = new Gson();
-	        	String url;
-	        	if (locat != null){
-	        		url = Network.URL + Network.PORT + "/places.json?latitude=" + locat.getLatitude() + "&longitude=" + locat.getLongitude();
-	        	}
-	        	else {        		
-	        		url = Network.URL + Network.PORT + "/places.json?latitude=45.75&longitude=-0.633333";
-	        	}
-	        	Message myMessage;
-	        	Bundle messageBundle = new Bundle();
-				messageBundle.putInt("action", Network.GET_PLACES);
-		        myMessage = myHandler.obtainMessage();	
-	       
-		        InputStream input = Network.retrieveStream(url, 0, null);
-	        	
-		        if (input == null)
-					messageBundle.putInt("error", 1);
-				else
-				{	
-					Reader readerResp = new InputStreamReader(input);
-					String ret = Network.checkInputStream(readerResp);
-					
-					if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
-					{
-						messageBundle.putInt("error", 3);
-						messageBundle.putString("msgError", ret);
-					}
-					else
-					{
-						try {		    
-							rep = gson.fromJson(ret, ResponseWS.class);
-							places = rep.getTabValue(Place.class);
-							Log.w("RECUP", "JAI RECUP " + places.length + " places");
-						}
-						catch(JsonParseException e)
-					    {
-					        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
-					    }
-						if (places == null)
-						{
-							messageBundle.putInt("error", 2);
-							messageBundle.putString("msgError", rep.responseMessage);
-						}
-						else		  	                   
-							messageBundle.putSerializable("places", (Serializable) places);
-					}
-				}
-		        myMessage.setData(messageBundle);
-                myHandler.sendMessage(myMessage);
-        	}
-        	catch (Exception e) {
-                e.printStackTrace();}
+        	
         }};
     
     
@@ -234,47 +199,44 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    		Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_LONG).show();
     			    	else if (Error == 2)
     			    	{
-    			    		Toast.makeText(getApplicationContext(), "Login error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
+    			    		Toast.makeText(getApplicationContext(), "Get places error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
     			    	}
     			    	else if (Error == 3)
     			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
     			    	else
     			    	{
-    			    		places = (Place[])pack.getSerializable("places");  //  UTILITEE ???
+    			    		places = (Place)pack.getSerializable("places");  //  UTILITEE ???
     			    		Toast.makeText(getApplicationContext(), "Places updated", Toast.LENGTH_SHORT).show();
-    			    		msg.obj = places;    		
+    			    		msg.obj = places;
+    			    		drawPlaces();
     			    	}
+    			    	
+    			    	
     	    	} 	
     	    }
     	};
+    	
+    	
+    	
+    	public void drawPlaces()
+    	{ 
+    		for (int i = 0; i < places.list.length; i++)
+    		{	
+    			//Bitmap icon;
+				/*try {
+					icon = BitmapFactory.decodeStream(new URL(places.list[i].icon).openConnection().getInputStream());
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}*/
+    			
+    			//icon = Network.DownloadImage(places.list[i].icon); 
+    			
+    			listAllPlace.add(gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.myPin))));
+    		}
+    	}
 }
 
-
-/*import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.model.*;
-import android.app.Activity;
-import android.os.Bundle;
-
-public class MapView extends Activity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_view);
-
-        // Get a handle to the Map Fragment
-        GoogleMap map = ((MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map)).getMap();
-
-        LatLng sydney = new LatLng(-33.867, 151.206);
-
-        map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
-
-        map.addMarker(new MarkerOptions()
-                .title("Sydney")
-                .snippet("The most populous city in Australia.")
-                .position(sydney));
-    }
-}
-*/

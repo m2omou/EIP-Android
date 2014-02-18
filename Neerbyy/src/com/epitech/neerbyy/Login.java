@@ -102,7 +102,7 @@ public class Login extends Activity {
 		            	nameValuePairs.add(new BasicNameValuePair("password", password.getText().toString()));
 		            	
 		            	Message myMessage, msgPb;
-		            	msgPb = myHandler.obtainMessage(0, (Object) "Try Connecting");	 
+		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
 		                myHandler.sendMessage(msgPb);
 				
 						Bundle messageBundle = new Bundle();
@@ -126,17 +126,18 @@ public class Login extends Activity {
 							{
 								try {		    
 									rep = gson.fromJson(ret, ResponseWS.class);
-									user = rep.getValue(User.class);						
+									user = rep.getValue(User.class);
+									//Log.w("LOGIN", "Jai recup " + user.username);
 								}
 								catch(JsonParseException e)
 							    {
 							        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
 							    }
 								
-								if (user == null)
+								if (user.error != null)
 								{
 									messageBundle.putInt("error", 2);
-									messageBundle.putString("msgError", rep.responseMessage);
+									messageBundle.putString("msgError", user.error);
 								}
 								else		  	                   
 									messageBundle.putSerializable("user", (Serializable) user);	
@@ -235,10 +236,10 @@ public class Login extends Activity {
 			    		info.setText("Ws error :\n" + pack.getString("msgError"));
 			    	else
 			    	{
-			    		user = (User)pack.getSerializable("user");
-			    		info.setText("Login success with id : " + user.id + " and token : " + user.token);
+			    		user = (User)pack.getSerializable("user");   //  utile ??????
+			    		info.setText("Login success with : " + user.username);
 			    		login.setEnabled(false);
-			    		msg.obj = user;    		
+			    		//msg.obj = user;    		
 			    		Network.USER = user;
 			    	}
 	    	} 	

@@ -19,7 +19,7 @@ public class MainMenu extends Activity {
 		if (Network.USER == null)
 			infoUser.setText("Please Login");
 		else
-			infoUser.setText("Hello " + Network.USER.firstname);
+			infoUser.setText("Hello " + Network.USER.username);
 	}
 
 	@Override

@@ -45,29 +45,30 @@ public class EditInfoUser extends Activity {
 		
 		btnOk = (Button)findViewById(R.id.btnEditOk);
 		username = (EditText)findViewById(R.id.txtEditUsername);
-		firstname = (EditText)findViewById(R.id.txtEditFirstname);
-		lastname = (EditText)findViewById(R.id.txtEditLastname);
+		//firstname = (EditText)findViewById(R.id.txtEditFirstname);
+		//lastname = (EditText)findViewById(R.id.txtEditLastname);
 		mail = (EditText)findViewById(R.id.txtEditMail);
 	//	password = (EditText)findViewById(R.id.txtEditPassword);
 		
-		Bundle b  = this.getIntent().getExtras();		
-		if (b == null)
+		//Bundle b  = this.getIntent().getExtras();		
+		if (Network.USER == null)
 		{
 			Intent intent = new Intent(this, Login.class);
 			startActivity(intent);	
 			return;
 		}
 		
-		user = (User)b.getSerializable("user");
+		//user = (User)b.getSerializable("user");
+		user = Network.USER;
 		
 		username.setText(user.username);
-		firstname.setText(user.firstname);
-		lastname.setText(user.lastname);
+		//firstname.setText(user.firstname);
+		//lastname.setText(user.lastname);
 		mail.setText(user.mail);
 //		password.setText(user.password);
 
 		
-		btnOk.setOnClickListener(new View.OnClickListener() {
+		/*btnOk.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
@@ -113,7 +114,7 @@ public class EditInfoUser extends Activity {
 				}};
 			thread1.start();				
 			}
-		});
+		});*/
 	}
 	
 	Handler myHandler = new Handler()

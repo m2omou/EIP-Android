@@ -32,6 +32,8 @@ public class User implements Serializable{
 	public String updated_at;
 	@SerializedName("auth_token")
 	public String token;
+	@SerializedName("error")
+	public String error;
 	
 	public class Avatar {
 		@SerializedName("url")

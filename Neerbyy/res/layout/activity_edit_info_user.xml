@@ -8,74 +8,60 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".EditInfoUser" >
 
-    <EditText
-        android:id="@+id/txtEditUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="26dp"
-        android:ems="10"
-        android:inputType="textPersonName" >
-
-        <requestFocus />
-    </EditText>
-
-    <EditText
-        android:id="@+id/txtEditFirstname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtEditUsername"
-        android:layout_below="@+id/txtEditUsername"
-        android:layout_marginTop="26dp"
-        android:ems="10"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/txtEditLastname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtEditFirstname"
-        android:layout_below="@+id/txtEditFirstname"
-        android:layout_marginTop="26dp"
-        android:ems="10"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/txtEditPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtEditMail"
-        android:layout_alignRight="@+id/txtEditMail"
-        android:layout_below="@+id/txtEditMail"
-        android:layout_marginTop="30dp"
-        android:ems="10"
-        android:inputType="textPassword" />
-
-    <EditText
-        android:id="@+id/txtEditMail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtEditLastname"
-        android:layout_below="@+id/txtEditLastname"
-        android:layout_marginTop="34dp"
-        android:ems="10"
-        android:inputType="textEmailAddress" />
-
-    <Button
-        android:id="@+id/btnEditOk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtEditPassword"
-        android:layout_below="@+id/txtEditPassword"
-        android:text="OK" />
-
     <TextView
         android:id="@+id/txtInfoEditUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/txtEditUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="49dp"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/btnEditOk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtEditMail"
+        android:layout_below="@+id/txtEditMail"
+        android:layout_marginTop="25dp"
+        android:text="@string/ok" />
+
+    <EditText
+        android:id="@+id/txtEditMail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtEditUsername"
+        android:layout_below="@+id/txtEditUsername"
+        android:layout_marginTop="52dp"
+        android:ems="10"
+        android:inputType="textEmailAddress" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtEditUsername"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="27dp"
+        android:text="Username :"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtEditMail"
+        android:layout_below="@+id/txtEditUsername"
+        android:layout_marginTop="26dp"
+        android:text="Email :"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
