@@ -48,6 +48,8 @@ public class CreateAccount extends Activity {
 	
 	ProgressDialog mProgressDialog;
 	
+	ResponseWS rep;
+	
 	User user;
 
 	@Override
@@ -125,14 +127,26 @@ public class CreateAccount extends Activity {
 							{
 								try {
 								//user = gson.fromJson(readerResp, User.class);
-								user = gson.fromJson(ret, User.class);
+								//user = gson.fromJson(ret, User.class);
+								rep = gson.fromJson(ret, ResponseWS.class);
+								user = rep.getValue(User.class, 1);
 								}
 								catch(JsonParseException e)
 							    {
 							        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
 							    }
-								
-							messageBundle.putSerializable("user", (Serializable) user);
+								if (user.errors != null)
+								{
+									messageBundle.putInt("error", 2);
+									String err = "";
+									for (String s : user.errors) {
+									    err += s;
+									    err += "/n";
+									}
+									messageBundle.putString("msgError", err);
+								}
+								else		  	                   
+									messageBundle.putSerializable("user", (Serializable) user);	
 						}						
 						myMessage.setData(messageBundle);
 	                    myHandler.sendMessage(myMessage);

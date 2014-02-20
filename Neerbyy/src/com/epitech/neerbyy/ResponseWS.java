@@ -20,15 +20,15 @@ public class ResponseWS {
 	@SerializedName("result")
 	public Object result;
 	
-	public <T> T getValue(Class<T> obj)
+	public <T> T getValue(Class<T> obj, int mode)   // 1 = user create account
 	{
-		try {
+		try {  //  mettre un champ user dans class response .......
 			Gson gson = new Gson();
-			if (responseCode != 1 || obj.getName().contains("com.epitech.neerbyy.User"))
-				{
-				String gg = "";
-					if (obj.getName().contains("com.epitech.neerbyy.User"))
+			//if (responseCode != 1 ) // || obj.getName().contains("com.epitech.neerbyy.User"))
+			//	{	
+					if (mode == 1 && responseCode != 1) // for create user
 							{
+								String gg = "";
 								gg = gson.toJson(result);
 								gg = gg.substring(8,gg.length() - 1);
 								//gg = gg.substring(0, gg.length() - 1);
@@ -39,14 +39,13 @@ public class ResponseWS {
 					else
 						return gson.fromJson(gson.toJson(result), obj);
 					
-				}
+				//}
 			}
 		catch(JsonParseException e)
 		{
 			System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
 		}
-		if (obj.getName() == "com.epitech.neerbyy.User")
-			responseMessage = "Invalid email or password";
+		
 		return null;
 	}
 	

@@ -34,6 +34,8 @@ public class User implements Serializable{
 	public String token;
 	@SerializedName("error")
 	public String error;
+	@SerializedName("errors")
+	public String[] errors;
 	
 	public class Avatar {
 		@SerializedName("url")

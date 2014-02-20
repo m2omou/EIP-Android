@@ -31,7 +31,8 @@ public class ThreadPlaces extends Thread {
         	Gson gson = new Gson();
         	String url;
         	if (mv.locat != null){
-        		url = Network.URL + Network.PORT + "/places.json?latitude=" + mv.locat.getLatitude() + "&longitude=" + mv.locat.getLongitude();
+        		url = Network.URL + Network.PORT + "/places.json?latitude=" + mv.locat.getLatitude() + "&longitude=" + mv.locat.getLongitude()
+        				+ "&limit=" + mv.limit + "&radius=" + mv.radius;
         	}
         	else {        		
         		url = Network.URL + Network.PORT + "/places.json?latitude=45.75&longitude=-0.633333";
@@ -66,7 +67,7 @@ public class ThreadPlaces extends Thread {
 					try {		    
 						mv.rep = gson.fromJson(ret, ResponseWS.class);
 						//mv.places = mv.rep.getTabValue(Place.class);
-						mv.places = mv.rep.getValue(Place.class);
+						mv.places = mv.rep.getValue(Place.class, 0);
 						//Log.w("RECUP", "JAI RECUP " + mv.places.list.length + " places");
 					}
 					catch(JsonParseException e)

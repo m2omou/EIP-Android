@@ -51,8 +51,12 @@ public class MapView extends FragmentActivity implements LocationListener{
 	private Marker posMarker;
 	private List<Marker> listAllPlace;
 	public Location locat = null;
+	private Location centerScreen = null;
 	public Place places;
 	public ResponseWS rep;
+	
+	public int limit;    //  def 10
+	public int radius;    //  def 800
 	
 	boolean isRun;
 	
@@ -62,16 +66,29 @@ public class MapView extends FragmentActivity implements LocationListener{
         setContentView(R.layout.activity_map_view);
         
         isRun = false;
-        gMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+        if (!initCheckMap())
+        {
+        	Toast.makeText(this, "Error loading map", Toast.LENGTH_LONG);	
+        	return;
+        }
         posMarker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(45.75, -0.633333)));
         listAllPlace = new ArrayList<Marker>();
+        gMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         //mMap.setMyLocationEnabled(true);
+        limit = 20;
+        radius = 1000;
     }
     
     @Override
     public void onResume() {
     	super.onResume();
         
+    	if (!initCheckMap())
+        {
+        	Toast.makeText(this, "Error loading map", Toast.LENGTH_LONG);	
+        	return;
+        }
+    	
         //Obtention de la référence du service
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
  
@@ -83,8 +100,9 @@ public class MapView extends FragmentActivity implements LocationListener{
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             abonnementGPS();
         }
-        
-       // onLocationChanged(null);  //  a   enleverrrrrr
+        if(locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
+            abonnement3G();
+        }
     }
     
     @Override
@@ -93,6 +111,7 @@ public class MapView extends FragmentActivity implements LocationListener{
         //On appelle la méthode pour se désabonner
         desabonnementGPS();
         desabonnementWIFI();
+        desabonnement3G();
     }
     
     /**
@@ -107,6 +126,11 @@ public class MapView extends FragmentActivity implements LocationListener{
         //On s'abonne
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, this);
     }
+    
+    public void abonnement3G() {
+        //On s'abonne
+        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 5000, 10, this);
+    }
  
     /**
      * Méthode permettant de se désabonner de la localisation par GPS.
@@ -117,6 +141,11 @@ public class MapView extends FragmentActivity implements LocationListener{
     }
     
     public void desabonnementWIFI() {
+        //Si le GPS est disponible, on s'y abonne
+        locationManager.removeUpdates(this);
+    }
+    
+    public void desabonnement3G() {
         //Si le GPS est disponible, on s'y abonne
         locationManager.removeUpdates(this);
     }
@@ -134,6 +163,8 @@ public class MapView extends FragmentActivity implements LocationListener{
     		gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
             posMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
             locat = location;
+            if (centerScreen == null)
+            	centerScreen = locat;
             
             //if (!tGetPlace.isAlive())
             	//tGetPlace.start();
@@ -238,5 +269,18 @@ public class MapView extends FragmentActivity implements LocationListener{
     			listAllPlace.add(gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.myPin))));
     		}
     	}
+    	
+    	private boolean initCheckMap() {   //  true ok
+    	    // Do a null check to confirm that we have not already instantiated the map.
+    	    if (gMap == null) {
+    	    	gMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+    	        // Check if we were successful in obtaining the map.
+    	        if (gMap != null)
+    	            return true;
+    	        return false;
+    	    }
+    	    return true;
+    	}
+    	
 }
 

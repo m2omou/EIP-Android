@@ -126,7 +126,7 @@ public class Login extends Activity {
 							{
 								try {		    
 									rep = gson.fromJson(ret, ResponseWS.class);
-									user = rep.getValue(User.class);
+									user = rep.getValue(User.class, 1);
 									//Log.w("LOGIN", "Jai recup " + user.username);
 								}
 								catch(JsonParseException e)

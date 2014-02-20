@@ -100,7 +100,7 @@ public class Network {
 	        	HttpResponse getResponse;
 	        	if (mode == 0)
 	        		Log.w("Network ", "JENVOIE : " + getRequestGet.getMethod() + " -- " + getRequestGet.getRequestLine());
-	        	else if(mode == 2)
+	        	else if(mode == 1)
 	        		Log.w("Network ", "JENVOIE : " + getRequestPost.getMethod() + " -- " + getRequestPost.getRequestLine());
 	        	
 	        	if (mode == 0)
