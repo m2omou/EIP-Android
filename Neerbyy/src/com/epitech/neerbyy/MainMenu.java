@@ -6,10 +6,9 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainMenu extends Activity {
-
+	     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,6 +28,7 @@ public class MainMenu extends Activity {
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
         switch (item.getItemId()) {

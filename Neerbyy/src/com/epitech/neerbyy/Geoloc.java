@@ -1,10 +1,8 @@
 package com.epitech.neerbyy;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -12,8 +10,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -25,7 +21,7 @@ import java.util.List;
 
 import com.epitech.neerbyy.R;
 
-public class Geoloc extends Activity implements OnClickListener, LocationListener{
+public class Geoloc extends MainMenu implements OnClickListener, LocationListener{
 	private LocationManager lManager;
     private Location location;
     private String choix_source = "";
@@ -191,43 +187,4 @@ public class Geoloc extends Activity implements OnClickListener, LocationListene
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		Log.i("Tuto géolocalisation", "Le statut de la source a changé.");
 	}
- 
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.layout.menu, menu);
-		menu.getItem(2).getSubMenu().setHeaderIcon(R.drawable.ic_launcher);
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent;
-        switch (item.getItemId()) {
-           case R.id.LocateMe:
-              //intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.fr"));
-              intent = new Intent(this, Geoloc.class);
-              startActivity(intent);
-              return true;
-           case R.id.getUser:
-               intent = new Intent(this, EditInfoUser.class);
-			   startActivity(intent);
-               return true;
-           case R.id.User:
-               return true;
-           case R.id.Login:
-        	   intent = new Intent(this, Login.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.CreateAccount:
-        	   intent = new Intent(this, CreateAccount.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.Menu:
-        	   intent = new Intent(this, MainMenu.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.quit:
-              finish();
-              return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

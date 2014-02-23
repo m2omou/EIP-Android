@@ -1,6 +1,5 @@
 package com.epitech.neerbyy;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -17,20 +16,16 @@ import com.google.gson.JsonParseException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CreateAccount extends Activity {
+public class CreateAccount extends MainMenu {
 	
 	Button btnOk;
 	EditText username; 
@@ -100,7 +95,11 @@ public class CreateAccount extends Activity {
 		            	
 		            	//nameValuePairs.add(new BasicNameValuePair("user[firstname]", firstname.getText().toString()));
 		            	//nameValuePairs.add(new BasicNameValuePair("user[lastname]", lastname.getText().toString()));    	
-		            	//nameValuePairs.add(new BasicNameValuePair("user[avatar]", "default.jpg"));
+		            
+		            	
+		            	//Bitmap image = = BitmapFactory.
+		            	
+		            	//nameValuePairs.add(new BasicNameValuePair("user[avatar]", ));
 
 		            	Message myMessage, msgPb;
 		            	msgPb = myHandler.obtainMessage(0, (Object) "Try Connecting");	 
@@ -249,7 +248,7 @@ public class CreateAccount extends Activity {
 	    }
 	};
 	
-	public boolean onCreateOptionsMenu(Menu menu) {
+	/*public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.layout.menu, menu);
 		menu.getItem(2).getSubMenu().setHeaderIcon(R.drawable.ic_launcher);
 		return super.onCreateOptionsMenu(menu);
@@ -286,6 +285,6 @@ public class CreateAccount extends Activity {
               return true;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
 }

@@ -1,32 +1,14 @@
 package com.epitech.neerbyy;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import com.google.gson.Gson;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class EditInfoUser extends Activity {
+public class EditInfoUser extends MainMenu {
 	
 	Button btnOk;
 	TextView info;
@@ -144,43 +126,4 @@ public class EditInfoUser extends Activity {
 	    	} 	
 	    }
 	};
-	
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.layout.menu, menu);
-		menu.getItem(2).getSubMenu().setHeaderIcon(R.drawable.ic_launcher);
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent;
-        switch (item.getItemId()) {
-           case R.id.LocateMe:
-              //intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.fr"));
-              intent = new Intent(this, Geoloc.class);
-              startActivity(intent);
-              return true;
-           case R.id.getUser:
-               intent = new Intent(this, EditInfoUser.class);
-			   startActivity(intent);
-               return true;
-           case R.id.User:
-               return true;
-           case R.id.Login:
-        	   intent = new Intent(this, Login.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.CreateAccount:
-        	   intent = new Intent(this, CreateAccount.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.Menu:
-        	   intent = new Intent(this, MainMenu.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.quit:
-              finish();
-              return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

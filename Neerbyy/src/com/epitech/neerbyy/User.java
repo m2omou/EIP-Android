@@ -1,9 +1,5 @@
 package com.epitech.neerbyy;
 import java.io.Serializable;
-import java.net.PasswordAuthentication;
-
-import android.text.method.PasswordTransformationMethod;
-
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -14,6 +10,10 @@ import com.google.gson.annotations.SerializedName;
  *
  */
 public class User implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2546606138675349316L;
 	@SerializedName("id")
 	public int id;
 	@SerializedName("username")

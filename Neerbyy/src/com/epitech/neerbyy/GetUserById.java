@@ -1,33 +1,20 @@
 package com.epitech.neerbyy;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewDebug.IntToString;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
-import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
 
-public class GetUserById extends Activity {
+public class GetUserById extends MainMenu {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,45 +63,6 @@ public class GetUserById extends Activity {
 			thread1.start();
 	}});}
 			
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.layout.menu, menu);
-		menu.getItem(2).getSubMenu().setHeaderIcon(R.drawable.ic_launcher);
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent;
-        switch (item.getItemId()) {
-           case R.id.LocateMe:
-              //intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.fr"));
-              intent = new Intent(this, Geoloc.class);
-              startActivity(intent);
-              return true;
-           case R.id.getUser:
-               intent = new Intent(this, EditInfoUser.class);
-			   startActivity(intent);
-               return true;
-           case R.id.User:
-               return true;
-           case R.id.Login:
-        	   intent = new Intent(this, Login.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.CreateAccount:
-        	   intent = new Intent(this, CreateAccount.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.Menu:
-        	   intent = new Intent(this, MainMenu.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.quit:
-              finish();
-              return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-	
 	Handler myHandler = new Handler()
 	{
 	    @Override 

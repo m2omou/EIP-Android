@@ -1,47 +1,26 @@
 package com.epitech.neerbyy;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.epitech.neerbyy.R.drawable;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
-
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MapView extends FragmentActivity implements LocationListener{
@@ -55,28 +34,66 @@ public class MapView extends FragmentActivity implements LocationListener{
 	public Place places;
 	public ResponseWS rep;
 	
-	public int limit;    //  def 10
-	public int radius;    //  def 800
+	public int limit = 10;    //  def 10
+	public int radius = 800;    //  def 800
 	
-	boolean isRun;
+	OnCameraChangeListener cc;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
         
-        isRun = false;
         if (!initCheckMap())
         {
-        	Toast.makeText(this, "Error loading map", Toast.LENGTH_LONG);	
+        	Toast.makeText(this, "Error loading map", Toast.LENGTH_LONG).show();	
         	return;
         }
+        gMap.setMyLocationEnabled(true);
+        gMap.getUiSettings().setMyLocationButtonEnabled(true);
+        gMap.getUiSettings().setZoomControlsEnabled(false);
+        gMap.setOnCameraChangeListener(cc);
+        
+        cc = new OnCameraChangeListener(){
+        	@Override
+        	public void onCameraChange(CameraPosition newPos)
+        	{
+        		if (centerScreen == null)
+        			return;
+        		double dist = getDistance(new LatLng(centerScreen.getLatitude(),  centerScreen.getLongitude()), newPos.target);
+        		Log.w("DISTANCE", Double.toString(dist));
+        		if (dist > radius)
+        		{	
+        			centerScreen.setLatitude(newPos.target.latitude);
+        			centerScreen.setLongitude(newPos.target.longitude);
+        			new ThreadPlaces(MapView.this, newPos.target).start();
+        		}
+        	}	
+        };
+        
+        gMap.setOnCameraChangeListener(cc);    
         posMarker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(45.75, -0.633333)));
         listAllPlace = new ArrayList<Marker>();
-        gMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        //mMap.setMyLocationEnabled(true);
+        gMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        
         limit = 20;
         radius = 1000;
+    }
+    
+    public double getDistance(LatLng oldPos, LatLng newPos) {
+    	double lat1 = oldPos.latitude;
+    	double lng1 = oldPos.longitude;
+    	double lat2 = newPos.latitude;
+    	double lng2 = newPos.longitude;
+        double earthRadius = 3958.75;
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = earthRadius * c;
+        int meterConversion = 1609;
+       // return new Double(dist * meterConversion).floatValue();
+        return Double.valueOf(dist * meterConversion);
     }
     
     @Override
@@ -85,7 +102,7 @@ public class MapView extends FragmentActivity implements LocationListener{
         
     	if (!initCheckMap())
         {
-        	Toast.makeText(this, "Error loading map", Toast.LENGTH_LONG);	
+        	Toast.makeText(this, "Error loading map", Toast.LENGTH_LONG).show();	
         	return;
         }
     	
@@ -108,7 +125,6 @@ public class MapView extends FragmentActivity implements LocationListener{
     @Override
     public void onPause() {
     	super.onPause();
-        //On appelle la méthode pour se désabonner
         desabonnementGPS();
         desabonnementWIFI();
         desabonnement3G();
@@ -165,14 +181,11 @@ public class MapView extends FragmentActivity implements LocationListener{
             locat = location;
             if (centerScreen == null)
             	centerScreen = locat;
-            
-            //if (!tGetPlace.isAlive())
-            	//tGetPlace.start();
-            if (!isRun)
-            {
-            	new ThreadPlaces(this).start();
-            	//isRun = true;
-            }
+           
+            if (locat == null)
+            	new ThreadPlaces(this, null).start();
+            else
+            	new ThreadPlaces(this, new LatLng(locat.getLatitude(), locat.getLongitude())).start();
         }
     }
  
@@ -199,23 +212,14 @@ public class MapView extends FragmentActivity implements LocationListener{
     @Override
     public void onStatusChanged(final String provider, final int status, final Bundle extras) { }
     
-    
-
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.map, menu);
 		return true;
 	}
-      
     
-    private Thread tGetPlace = new Thread(){
-        public void run(){
-        	
-        }};
-    
-    
-        Handler myHandler = new Handler()
+     Handler myHandler = new Handler()
     	{
     	    @Override 
     	    public void handleMessage(Message msg)
@@ -240,14 +244,10 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    		Toast.makeText(getApplicationContext(), "Places updated", Toast.LENGTH_SHORT).show();
     			    		msg.obj = places;
     			    		drawPlaces();
-    			    	}
-    			    	
-    			    	
+    			    	}		    	
     	    	} 	
     	    }
     	};
-    	
-    	
     	
     	public void drawPlaces()
     	{ 
@@ -266,21 +266,20 @@ public class MapView extends FragmentActivity implements LocationListener{
     			
     			//icon = Network.DownloadImage(places.list[i].icon); 
     			
-    			listAllPlace.add(gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.myPin))));
+    			
+    			//check something mull  !!!!!!!!!!!!!!!!!
+    			listAllPlace.add(gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.myPin)).snippet(places.list[i].address)));
     		}
     	}
     	
     	private boolean initCheckMap() {   //  true ok
-    	    // Do a null check to confirm that we have not already instantiated the map.
     	    if (gMap == null) {
     	    	gMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-    	        // Check if we were successful in obtaining the map.
     	        if (gMap != null)
     	            return true;
     	        return false;
     	    }
     	    return true;
-    	}
-    	
+    	}  	
 }
 

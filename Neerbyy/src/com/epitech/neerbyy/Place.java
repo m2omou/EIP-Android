@@ -5,7 +5,11 @@ import java.io.Serializable;
 import com.google.gson.annotations.SerializedName;
 
 public class Place implements Serializable {
-    @SerializedName("places") 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3112717925409026343L;
+	@SerializedName("places") 
     public PlaceInfo[] list;
     
     public class PlaceInfo {

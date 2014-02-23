@@ -3,7 +3,6 @@ package com.epitech.neerbyy;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -15,10 +14,7 @@ import javax.net.ssl.HttpsURLConnection;
  
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -27,11 +23,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
-import android.widget.TextView;
 
 /**
  * <b>Network est une classe static permettant d'effectuer des taches réseau.</b>
@@ -57,6 +49,7 @@ public class Network {
 	static final public int CREATE_ACCOUNT = 4;
 	static final public int EDIT_USER = 5;
 	static final public int GET_PLACES = 6;
+	static final public int RESET_PASSWORD = 7;
 	
 	static final public String URL = "http://neerbyy.com:";  //  keep : !?
 	static final public int PORT = 80;

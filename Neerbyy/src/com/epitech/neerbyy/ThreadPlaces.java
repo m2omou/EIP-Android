@@ -4,25 +4,24 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-import android.content.Context;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 	
 public class ThreadPlaces extends Thread {
 	public MapView mv;
+	private LatLng locat;
 	
-    public ThreadPlaces(MapView Mv) {
+    public ThreadPlaces(MapView Mv, LatLng L) {
         super();
         mv = Mv;
+        locat = L;
     }
     
     public void run() {
@@ -30,8 +29,8 @@ public class ThreadPlaces extends Thread {
     	try {
         	Gson gson = new Gson();
         	String url;
-        	if (mv.locat != null){
-        		url = Network.URL + Network.PORT + "/places.json?latitude=" + mv.locat.getLatitude() + "&longitude=" + mv.locat.getLongitude()
+        	if (locat != null){
+        		url = Network.URL + Network.PORT + "/places.json?latitude=" + locat.latitude + "&longitude=" + locat.longitude
         				+ "&limit=" + mv.limit + "&radius=" + mv.radius;
         	}
         	else {        		
