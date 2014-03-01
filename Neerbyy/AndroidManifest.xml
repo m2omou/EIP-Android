@@ -63,7 +63,7 @@
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" /> 
+            android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDt8wRBGs4bjsKa2I_KyG_uqzMORpsGCGM" />
@@ -71,6 +71,10 @@
         <activity
             android:name="com.epitech.neerbyy.MapView"
             android:label="@string/title_activity_map_view" >
+        </activity>
+        <activity
+            android:name="com.epitech.neerbyy.ViewPost"
+            android:label="@string/title_activity_view_post" >
         </activity>
     </application>
 

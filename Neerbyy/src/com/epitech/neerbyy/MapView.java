@@ -1,17 +1,22 @@
 package com.epitech.neerbyy;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.epitech.neerbyy.Place.PlaceInfo;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.SupportMapFragment;
+
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -54,6 +59,7 @@ public class MapView extends FragmentActivity implements LocationListener{
         gMap.getUiSettings().setZoomControlsEnabled(false);
         gMap.setOnCameraChangeListener(cc);
         
+        
         cc = new OnCameraChangeListener(){
         	@Override
         	public void onCameraChange(CameraPosition newPos)
@@ -70,9 +76,29 @@ public class MapView extends FragmentActivity implements LocationListener{
         		}
         	}	
         };
+        gMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+			
+			@Override
+			public void onInfoWindowClick(Marker m) {
+				Intent intent = new Intent(MapView.this, ViewPost.class);
+				Bundle b = new Bundle();
+				PlaceInfo pi = getPlaceFromMarker(m.getId());
+				if (pi == null)
+				{
+		    		Toast.makeText(getApplicationContext(), "Error find postInfo", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				//intent.put
+	    		//b.putSerializable("placeInfo", pi);
+				b.putString("placeId", pi.id);
+	    		intent.putExtras(b);					
+				startActivity(intent);
+				return;
+			}
+		});
         
         gMap.setOnCameraChangeListener(cc);    
-        posMarker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(45.75, -0.633333)));
+        //posMarker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(45.75, -0.633333)));
         listAllPlace = new ArrayList<Marker>();
         gMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         
@@ -114,20 +140,20 @@ public class MapView extends FragmentActivity implements LocationListener{
         {
         	abonnementWIFI();
         }
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        /*if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             abonnementGPS();
         }
         if(locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
             abonnement3G();
-        }
+        }*/
     }
     
     @Override
     public void onPause() {
     	super.onPause();
-        desabonnementGPS();
+        //desabonnementGPS();
         desabonnementWIFI();
-        desabonnement3G();
+        //desabonnement3G();
     }
     
     /**
@@ -177,7 +203,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     		msg.append(location.getLongitude());
     		Log.w("GEOLOC", msg.toString());
     		gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
-            posMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+          //  posMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
             locat = location;
             if (centerScreen == null)
             	centerScreen = locat;
@@ -204,9 +230,9 @@ public class MapView extends FragmentActivity implements LocationListener{
     	if("NETWORK_PROVIDER".equals(provider)){
         	abonnementWIFI();
         }
-    	if("gps".equals(provider)) {
+    	/*if("gps".equals(provider)) {
             abonnementGPS();
-        }
+        }*/
     }
  
     @Override
@@ -240,7 +266,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
     			    	else
     			    	{
-    			    		places = (Place)pack.getSerializable("places");  //  UTILITEE ???
+    			    		//places = (Place)pack.getSerializable("places");  //  UTILITEE ???
     			    		Toast.makeText(getApplicationContext(), "Places updated", Toast.LENGTH_SHORT).show();
     			    		msg.obj = places;
     			    		drawPlaces();
@@ -268,8 +294,22 @@ public class MapView extends FragmentActivity implements LocationListener{
     			
     			
     			//check something mull  !!!!!!!!!!!!!!!!!
-    			listAllPlace.add(gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.myPin)).snippet(places.list[i].address)));
+    			//listAllPlace.add(gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.myPin)).snippet(places.list[i].address)));
+    			if (places.list[i].marker == null) {
+    				places.list[i].marker = gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.myPin)).snippet(places.list[i].address));
+    				listAllPlace.add(places.list[i].marker);
+    			}
     		}
+    	}
+    	
+    	private PlaceInfo getPlaceFromMarker(String id) {
+    		
+    		for (int i = 0; i < places.list.length; i++) {
+    			Log.w("TEST", "ID M= " + id + " ET JAI " + places.list[i].marker.getId());
+    			if (places.list[i].marker.getId().contains(id))
+    				return places.list[i];
+    		}
+    		return null;
     	}
     	
     	private boolean initCheckMap() {   //  true ok

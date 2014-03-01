@@ -50,6 +50,8 @@ public class Network {
 	static final public int EDIT_USER = 5;
 	static final public int GET_PLACES = 6;
 	static final public int RESET_PASSWORD = 7;
+	static final public int CREATE_POST = 8;
+	static final public int UPDATE_POST = 9;
 	
 	static final public String URL = "http://neerbyy.com:";  //  keep : !?
 	static final public int PORT = 80;

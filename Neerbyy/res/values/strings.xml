@@ -28,7 +28,13 @@
 
     <string name="title_activity_map">Neerbyy</string>
     <string name="title_activity_map_view">MapView</string>
+
     <drawable name="myPin">@drawable/iconmortel</drawable>
-    
+
+    <string name="title_activity_view_post">Neerbyy</string>
+
+    <string name="hintPostComment">Post your comment</string>
+
+    <string name="postSendPost">send</string>
 
 </resources>

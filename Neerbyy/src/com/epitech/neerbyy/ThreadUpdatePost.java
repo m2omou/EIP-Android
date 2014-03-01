@@ -14,32 +14,25 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 	
-public class ThreadPlaces extends Thread {
-	public MapView mv;
-	private LatLng locat;
+public class ThreadUpdatePost extends Thread {
+	private ViewPost vp;
 	
-    public ThreadPlaces(MapView Mv, LatLng L) {
+    public ThreadUpdatePost(ViewPost vp) {
         super();
-        mv = Mv;
-        locat = L;
+        this.vp = vp;
     }
     
     public void run() {
-        Log.w("THREAD", "DEBUT THREAD PLACES");
+        Log.w("THREAD", "DEBUT THREAD POSTS");
     	try {
         	Gson gson = new Gson();
         	String url;
-        	if (locat != null){
-        		url = Network.URL + Network.PORT + "/places.json?latitude=" + locat.latitude + "&longitude=" + locat.longitude
-        				+ "&limit=" + mv.limit + "&radius=" + mv.radius;
-        	}
-        	else {        		
-        		url = Network.URL + Network.PORT + "/places.json?latitude=45.75&longitude=-0.633333";
-        	}
+        	url = Network.URL + Network.PORT + "/publications.json/?place_id=" + vp.placeId;        	
+
         	Message myMessage;
         	Bundle messageBundle = new Bundle();
-			messageBundle.putInt("action", Network.GET_PLACES);
-	        myMessage = mv.myHandler.obtainMessage();	
+			messageBundle.putInt("action", Network.UPDATE_POST);
+	        myMessage = vp.myHandler.obtainMessage();	
        
 	        InputStream input = Network.retrieveStream(url, 0, null);
         	
@@ -57,37 +50,29 @@ public class ThreadPlaces extends Thread {
 				}
 				else
 				{
-					/*if (ret.charAt(0) == '[')  //   ENLEVE  BLOC  INUTILE  !!!!!
-					{
-						ret = ret.substring(1);
-						ret = ret.substring(0, ret.length() - 1);
-						Log.w("TRANSFORM", "NEW RET =  " + ret);
-					}*/
 					try {		    
-						mv.rep = gson.fromJson(ret, ResponseWS.class);
-						//mv.places = mv.rep.getTabValue(Place.class);
-						mv.places = mv.rep.getValue(Place.class, 0);
-						//Log.w("RECUP", "JAI RECUP " + mv.places.list.length + " places");
+						vp.rep = gson.fromJson(ret, ResponseWS.class);
+						vp.listPost = vp.rep.getValue(Post.class, 0);
+						Log.w("RECUP", "JAI RECUP " + vp.listPost.list.length + " posts");
 					}
 					catch(JsonParseException e)
 				    {
 				        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
 				    }
-					if (mv.places == null)
+					if (vp.listPost == null)
 					{
 						messageBundle.putInt("error", 2);
-						messageBundle.putString("msgError", mv.rep.responseMessage);
+						messageBundle.putString("msgError", vp.rep.responseMessage);
 					}
 					//else		  	                   
-						//messageBundle.putSerializable("places", (Serializable) mv.places);
+						//messageBundle.putSerializable("post", (Serializable) vp.listPost);
 				}
 			}
 	        myMessage.setData(messageBundle);
-            mv.myHandler.sendMessage(myMessage);
+            vp.myHandler.sendMessage(myMessage);
     	}
     	catch (Exception e) {
             e.printStackTrace();}
     	Log.w("THREAD", "FIN THREAD PLACES");
     }
 }
-

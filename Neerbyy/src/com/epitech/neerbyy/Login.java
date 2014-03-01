@@ -261,45 +261,6 @@ public class Login extends MainMenu {
 			return true;
 	}
 
-	/*public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.layout.menu, menu);
-		menu.getItem(2).getSubMenu().setHeaderIcon(R.drawable.ic_launcher);
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent;
-        switch (item.getItemId()) {
-           case R.id.LocateMe:
-              //intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.fr"));
-              intent = new Intent(this, Geoloc.class);
-              startActivity(intent);
-              return true;
-           case R.id.getUser:
-               intent = new Intent(this, EditInfoUser.class);
-			   startActivity(intent);
-               return true;
-           case R.id.User:
-               return true;
-           case R.id.Login:
-        	   intent = new Intent(this, Login.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.CreateAccount:
-        	   intent = new Intent(this, CreateAccount.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.Menu:
-        	   intent = new Intent(this, MainMenu.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.quit:
-              finish();
-              return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
-	
 	Handler myHandler = new Handler()
 	{
 	    @Override 
