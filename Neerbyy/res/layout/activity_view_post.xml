@@ -50,11 +50,27 @@
         android:textColor="@color/blue" />
 
     <TextView
+        android:id="@+id/postNamePlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnCreatePost"
+        android:layout_alignLeft="@+id/postTextInfo"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
         android:id="@+id/postTextInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/postEditPost"
-        android:layout_below="@+id/btnCreatePost"
+        android:layout_alignTop="@+id/btnCreatePost"
+        android:layout_toLeftOf="@+id/postEditPost"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/postTextInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/postTextInfo"
+        android:layout_toLeftOf="@+id/postEditPost"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

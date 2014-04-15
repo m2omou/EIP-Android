@@ -26,15 +26,18 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 /**
- * <b>Network est une classe static permettant d'effectuer des taches réseau.</b>
- *<p>Elle possede une liste des differentes actions reseaux disponible 
- *pour les vues:
+ * <b>Network is a static a class for performing network tasks.</b>
+ *<p>It has a list of different network shares available for views:
  *<ul>
- *<li>GET_UNTRUC : operation quelconque (pour debugging)
- *<li>GET_USER : s'apprete à recevoir les infos d'un utilisateur par le WS
- *<li>LOGIN : s'apprete à recevoir la confirmation du Login par le WS
- *<li>CREATE_ACCOUNT : s'apprete à recevoir la confirmation de la création du compte utilisateur par le WS
- *<li>EDIT_USER : s'apprete à recevoir les information d'un utilisateur par le WS en vue de les modifier
+ *<li>GET_UNTRUC : any operation (for debugging)
+ *<li>GET_USER : prepares to to receive information from a user by WS
+ *<li>LOGIN : prepares to to receive confirmation Login by WS
+ *<li>CREATE_ACCOUNT : prepares to receive confirmation of the user account creation by WS
+ *<li>EDIT_USER : prepares to receive information from a user by the WS to change
+ *<li>GET_PLACES : prepares to receive information from the places around the user
+ *<li>RESET_PASSWORD : prepares to receive confirmation about the modification's user password 
+ *<li>CREATE_POST : prepares to receive confirmation about the new created post
+ *<li>UPDATE_POST : prepares to receive information about list of post from a place
  *</ul>
  *</p>
  *@see User
@@ -53,24 +56,34 @@ public class Network {
 	static final public int CREATE_POST = 8;
 	static final public int UPDATE_POST = 9;
 	
-	static final public String URL = "http://neerbyy.com:";  //  keep : !?
+	 /**
+	  * The URL of the Web Service
+     */
+	static final public String URL = "http://api.neerbyy.com:";  //  keep : !?
+	/**
+	  * The default port of the Web Service 
+    */
 	static final public int PORT = 80;
 	
+	/**
+	  * USER will be set when the user will be logged. It will contain all data
+	  *  of this user in a static way for allow access to other views. 
+   */
 	static public User USER = null;
 	
 	/**
 	 * 
 	 * @param url
-	 * L'url de la requete http
+	 * URL of the HTTP request
 	 * @param mode
-	 * Le type de la requete : 0 GET, 1 POST, 2 PUT
+	 * type of the request : 0 GET, 1 POST, 2 PUT
 	 * @param nameValuePairs
-	 * Liste des variables à envoyer pour les requetes de type POST et PUT
+	 * List of variables to send to the applications of POST and PUT
 	 * @return
-	 * L'InputStream contenant la réponse éventuelle du WS
+	 * The InputStream containing the possible response of the WS
 	 * @see InputStream
 	 * @throws UnsupportedEncodingException
-	 * Permet de gerer les exception non gérer par le bloc Catch habituel
+	 * Allows you to manage the unhandled by the usual exception Catch block
 	 */
 	static public InputStream retrieveStream(final String url, int mode, List<NameValuePair> nameValuePairs) throws UnsupportedEncodingException { // mode 0 = getMethode  1 = postMethode 2 = putMethode with key pair data value
 		
@@ -87,9 +100,11 @@ public class Network {
 	        	}
 		        if (USER != null)
 		        {	
-		        	getRequestPost.setHeader("Authorization", "Token token="+ USER.token);
-		        	getRequestGet.setHeader("Authorization", "Token token="+ USER.token);
-		        	getRequestPut.setHeader("Authorization", "Token token=" + USER.token);  
+		        	Log.w("TOKEN USER", "TOKEN: " + USER.token);
+		        	getRequestPost.setHeader("Authorization", "Token =" + USER.token);
+		        	getRequestGet.setHeader("Authorization", "Token =" + USER.token);
+		        	getRequestPut.setHeader("Authorization", "Token =" + USER.token);
+		        	
 		        }
 	        	        	
 	        	HttpResponse getResponse;
@@ -108,7 +123,9 @@ public class Network {
 	        	final int statusCode = getResponse.getStatusLine().getStatusCode();
 	            if (statusCode < 200 || statusCode > 226) {  // before HttpStatus.SC_OK && statusCode != HttpStatus.SC_CREATED
 	            	Log.w("Network ", "Error " + statusCode + " for URL " + url);  // before = getClass().getSimpleName()
-	            	if (statusCode != 422)  //  Enlever ca plus tard !!!  erreur webservice connection
+	            	//if (statusCode != 422)  //  Enlever ca plus tard !!!  erreur webservice connection
+	            	//	return null;
+	            	if (statusCode == 401)   //  pour erreur token
 	            		return null;
 	            }
 	       
@@ -130,9 +147,9 @@ public class Network {
 	     }
 	  
 	/**
-	 * <p>Affiche le contenu de la réponse retour du WS</p>
+	 * <p>Displays the contents of the return response of the WS on the log, and return a String data</p>
 	 * @param readerResp
-	 * Reader contenant le InputStream de retour du WS
+	 * Reader containing the InputStream returned from WS
 	 * @see Reader
 	 * @see InputStream
 	 * @see retrieveStream
@@ -166,6 +183,15 @@ public class Network {
 	    return bitmap;                
 	}
 	
+	/**
+	 * <p>Creates an asynchronous connection to handle
+	 * download certaint graphic items listed such as user avatars for exemple</p>
+	 * @param urlString
+	 * URL element to download.
+	 * @return
+	 * The InputStream object containing the data sent by the Web Service.
+	 * @see InputStream
+	 */
 	private static InputStream OpenHttpConnection(String urlString) 
 	        throws IOException
 	        {
@@ -175,9 +201,8 @@ public class Network {
 	            URL url = new URL(urlString); 
 	            URLConnection conn = url.openConnection();
 
-	            if (!(conn instanceof HttpURLConnection))                     
+	            if (!(conn instanceof HttpURLConnection))                    
 	                throw new IOException("Not an HTTP connection");
-
 	            try{
 	                HttpsURLConnection httpConn = (HttpsURLConnection) conn;
 	                httpConn.setAllowUserInteraction(false);
@@ -196,6 +221,4 @@ public class Network {
 	            }
 	            return in;     
 	        }
-	
-	
 }

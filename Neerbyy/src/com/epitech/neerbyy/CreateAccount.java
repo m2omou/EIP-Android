@@ -19,11 +19,19 @@ import android.os.Message;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+/**
+ * This class represent the view for create a new user account.
+ * Each field must be check for error with the MyRegex class
+ *@see User
+ *@see MyRegex
+ */
 
 public class CreateAccount extends MainMenu {
 	
@@ -127,21 +135,31 @@ public class CreateAccount extends MainMenu {
 								try {
 								//user = gson.fromJson(readerResp, User.class);
 								//user = gson.fromJson(ret, User.class);
+									
+								//Log.d("RET", "RET = " + ret);
 								rep = gson.fromJson(ret, ResponseWS.class);
-								user = rep.getValue(User.class, 1);
+								//Log.d("REP", "REP = " + rep.responseMessage + " ::: " + rep.result.toString());
+								user = rep.getValue(User.class);
 								}
 								catch(JsonParseException e)
 							    {
 							        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
+							        
+							        msgPb = myHandler.obtainMessage(1, (Object) "Echec");
+					                myHandler.sendMessage(msgPb);
+							        return;
 							    }
-								if (user.errors != null)
+								if (user == null || user.errors != null)
 								{
 									messageBundle.putInt("error", 2);
 									String err = "";
+									
+									err = rep.responseMessage;
+									/*
 									for (String s : user.errors) {
 									    err += s;
 									    err += "/n";
-									}
+									}*/
 									messageBundle.putString("msgError", err);
 								}
 								else		  	                   
@@ -228,16 +246,16 @@ public class CreateAccount extends MainMenu {
 	    	switch (pack.getInt("action"))
 	    	{
 		    	case Network.CREATE_ACCOUNT:    		
-		    		info.setText("");
-		    		User user = (User)pack.getSerializable("user");   	
+		    		info.setText("");	    		  	
 			    	int Error = pack.getInt("error");
 			    	if (Error == 1)
 			    		info.setText("Error: connection with WS fail");
-			    	else if (Error == 3)
+			    	else if (Error == 3 || Error == 2)
 			    		info.setText("Login error :\n" + pack.getString("msgError"));
 			    	else
 			    	{
 			    		//info.setText("Creating account success");
+			    		User user = (User)pack.getSerializable("user"); 
 			    		msg.obj = user;
 			    		Toast.makeText(getApplicationContext(), "Creating account success", Toast.LENGTH_SHORT).show();
 			    		Network.USER = user;
@@ -286,5 +304,4 @@ public class CreateAccount extends MainMenu {
         }
         return super.onOptionsItemSelected(item);
     }*/
-
 }

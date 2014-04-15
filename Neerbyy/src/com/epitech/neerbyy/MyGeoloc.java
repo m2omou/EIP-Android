@@ -6,6 +6,11 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * Just an temporary DEBUG class
+ * @author Seb
+ *
+ */
 public class MyGeoloc implements LocationListener {
     private LocationManager locationManager;
  

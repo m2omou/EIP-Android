@@ -14,6 +14,11 @@ import java.io.Serializable;
 
 import com.google.gson.Gson;
 
+/**
+ * This class can ask to the WebService the informations about one user
+ * by an Id user.
+ *@see User
+ */
 public class GetUserById extends MainMenu {
 	
 	@Override

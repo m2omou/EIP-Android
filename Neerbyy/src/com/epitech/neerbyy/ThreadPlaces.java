@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 
 import android.os.Bundle;
 import android.os.Message;
@@ -13,9 +14,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
-	
+/**
+ * this class can launch a request for Places around the user. 
+ *This class can be instantiated as a Thread
+ * @see Place
+ */
 public class ThreadPlaces extends Thread {
+	/**
+	 * mv represent the instance of the view "MapView",
+	 * and allow this thread to communicate with it handler
+	 */
 	public MapView mv;
+	
+	/**
+	 * locat represent the actual position of the user
+	 */
 	private LatLng locat;
 	
     public ThreadPlaces(MapView Mv, LatLng L) {
@@ -66,12 +79,12 @@ public class ThreadPlaces extends Thread {
 					try {		    
 						mv.rep = gson.fromJson(ret, ResponseWS.class);
 						//mv.places = mv.rep.getTabValue(Place.class);
-						mv.places = mv.rep.getValue(Place.class, 0);
-						//Log.w("RECUP", "JAI RECUP " + mv.places.list.length + " places");
+						mv.places = mv.rep.getValue(Place.class);
+						Log.w("RECUP", "JAI RECUP " + mv.places.list.length + " places");
 					}
 					catch(JsonParseException e)
 				    {
-				        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
+				        System.out.println("Exception n6 in check_exitrestrepWSResponse::"+e.toString());
 				    }
 					if (mv.places == null)
 					{

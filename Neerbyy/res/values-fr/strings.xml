@@ -10,6 +10,6 @@
     <string name="hintConfirmPassword">Confirme MotDePasse</string>
     <string name="loginDefaultInfo">Entrez vos identifiants:</string>
     <string name="loginLostPassword">Mot de passe oublié</string>
-     <string name="hintPostComment">Poste ton commentaire</string>
+     <string name="hintPostComment">Envoie un commentaire</string>
      <string name="postSendPost">envoyez</string>
 </resources>

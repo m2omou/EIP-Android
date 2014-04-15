@@ -21,6 +21,11 @@ import java.util.List;
 
 import com.epitech.neerbyy.R;
 
+/**
+ * Just an temporary DEBUG class
+ * @author Seb
+ *
+ */
 public class Geoloc extends MainMenu implements OnClickListener, LocationListener{
 	private LocationManager lManager;
     private Location location;

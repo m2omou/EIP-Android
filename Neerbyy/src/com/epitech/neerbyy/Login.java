@@ -19,12 +19,19 @@ import android.os.Message;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * This class represent the view for logging an user.
+ * Each field must be check for error with the MyRegex class
+ *@see User
+ *@see MyRegex
+ */
 public class Login extends MainMenu {
 
 	Button createAccount;
@@ -99,13 +106,15 @@ public class Login extends MainMenu {
 		            	String url = Network.URL + Network.PORT + "/sessions.json";
 		            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		            	
-		            	nameValuePairs.add(new BasicNameValuePair("email", loginMail.getText().toString()));
-		            	nameValuePairs.add(new BasicNameValuePair("password", password.getText().toString()));
+		            	nameValuePairs.add(new BasicNameValuePair("connection[email]", loginMail.getText().toString()));
+		            	nameValuePairs.add(new BasicNameValuePair("connection[password]", password.getText().toString()));
 		            	
 		            	Message myMessage, msgPb;
 		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
 		                myHandler.sendMessage(msgPb);
 				
+		                Log.w("PATH", "ICI1");
+		                
 						Bundle messageBundle = new Bundle();
 						messageBundle.putInt("action", Network.LOGIN);
 				        myMessage = myHandler.obtainMessage();	
@@ -115,6 +124,7 @@ public class Login extends MainMenu {
 							messageBundle.putInt("error", 1);
 						else
 						{	
+							Log.w("PATH", "ICI2");
 							Reader readerResp = new InputStreamReader(input);
 							String ret = Network.checkInputStream(readerResp);
 							
@@ -125,19 +135,22 @@ public class Login extends MainMenu {
 							}
 							else
 							{
-								try {		    
+								try {
+									Log.w("PATH", "ICI3");
 									rep = gson.fromJson(ret, ResponseWS.class);
-									user = rep.getValue(User.class, 1);
+									Log.w("PATH", "ICI4");
+									user = rep.getValue(User.class);
+									Log.w("PATH", "ICI5");
 								}
 								catch(JsonParseException e)
 							    {
-							        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
+							        System.out.println("Exception n3 in check_exitrestrepWSResponse::"+e.toString());
 							    }
 								
-								if (user.error != null)
+								if (rep.responseCode == 1)
 								{
 									messageBundle.putInt("error", 2);
-									messageBundle.putString("msgError", user.error);
+									messageBundle.putString("msgError", rep.responseMessage);
 								}
 								else		  	                   
 									messageBundle.putSerializable("user", (Serializable) user);	

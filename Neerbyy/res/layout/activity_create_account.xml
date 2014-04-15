@@ -82,6 +82,6 @@
         android:layout_marginLeft="37dp"
         android:ems="10"
         android:hint="@string/hintUsername"
-        android:inputType="text|textPersonName" />
+        android:inputType="text" />
 
 </RelativeLayout>

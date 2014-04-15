@@ -7,6 +7,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+/**
+ * This class describe the temporary menu of each views
+ * All views extend this class instead the class Activity
+ * @author Seb
+ *
+ */
 public class MainMenu extends Activity {
 	     
 	@Override
@@ -29,6 +35,7 @@ public class MainMenu extends Activity {
 	}
 	
 	@Override
+	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
         switch (item.getItemId()) {
@@ -61,9 +68,11 @@ public class MainMenu extends Activity {
            case R.id.testToken:
         	   intent = new Intent(this, GetUserById.class);
 			   startActivity(intent);
+			   break;   //  ou return true ??
            case R.id.mapView:
         	   intent = new Intent(this, MapView.class);
 			   startActivity(intent);
+			   break;
         }
         return super.onOptionsItemSelected(item);
     }

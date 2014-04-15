@@ -19,6 +19,7 @@ import android.os.Message;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,11 +32,16 @@ import android.widget.Toast;
 
 import com.epitech.neerbyy.Place.PlaceInfo;
 
+/**
+ * This class represent the view associate to a place, and allow to list all posts of this place.
+ * @author Seb
+ */
 public class ViewPost extends Activity {
 
 	private ImageButton btnCreatePost;
 	private TextView sendButton;
 	private TextView info;
+	private TextView placeName;
 	private EditText editPost;
 	private ListView listView;
 	
@@ -53,12 +59,14 @@ public class ViewPost extends Activity {
 		btnCreatePost = (ImageButton)findViewById(R.id.btnCreatePost);
 		sendButton = (TextView)findViewById(R.id.postSendPost);
 		info = (TextView)findViewById(R.id.postTextInfo);
+		placeName = (TextView)findViewById(R.id.postNamePlace);
 		editPost = (EditText)findViewById(R.id.postEditPost);
 		listView = (ListView)findViewById(R.id.postViewListPost);
 		
 		Bundle b  = this.getIntent().getExtras();
 	//	place = (PlaceInfo)b.getSerializable("placeInfo");
 		placeId = b.getString("placeId");
+		placeName.setText(b.getString("placeName"));
 
 //		b.getSerializable(key)
 		sendButton.setOnClickListener(new OnClickListener() {
@@ -73,11 +81,15 @@ public class ViewPost extends Activity {
 		            	String url = Network.URL + Network.PORT + "/publications.json";
 		            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		            	
-		            	nameValuePairs.add(new BasicNameValuePair("user_id", Integer.toString(Network.USER.id)));
-		            	nameValuePairs.add(new BasicNameValuePair("place_id", placeId));
-		            	nameValuePairs.add(new BasicNameValuePair("title", ""));
-		            	nameValuePairs.add(new BasicNameValuePair("content", editPost.getText().toString()));
-		            	nameValuePairs.add(new BasicNameValuePair("file", null));
+		            	nameValuePairs.add(new BasicNameValuePair("publication[user_id]", Integer.toString(Network.USER.id)));
+		            	nameValuePairs.add(new BasicNameValuePair("publication[place_id]", placeId));
+		            	
+		            	nameValuePairs.add(new BasicNameValuePair("publication[link]", ""));
+		            	
+		            	
+		            	nameValuePairs.add(new BasicNameValuePair("publication[title]", ""));
+		            	nameValuePairs.add(new BasicNameValuePair("publication[content]", editPost.getText().toString()));
+		            	nameValuePairs.add(new BasicNameValuePair("publication[file]", null));
 		            	
 		            	Message myMessage, msgPb;
 		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
@@ -132,6 +144,9 @@ public class ViewPost extends Activity {
 			
 			}
 		});
+		
+		mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
+				"Long operation starts...", true);
 		
 		new ThreadUpdatePost(ViewPost.this).start();
 	}
@@ -191,17 +206,20 @@ public class ViewPost extends Activity {
 			    	else
 			    	{
 			    		//listPost = (Post)pack.getSerializable("post");   //  utile ?????? 
-			    		
+			    		Log.w("PATH", "LAAA");
 			    		//List listStrings = new ArrayList<String>() ;//= {"France","Allemagne","Russie"};
 			    		String[] listStrings = new String[listPost.list.length] ;//= {"France","Allemagne","Russie"};
 
-			    		for (int i = 0; i < listPost.list.length; i++) {
-			    			//listStrings.add(listPost.list[i].content);
-			    			listStrings[i] = listPost.list[i].content;
-			    		}
+			    		if (listPost.list.length > 0)
+			    		{
+			    			for (int i = 0; i < listPost.list.length; i++) {
+			    				//listStrings.add(listPost.list[i].content);
+			    				listStrings[i] = listPost.list[i].content;
+			    			}
 			    		 
-			            listView.setAdapter(new ArrayAdapter<String>(ViewPost.this, android.R.layout.simple_list_item_1, listStrings));
-			    		Toast.makeText(getApplicationContext(), "Update post success", Toast.LENGTH_LONG).show();
+			    			listView.setAdapter(new ArrayAdapter<String>(ViewPost.this, android.R.layout.simple_list_item_1, listStrings));
+			    		}
+			            Toast.makeText(getApplicationContext(), "Update post success", Toast.LENGTH_LONG).show();
 
 			    	}
 			    	break;

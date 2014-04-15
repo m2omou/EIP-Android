@@ -4,6 +4,11 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 
+/**
+ * This is an temporary debugging test class
+ * @author Seb
+ *
+ */
 public class Map extends Activity {
 
 	@Override

@@ -8,6 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/**
+ * This class stock temporary the informations of the user. It is use for debugging case
+ *@see User
+ */
 public class EditInfoUser extends MainMenu {
 	
 	Button btnOk;

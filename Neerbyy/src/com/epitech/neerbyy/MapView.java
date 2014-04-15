@@ -28,6 +28,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
+/**
+ * This class represent the view of the Google Map view.
+ * (see the GooglePlay api V2 doc)
+ *  
+ * @author Seb
+ *
+ */
 public class MapView extends FragmentActivity implements LocationListener{
 	
 	private LocationManager locationManager;
@@ -91,6 +98,7 @@ public class MapView extends FragmentActivity implements LocationListener{
 				//intent.put
 	    		//b.putSerializable("placeInfo", pi);
 				b.putString("placeId", pi.id);
+				b.putString("placeName", pi.name);
 	    		intent.putExtras(b);					
 				startActivity(intent);
 				return;
