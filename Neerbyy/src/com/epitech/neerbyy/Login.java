@@ -52,32 +52,32 @@ public class Login extends MainMenu {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
+		setContentView(R.layout.activity_login2);
 		
-		createAccount = (Button)findViewById(R.id.btnGoCreateAccount);
-		login = (Button)findViewById(R.id.btnLogin);
-		loginMail = (EditText)findViewById(R.id.txtLoginMail);
-		password = (EditText)findViewById(R.id.txtPassword);
+		createAccount = (Button)findViewById(R.id.btnGoCreateAccount2);
+		login = (Button)findViewById(R.id.btnLogin2);
+		loginMail = (EditText)findViewById(R.id.txtCreateMail2);
+		password = (EditText)findViewById(R.id.txtCreatePassword2);
 		
-		lostPassword = (TextView)findViewById(R.id.txtLostPassword);		
-		loginLostPassword = (EditText)findViewById(R.id.txtLoginLostPasswordMail);
-		btnLostPassword = (Button)findViewById(R.id.btnLoginLostPasswordMail);
-		info = (TextView)findViewById(R.id.txtLoginInfo);
+		//lostPassword = (TextView)findViewById(R.id.txtLostPassword2);		
+		//loginLostPassword = (EditText)findViewById(R.id.txtLoginLostPasswordMail);
+		//btnLostPassword = (Button)findViewById(R.id.btnLoginLostPasswordMail);
+		info = (TextView)findViewById(R.id.txtLoginInfo2);
 		
 		list = new ArrayList<EditText>();
 		list.add(loginMail);
 		list.add(password);
 		
-		loginLostPassword.setVisibility(View.INVISIBLE);
-		btnLostPassword.setVisibility(View.INVISIBLE);
+		//loginLostPassword.setVisibility(View.INVISIBLE);
+		//btnLostPassword.setVisibility(View.INVISIBLE);
 		
-		lostPassword.setOnClickListener(new View.OnClickListener() {		
+		/*lostPassword.setOnClickListener(new View.OnClickListener() {		
 			@Override
 			public void onClick(View v) {
 				loginLostPassword.setVisibility(View.VISIBLE);
 				btnLostPassword.setVisibility(View.VISIBLE);
 			}
-		});
+		});*/
 
 		createAccount.setOnClickListener(new View.OnClickListener() {
 			
@@ -136,11 +136,8 @@ public class Login extends MainMenu {
 							else
 							{
 								try {
-									Log.w("PATH", "ICI3");
 									rep = gson.fromJson(ret, ResponseWS.class);
-									Log.w("PATH", "ICI4");
 									user = rep.getValue(User.class);
-									Log.w("PATH", "ICI5");
 								}
 								catch(JsonParseException e)
 							    {
@@ -172,7 +169,7 @@ public class Login extends MainMenu {
 		
 		//-----------------------------------------------------------------
 		
-		btnLostPassword.setOnClickListener(new View.OnClickListener() {
+		/*btnLostPassword.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -243,7 +240,7 @@ public class Login extends MainMenu {
 				}};
 			thread1.start();			
 			}
-		});
+		});*/
 	}
 	
 	//-------------------------------------------------

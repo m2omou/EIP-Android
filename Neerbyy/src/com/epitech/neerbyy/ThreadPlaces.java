@@ -70,17 +70,10 @@ public class ThreadPlaces extends Thread {
 				}
 				else
 				{
-					/*if (ret.charAt(0) == '[')  //   ENLEVE  BLOC  INUTILE  !!!!!
-					{
-						ret = ret.substring(1);
-						ret = ret.substring(0, ret.length() - 1);
-						Log.w("TRANSFORM", "NEW RET =  " + ret);
-					}*/
 					try {		    
 						mv.rep = gson.fromJson(ret, ResponseWS.class);
-						//mv.places = mv.rep.getTabValue(Place.class);
 						mv.places = mv.rep.getValue(Place.class);
-						Log.w("RECUP", "JAI RECUP " + mv.places.list.length + " places");
+						
 					}
 					catch(JsonParseException e)
 				    {
@@ -91,6 +84,7 @@ public class ThreadPlaces extends Thread {
 						messageBundle.putInt("error", 2);
 						messageBundle.putString("msgError", mv.rep.responseMessage);
 					}
+					Log.w("RECUP", "JAI RECUP " + mv.places.list.length + " places");
 					//else		  	                   
 						//messageBundle.putSerializable("places", (Serializable) mv.places);
 				}

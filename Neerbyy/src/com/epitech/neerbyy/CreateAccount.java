@@ -58,20 +58,20 @@ public class CreateAccount extends MainMenu {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_create_account);
+		setContentView(R.layout.activity_create_account2);
 		
-		btnOk = (Button)findViewById(R.id.btnValidInscr);		
-		username = (EditText)findViewById(R.id.txtCreateUsername);
+		btnOk = (Button)findViewById(R.id.btnGoCreateAccount2);		
+		username = (EditText)findViewById(R.id.txtCreateUsername2);
 		
 	//	firstname = (EditText)findViewById(R.id.txtCreateFirstname);
 	//	lastname = (EditText)findViewById(R.id.txtCreateLastname);
 	//	avatar= (EditText)findViewById(R.id.txtUsername);
 		
-		mail = (EditText)findViewById(R.id.txtCreateMail);
-		confirmMail = (EditText)findViewById(R.id.txtCreateConfirmMail);
-		password = (EditText)findViewById(R.id.txtCreatePassword);
-		confirmPassword = (EditText)findViewById(R.id.txtCreateConfirmPassword);
-		info = (TextView)findViewById(R.id.txtCreateAccountInfo);
+		mail = (EditText)findViewById(R.id.txtCreateMail2);
+		confirmMail = (EditText)findViewById(R.id.txtCreateConfirmMail2);
+		password = (EditText)findViewById(R.id.txtCreatePassword2);
+		confirmPassword = (EditText)findViewById(R.id.txtCreateConfirmPassword2);
+		info = (TextView)findViewById(R.id.txtCreateAccountInfo2);
 		
 		list = new ArrayList<EditText>();
 		list.add(username);

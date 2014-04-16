@@ -101,10 +101,9 @@ public class Network {
 		        if (USER != null)
 		        {	
 		        	Log.w("TOKEN USER", "TOKEN: " + USER.token);
-		        	getRequestPost.setHeader("Authorization", "Token =" + USER.token);
-		        	getRequestGet.setHeader("Authorization", "Token =" + USER.token);
-		        	getRequestPut.setHeader("Authorization", "Token =" + USER.token);
-		        	
+		        	getRequestPost.setHeader("Authorization", "Token token=" + USER.token);
+		        	getRequestGet.setHeader("Authorization", "Token token=" + USER.token);
+		        	getRequestPut.setHeader("Authorization", "Token token=" + USER.token);       	
 		        }
 	        	        	
 	        	HttpResponse getResponse;
@@ -125,10 +124,11 @@ public class Network {
 	            	Log.w("Network ", "Error " + statusCode + " for URL " + url);  // before = getClass().getSimpleName()
 	            	//if (statusCode != 422)  //  Enlever ca plus tard !!!  erreur webservice connection
 	            	//	return null;
-	            	if (statusCode == 401)   //  pour erreur token
-	            		return null;
+	            	//if (statusCode == 401)   //  pour erreur token
+	            		//return null;
 	            }
 	       
+	            //Log.w("Network RET", "Error " + statusCode + " for URL " + url);
 	           if (mode == 2)
 	        	   return null;
 	           HttpEntity getResponseEntity = getResponse.getEntity();

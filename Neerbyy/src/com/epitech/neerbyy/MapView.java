@@ -40,7 +40,8 @@ public class MapView extends FragmentActivity implements LocationListener{
 	private LocationManager locationManager;
 	private GoogleMap gMap;
 	private Marker posMarker;
-	private List<Marker> listAllPlace;
+	private List<Marker> listAllMarker;
+	private List<Place.PlaceInfo> listAllPlaceInfos;
 	public Location locat = null;
 	private Location centerScreen = null;
 	public Place places;
@@ -48,7 +49,7 @@ public class MapView extends FragmentActivity implements LocationListener{
 	
 	public int limit = 10;    //  def 10
 	public int radius = 800;    //  def 800
-	
+	public int bufferPlace = 20;   //  def  20
 	OnCameraChangeListener cc;
 	
     @Override
@@ -79,6 +80,9 @@ public class MapView extends FragmentActivity implements LocationListener{
         		{	
         			centerScreen.setLatitude(newPos.target.latitude);
         			centerScreen.setLongitude(newPos.target.longitude);
+        			
+        			//listAllPlace.clear();
+        			
         			new ThreadPlaces(MapView.this, newPos.target).start();
         		}
         	}	
@@ -90,6 +94,7 @@ public class MapView extends FragmentActivity implements LocationListener{
 				Intent intent = new Intent(MapView.this, ViewPost.class);
 				Bundle b = new Bundle();
 				PlaceInfo pi = getPlaceFromMarker(m.getId());
+				
 				if (pi == null)
 				{
 		    		Toast.makeText(getApplicationContext(), "Error find postInfo", Toast.LENGTH_SHORT).show();
@@ -107,8 +112,9 @@ public class MapView extends FragmentActivity implements LocationListener{
         
         gMap.setOnCameraChangeListener(cc);    
         //posMarker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(45.75, -0.633333)));
-        listAllPlace = new ArrayList<Marker>();
-        gMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        listAllMarker = new ArrayList<Marker>();
+        listAllPlaceInfos = new ArrayList<Place.PlaceInfo>();
+        gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         
         limit = 20;
         radius = 1000;
@@ -210,9 +216,15 @@ public class MapView extends FragmentActivity implements LocationListener{
     		msg.append( "; lng : ");
     		msg.append(location.getLongitude());
     		Log.w("GEOLOC", msg.toString());
-    		gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
+    		
+    		
+ //   		gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
           //  posMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
-            locat = location;
+          
+    		gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.858093f, 2.294694f), 15));
+
+    		
+    		locat = location;
             if (centerScreen == null)
             	centerScreen = locat;
            
@@ -274,7 +286,6 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
     			    	else
     			    	{
-    			    		//places = (Place)pack.getSerializable("places");  //  UTILITEE ???
     			    		Toast.makeText(getApplicationContext(), "Places updated", Toast.LENGTH_SHORT).show();
     			    		msg.obj = places;
     			    		drawPlaces();
@@ -296,26 +307,53 @@ public class MapView extends FragmentActivity implements LocationListener{
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}*/
-    			
+				}*/		
     			//icon = Network.DownloadImage(places.list[i].icon); 
-    			
-    			
+
     			//check something mull  !!!!!!!!!!!!!!!!!
-    			//listAllPlace.add(gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.myPin)).snippet(places.list[i].address)));
-    			if (places.list[i].marker == null) {
-    				places.list[i].marker = gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.myPin)).snippet(places.list[i].address));
-    				listAllPlace.add(places.list[i].marker);
-    			}
+    				
+    		if (!isAlreadyHere(places.list[i]))
+    		{
+    			places.list[i].marker = gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.myPin2)).snippet(places.list[i].address));	
+    			listAllPlaceInfos.add(places.list[i]);
+    			listAllMarker.add(places.list[i].marker);		
+    		}		
+    	}		
+    	Log.d("DELM", "DEB VEC " + listAllMarker.size() + "/" + bufferPlace);
+		if (listAllMarker.size() > bufferPlace) {
+			while (listAllMarker.size() > bufferPlace) {
+				//listAllMarker.get(listAllMarker.size() - 1).remove();
+				//listAllMarker.remove(listAllMarker.size() - 1);  // dernier ou first ?
+				listAllMarker.get(0).remove();
+				listAllMarker.remove(0);
+			}
+			Log.d("DELM", "FIN VEC " + listAllMarker.size() + "/" + bufferPlace);
+    	}
+    }
+    	
+    	private boolean isAlreadyHere(Place.PlaceInfo pi) {
+    		//Marker mpi = pi.marker;
+    		
+    		for (Place.PlaceInfo list : listAllPlaceInfos) {
+    			if (pi.name.contains(list.name))
+    				return true;
     		}
+    		
+    		
+    		/*for (Marker m : listAllMarker) {
+    			if (pi.name.contains(m.getTitle()))
+    				return true;
+    		}
+    		*/
+    		return false;
     	}
     	
     	private PlaceInfo getPlaceFromMarker(String id) {
     		
-    		for (int i = 0; i < places.list.length; i++) {
-    			Log.w("TEST", "ID M= " + id + " ET JAI " + places.list[i].marker.getId());
-    			if (places.list[i].marker.getId().contains(id))
-    				return places.list[i];
+    		for (Place.PlaceInfo pi : listAllPlaceInfos) {
+    			Log.d("TEST", "ID M= " + id + " ET JAI " + pi.marker.getId());
+    			if (pi.marker.getId().contains(id))
+    				return pi;
     		}
     		return null;
     	}

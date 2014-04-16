@@ -27,6 +27,9 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
+        
+        
         <activity
             android:name="com.epitech.neerbyy.GetUserById"
             android:label="@string/app_name" >
@@ -34,6 +37,12 @@
         <activity
             android:name="com.epitech.neerbyy.Login"
             android:label="@string/title_activity_login" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            
         </activity>
         <activity
             android:name="com.epitech.neerbyy.Geoloc"
@@ -50,11 +59,7 @@
         <activity
             android:name="com.epitech.neerbyy.MainMenu"
             android:label="@string/title_activity_menu" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            
         </activity>
         <activity
             android:name="com.epitech.neerbyy.Map"
@@ -74,6 +79,8 @@
         </activity>
         <activity
             android:name="com.epitech.neerbyy.ViewPost"
+            android:configChanges="keyboardHidden|orientation"
+        	android:windowSoftInputMode="stateHidden"
             android:label="@string/title_activity_view_post" >
         </activity>
     </application>

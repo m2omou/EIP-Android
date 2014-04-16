@@ -63,6 +63,10 @@ public class ViewPost extends Activity {
 		editPost = (EditText)findViewById(R.id.postEditPost);
 		listView = (ListView)findViewById(R.id.postViewListPost);
 		
+		//listView.removeAllViews();
+		listView.clearChoices();
+		
+		
 		Bundle b  = this.getIntent().getExtras();
 	//	place = (PlaceInfo)b.getSerializable("placeInfo");
 		placeId = b.getString("placeId");
@@ -74,6 +78,9 @@ public class ViewPost extends Activity {
 			@Override
 			public void onClick(View v) {
 		
+				mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
+						"Long operation starts...", true);
+				
 				Thread thread1 = new Thread(){
 			        public void run(){	        	      
 					try {	
@@ -133,8 +140,8 @@ public class ViewPost extends Activity {
 						myMessage.setData(messageBundle);
 	                    myHandler.sendMessage(myMessage);
 	                    
-	                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
-		                myHandler.sendMessage(msgPb);
+	                   // msgPb = myHandler.obtainMessage(1, (Object) "Success");
+		                //myHandler.sendMessage(msgPb);
 	                }
 					catch (Exception e) {
 		                e.printStackTrace();}
@@ -189,7 +196,10 @@ public class ViewPost extends Activity {
 			    		info.setText("Ws error :\n" + pack.getString("msgError"));
 			    	else
 			    	{
+			    		editPost.setText("");
 			    		info.setText("Post send success" );
+			    		//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
+			    			//	"Long operation starts...", true);
 			    		new ThreadUpdatePost(ViewPost.this).start();
 			    	}
 			    	break;
@@ -206,21 +216,19 @@ public class ViewPost extends Activity {
 			    	else
 			    	{
 			    		//listPost = (Post)pack.getSerializable("post");   //  utile ?????? 
-			    		Log.w("PATH", "LAAA");
+			    		//Log.w("PATH", "LAAA");
 			    		//List listStrings = new ArrayList<String>() ;//= {"France","Allemagne","Russie"};
 			    		String[] listStrings = new String[listPost.list.length] ;//= {"France","Allemagne","Russie"};
-
 			    		if (listPost.list.length > 0)
 			    		{
+			    			Log.d("POST", "YA DEJA DES POSTS !!");
 			    			for (int i = 0; i < listPost.list.length; i++) {
-			    				//listStrings.add(listPost.list[i].content);
 			    				listStrings[i] = listPost.list[i].content;
 			    			}
 			    		 
 			    			listView.setAdapter(new ArrayAdapter<String>(ViewPost.this, android.R.layout.simple_list_item_1, listStrings));
 			    		}
 			            Toast.makeText(getApplicationContext(), "Update post success", Toast.LENGTH_LONG).show();
-
 			    	}
 			    	break;
 	    	} 	

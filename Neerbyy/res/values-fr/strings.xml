@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="btnCreateAccount">Crée un compte</string>
-    <string name="hintUsername">Login</string>
+    
+    <string name="btnCreateAccount">INSCRIPTION</string>
+    <string name="btnRejoin">REJOINDRE NEERBYY</string>
+    <string name="btnLogin">SE CONNECTER</string>
+    <string name="btnLoginLostPassword">MOT DE PASSE OUBLIÉ ?</string>
+    
+    <string name="hintUsername">Nom d\'utilisateur</string>
     <string name="hintFirstname">Prénom</string>
     <string name="hintLastname">Nom</string>
     <string name="hintMail">Mail</string>
-    <string name="hintConfirmMail">Confirme mail</string>
-    <string name="hintPassword">MotDePasse</string>
-    <string name="hintConfirmPassword">Confirme MotDePasse</string>
+    <string name="hintConfirmMail">Confirmer mail</string>
+    <string name="hintPassword">Mot De Passe</string>
+    <string name="hintConfirmPassword">Confirmer Mot De Passe</string>
     <string name="loginDefaultInfo">Entrez vos identifiants:</string>
-    <string name="loginLostPassword">Mot de passe oublié</string>
-     <string name="hintPostComment">Envoie un commentaire</string>
-     <string name="postSendPost">envoyez</string>
+    <string name="hintPostComment">Envoie un commentaire</string>
+    <string name="postSendPost">envoyez</string>
+    <string name="loginMessageInscr">Pas encore de compte ? Inscrivez vous !</string>
+    <string name="loginMessageCGU">Pour l\'inscription je déclare accepter les CGU</string>
 </resources>

@@ -5,9 +5,13 @@
     <string name="action_settings">Settings</string>
     <string name="getUser">get User By Id</string>
     <string name="title_activity_login">Neerbyy</string>
-    <string name="btnCreateAccount">Create account</string>
-    <string name="btnLogin">Login</string>
-    <string name="hintUsername">Username</string>
+    
+    <string name="btnCreateAccount">INSCRIPTION</string>
+    <string name="btnLogin">LOGIN</string>
+    <string name="btnLoginLostPassword">LOST PASSWORD ?</string>
+    <string name="btnRejoin">REJOIN NEERBYY</string>
+    
+    <string name="hintUsername">Enter an username</string>
     <string name="hintFirstname">Firstname</string>
     <string name="hintLastname">Lastname</string>
     <string name="hintMail">Mail</string>
@@ -19,22 +23,25 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_menu">Neerbyy</string>
     <string name="loginDefaultInfo">Enter your identifier:</string>
-    <string name="loginLostPassword">Lost password</string>
+    
     <string name="ok">OK</string>
 
     <color name="white">#FFFFFF</color>
     <color name="blue">#0000FF</color>
+    <color name="greenNeerbyy">#3eb88e</color>
     <color name="ErrorBackground">#FF4848</color>
 
     <string name="title_activity_map">Neerbyy</string>
     <string name="title_activity_map_view">MapView</string>
 
     <drawable name="myPin">@drawable/iconmortel</drawable>
-
+	<drawable name="myPin2">@drawable/pin_dark_green</drawable>
+	
     <string name="title_activity_view_post">Neerbyy</string>
 
     <string name="hintPostComment">Send a comment</string>
 
     <string name="postSendPost">send</string>
+    <string name="loginMessageInscr">Don\'t have an account yet ? create one now</string>
 
 </resources>

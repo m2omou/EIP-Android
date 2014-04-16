@@ -81,7 +81,6 @@ public class ThreadUpdatePost extends Thread {
 						messageBundle.putInt("error", 2);
 						messageBundle.putString("msgError", vp.rep.responseMessage);
 					}
-					
 					Log.w("RECUP", "JAI RECUP " + vp.listPost.list.length + " posts");
 					//else		  	                   
 						//messageBundle.putSerializable("post", (Serializable) vp.listPost);
