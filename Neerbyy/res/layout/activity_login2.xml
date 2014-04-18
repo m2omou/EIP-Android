@@ -41,12 +41,14 @@
             android:paddingTop="20dp" >
 
             <EditText
-                android:id="@+id/txtCreateMail2"
+                android:id="@+id/txtLoginMail2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
                 android:ems="10"
                 android:hint="@string/hintMail"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:padding="10dp" />
 
         </TableRow>
 
@@ -58,12 +60,14 @@
             android:paddingTop="15dp" >
 
             <EditText
-                android:id="@+id/txtCreatePassword2"
+                android:id="@+id/txtLoginPassword2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
                 android:ems="10"
                 android:hint="@string/hintPassword"
-                android:inputType="textPassword" >
+                android:inputType="textPassword"
+                android:padding="10dp" >
 
                 <requestFocus />
             </EditText>

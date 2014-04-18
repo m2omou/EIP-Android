@@ -53,6 +53,10 @@
             android:label="@string/title_activity_create_account" >
         </activity>
         <activity
+            android:name="com.epitech.neerbyy.LostPassword"
+            android:label="@string/title_activity_create_account" >
+        </activity>
+        <activity
             android:name="com.epitech.neerbyy.EditInfoUser"
             android:label="@string/title_activity_edit_info_user" >
         </activity>

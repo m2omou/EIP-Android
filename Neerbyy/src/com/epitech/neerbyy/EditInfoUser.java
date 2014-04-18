@@ -109,9 +109,9 @@ public class EditInfoUser extends MainMenu {
 	    public void handleMessage(Message msg)
 	    {
 	    	Bundle pack = msg.getData();
-	    	switch (pack.getInt("action"))
+	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{
-		    	case Network.EDIT_USER:    		
+		    	case EDIT_USER:    		
 		    		info = (TextView)findViewById(R.id.txtInfoEditUser);
 		    		info.setText("");
 		    		user = (User)pack.getSerializable("user");

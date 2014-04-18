@@ -10,6 +10,7 @@
     <string name="btnLogin">LOGIN</string>
     <string name="btnLoginLostPassword">LOST PASSWORD ?</string>
     <string name="btnRejoin">REJOIN NEERBYY</string>
+    <string name="btnLostPassword">REINIT</string>
     
     <string name="hintUsername">Enter an username</string>
     <string name="hintFirstname">Firstname</string>
@@ -29,10 +30,12 @@
     <color name="white">#FFFFFF</color>
     <color name="blue">#0000FF</color>
     <color name="greenNeerbyy">#3eb88e</color>
+    <color name="greyNeerbyy">#CACACA</color>
     <color name="ErrorBackground">#FF4848</color>
+    
 
     <string name="title_activity_map">Neerbyy</string>
-    <string name="title_activity_map_view">MapView</string>
+    <string name="title_activity_map_view">Neerbyy</string>
 
     <drawable name="myPin">@drawable/iconmortel</drawable>
 	<drawable name="myPin2">@drawable/pin_dark_green</drawable>

@@ -12,6 +12,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
 
+import com.epitech.neerbyy.Network.ACTION;
+import com.epitech.neerbyy.Network.METHOD;
 import com.google.gson.Gson;
 
 /**
@@ -40,13 +42,13 @@ public class GetUserById extends MainMenu {
 					try {	
 		            	Gson gson = new Gson();
 		            	String url = Network.URL + Network.PORT + "/users.json?user_id=" + login.getText();
-						InputStream input = Network.retrieveStream(url, 0, null);
+						InputStream input = Network.retrieveStream(url, METHOD.GET, null);
 						
 						Bundle messageBundle = new Bundle();
 				        Message myMessage;
 				        myMessage=myHandler.obtainMessage();	
 				        
-				        messageBundle.putInt("action", Network.GET_USER);			        
+				        messageBundle.putInt("action", ACTION.GET_USER.getValue());			        
 						if (input == null)
 							messageBundle.putInt("error", 1);
 						else
@@ -74,9 +76,9 @@ public class GetUserById extends MainMenu {
 	    public void handleMessage(Message msg)
 	    {
 	    	Bundle pack = msg.getData();
-	    	switch (pack.getInt("action"))
+	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{
-		    	case Network.GET_USER:
+		    	case GET_USER:
 		    		TextView error = (TextView)findViewById(R.id.txtInfoError);   	    	
 			    	TextView username = (TextView)findViewById(R.id.txtInfoUsername);
 			    	TextView firstname = (TextView)findViewById(R.id.txtInfoFirstname);

@@ -5,6 +5,7 @@
     <string name="btnRejoin">REJOINDRE NEERBYY</string>
     <string name="btnLogin">SE CONNECTER</string>
     <string name="btnLoginLostPassword">MOT DE PASSE OUBLIÉ ?</string>
+    <string name="btnLostPassword">REINITIALISER</string>
     
     <string name="hintUsername">Nom d\'utilisateur</string>
     <string name="hintFirstname">Prénom</string>
@@ -18,4 +19,5 @@
     <string name="postSendPost">envoyez</string>
     <string name="loginMessageInscr">Pas encore de compte ? Inscrivez vous !</string>
     <string name="loginMessageCGU">Pour l\'inscription je déclare accepter les CGU</string>
+    <string name="msgLostPassword">Une procédure pour réinitialiser votre mot de passe vous sera envoyé à votre adresse email.</string>
 </resources>

@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.epitech.neerbyy.Network.METHOD;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
@@ -115,9 +116,9 @@ public class CreateAccount extends MainMenu {
 		                 	
 						Bundle messageBundle = new Bundle();
 				        myMessage=myHandler.obtainMessage();					        
-				        messageBundle.putInt("action", Network.CREATE_ACCOUNT);	
+				        messageBundle.putInt("action", Network.ACTION.CREATE_ACCOUNT.getValue());	
 				        
-				        InputStream input = Network.retrieveStream(url, 1, nameValuePairs);
+				        InputStream input = Network.retrieveStream(url, METHOD.POST, nameValuePairs);
 						if (input == null)
 							messageBundle.putInt("error", 1);
 						else
@@ -243,9 +244,10 @@ public class CreateAccount extends MainMenu {
 	    	}
 	    	
 	    	Bundle pack = msg.getData();
-	    	switch (pack.getInt("action"))
+	    	
+	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{
-		    	case Network.CREATE_ACCOUNT:    		
+		    	case CREATE_ACCOUNT:    		
 		    		info.setText("");	    		  	
 			    	int Error = pack.getInt("error");
 			    	if (Error == 1)
@@ -265,43 +267,4 @@ public class CreateAccount extends MainMenu {
 	    	} 	
 	    }
 	};
-	
-	/*public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.layout.menu, menu);
-		menu.getItem(2).getSubMenu().setHeaderIcon(R.drawable.ic_launcher);
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent;
-        switch (item.getItemId()) {
-           case R.id.LocateMe:
-              //intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.fr"));
-              intent = new Intent(this, Geoloc.class);
-              startActivity(intent);
-              return true;
-           case R.id.getUser:
-               intent = new Intent(this, EditInfoUser.class);
-			   startActivity(intent);
-               return true;
-           case R.id.User:
-               return true;
-           case R.id.Login:
-        	   intent = new Intent(this, Login.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.CreateAccount:
-        	   intent = new Intent(this, CreateAccount.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.Menu:
-        	   intent = new Intent(this, MainMenu.class);
-			   startActivity(intent);
-        	   return true;
-           case R.id.quit:
-              finish();
-              return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 }

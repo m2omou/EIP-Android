@@ -30,6 +30,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.epitech.neerbyy.Network.ACTION;
+import com.epitech.neerbyy.Network.METHOD;
 import com.epitech.neerbyy.Place.PlaceInfo;
 
 /**
@@ -103,10 +105,10 @@ public class ViewPost extends Activity {
 		                myHandler.sendMessage(msgPb);
 				
 						Bundle messageBundle = new Bundle();
-						messageBundle.putInt("action", Network.CREATE_POST);
+						messageBundle.putInt("action", ACTION.CREATE_POST.getValue());
 				        myMessage = myHandler.obtainMessage();	
    		        
-				        InputStream input = Network.retrieveStream(url, 1, nameValuePairs);
+				        InputStream input = Network.retrieveStream(url, METHOD.POST, nameValuePairs);
 						if (input == null)
 							messageBundle.putInt("error", 1);
 						else
@@ -182,9 +184,9 @@ public class ViewPost extends Activity {
 	    	
 	    	Bundle pack = msg.getData();
 	    	int Error = pack.getInt("error");
-	    	switch (pack.getInt("action"))
+	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{
-		    	case Network.CREATE_POST:
+		    	case CREATE_POST:
 		    		info.setText("");
 			    	if (Error == 1)
 			    		info.setText("Error: connection with WS fail");
@@ -203,7 +205,7 @@ public class ViewPost extends Activity {
 			    		new ThreadUpdatePost(ViewPost.this).start();
 			    	}
 			    	break;
-		    	case Network.UPDATE_POST:
+		    	case UPDATE_POST:
 		    		info.setText("");		    	
 			    	if (Error == 1)
 			    		info.setText("Error: connection with WS fail");

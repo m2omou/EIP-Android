@@ -44,9 +44,12 @@
                 android:id="@+id/txtCreateUsername2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
                 android:ems="10"
                 android:hint="@string/hintUsername"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:padding="10dp" />
+
         </TableRow>
 
         <TableRow
@@ -60,9 +63,11 @@
                 android:id="@+id/txtCreateMail2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
                 android:ems="10"
                 android:hint="@string/hintMail"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:padding="10dp" />
 
         </TableRow>
 
@@ -77,9 +82,11 @@
                 android:id="@+id/txtCreateConfirmMail2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
                 android:ems="10"
                 android:hint="@string/hintConfirmMail"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:padding="10dp" />
 
         </TableRow>
 
@@ -94,9 +101,11 @@
                 android:id="@+id/txtCreatePassword2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
                 android:ems="10"
                 android:hint="@string/hintPassword"
-                android:inputType="textPassword" >
+                android:inputType="textPassword"
+                android:padding="10dp" >
 
                 <requestFocus />
             </EditText>
@@ -114,9 +123,11 @@
                 android:id="@+id/txtCreateConfirmPassword2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
                 android:ems="10"
                 android:hint="@string/hintConfirmPassword"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:padding="10dp" />
 
         </TableRow>
 

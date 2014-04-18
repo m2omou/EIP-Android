@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
+import com.epitech.neerbyy.Network.ACTION;
+import com.epitech.neerbyy.Network.METHOD;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -48,10 +50,10 @@ public class ThreadUpdatePost extends Thread {
         	vp.myHandler.sendMessage(msgPb);
         
         	Bundle messageBundle = new Bundle();
-			messageBundle.putInt("action", Network.UPDATE_POST);
+			messageBundle.putInt("action", ACTION.UPDATE_POST.getValue());
 	        myMessage = vp.myHandler.obtainMessage();	
        
-	        InputStream input = Network.retrieveStream(url, 0, null);
+	        InputStream input = Network.retrieveStream(url, METHOD.GET, null);
         	
 	        if (input == null)
 				messageBundle.putInt("error", 1);

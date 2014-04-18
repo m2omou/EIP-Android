@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
  
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -20,6 +19,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -45,7 +46,51 @@ import android.util.Log;
 
 public class Network {
 
-	static final public int GET_UNTRUC = 0;
+	static public enum ACTION {
+		GET_UNTRUC(0),
+		GET_USER(1),
+		GET_INFO(2),
+		LOGIN(3),
+		CREATE_ACCOUNT(4),
+		EDIT_USER(5),
+		GET_PLACES(6),
+		RESET_PASSWORD(7),
+		CREATE_POST(8),
+		UPDATE_POST(9);
+		
+		private final int value;
+		
+		private ACTION(int value) {
+			this.value = value;
+		}
+		
+		public int getValue() {
+			return this.value;
+		}
+	}
+	
+	static public enum METHOD {
+		GET,
+		POST,
+		PUT,
+	}
+		
+	static public enum PARAMS {
+		CONNECTION_TIME_OUT(5000),   // def 0 for not taking
+		SOCKET_TIME_OUT(3000);
+	
+		private final int value;
+		
+		private PARAMS(int value) {
+			this.value = value;
+		}
+		
+		public int getValue() {
+			return this.value;
+		}
+	}
+	
+	/*static final public int GET_UNTRUC = 0;
 	static final public int GET_USER = 1;
 	static final public int GET_INFO = 2;
 	static final public int LOGIN = 3;
@@ -54,22 +99,44 @@ public class Network {
 	static final public int GET_PLACES = 6;
 	static final public int RESET_PASSWORD = 7;
 	static final public int CREATE_POST = 8;
-	static final public int UPDATE_POST = 9;
+	static final public int UPDATE_POST = 9;*/
+	
+	//static final public int CONNECTION_TIME_OUT = 5000;    // def 0 for not take
+	//static final public int SOCKET_TIME_OUT = 3000;
 	
 	 /**
 	  * The URL of the Web Service
-     */
-	static final public String URL = "http://api.neerbyy.com:";  //  keep : !?
+	  */
+	static final public String URL = "http://api.neerbyy.com:";
+	
 	/**
 	  * The default port of the Web Service 
-    */
+	 */
 	static final public int PORT = 80;
 	
 	/**
 	  * USER will be set when the user will be logged. It will contain all data
 	  *  of this user in a static way for allow access to other views. 
-   */
+	 */
+	
 	static public User USER = null;
+	
+	static DefaultHttpClient client = new DefaultHttpClient();
+
+    static boolean isInit = false;
+     
+    static final HttpParams httpParameters = client.getParams();
+     
+    static int statusCode = 0;
+    static HttpResponse getResponse = null;
+	
+    static private void init() {
+    	if (isInit)
+			return;
+		HttpConnectionParams.setConnectionTimeout(httpParameters, PARAMS.CONNECTION_TIME_OUT.getValue());
+		HttpConnectionParams.setSoTimeout(httpParameters, PARAMS.SOCKET_TIME_OUT.getValue());
+		isInit = true;
+	}
 	
 	/**
 	 * 
@@ -85,67 +152,67 @@ public class Network {
 	 * @throws UnsupportedEncodingException
 	 * Allows you to manage the unhandled by the usual exception Catch block
 	 */
-	static public InputStream retrieveStream(final String url, int mode, List<NameValuePair> nameValuePairs) throws UnsupportedEncodingException { // mode 0 = getMethode  1 = postMethode 2 = putMethode with key pair data value
+    
+	static public InputStream retrieveStream(final String url, METHOD mode, List<NameValuePair> nameValuePairs) throws UnsupportedEncodingException { 
 		
-	        DefaultHttpClient client = new DefaultHttpClient();
-	        HttpGet getRequestGet = new HttpGet(url);
-	        HttpPost getRequestPost = new HttpPost(url);
-	        HttpPut getRequestPut = new HttpPut(url);
-	        
-	        try {
-	        	if (nameValuePairs != null)
-	        	{        		
-		        	getRequestPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		        	getRequestPut.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-	        	}
-		        if (USER != null)
-		        {	
-		        	Log.w("TOKEN USER", "TOKEN: " + USER.token);
-		        	getRequestPost.setHeader("Authorization", "Token token=" + USER.token);
-		        	getRequestGet.setHeader("Authorization", "Token token=" + USER.token);
-		        	getRequestPut.setHeader("Authorization", "Token token=" + USER.token);       	
-		        }
-	        	        	
-	        	HttpResponse getResponse;
-	        	if (mode == 0)
-	        		Log.w("Network ", "JENVOIE : " + getRequestGet.getMethod() + " -- " + getRequestGet.getRequestLine());
-	        	else if(mode == 1)
-	        		Log.w("Network ", "JENVOIE : " + getRequestPost.getMethod() + " -- " + getRequestPost.getRequestLine());
-	        	
-	        	if (mode == 0)
+		HttpGet getRequestGet = new HttpGet(url);
+	    HttpPost getRequestPost = new HttpPost(url);
+	    HttpPut getRequestPut = new HttpPut(url);
+	    
+	    if (!isInit)
+			init();
+	    try {
+	        if (USER != null)
+	        	Log.w("TOKEN USER", "TOKEN: " + USER.token);
+	        switch(mode) {
+	        	case GET: {
+	        		Log.w("Network ", "SENDING : " + getRequestGet.getMethod() + " -- " + getRequestGet.getRequestLine());	
+	        		if (USER != null)
+	    	        	getRequestGet.setHeader("Authorization", "Token token=" + USER.token);
 	        		getResponse = client.execute(getRequestGet);
-	        	else if(mode == 1)
+	        		break;
+	        	}
+	        	case POST: {
+	        		Log.w("Network ", "SENDING : " + getRequestPost.getMethod() + " -- " + getRequestPost.getRequestLine());
+	        		if (nameValuePairs != null)
+	    	    		getRequestPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+	        		if (USER != null)
+	    	        	getRequestPost.setHeader("Authorization", "Token token=" + USER.token);
 	        		getResponse = client.execute(getRequestPost);
-	        	else
+	        		break;
+	        	}
+	        	case PUT: {
+	        		Log.w("Network ", "SENDING : " + getRequestPut.getMethod() + " -- " + getRequestPut.getRequestLine());
+	        		if (nameValuePairs != null)
+	    	    		getRequestPut.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+	        		if (USER != null)
+	    	        	getRequestPut.setHeader("Authorization", "Token token=" + USER.token);
 	        		getResponse = client.execute(getRequestPut);
-	           
-	        	final int statusCode = getResponse.getStatusLine().getStatusCode();
-	            if (statusCode < 200 || statusCode > 226) {  // before HttpStatus.SC_OK && statusCode != HttpStatus.SC_CREATED
-	            	Log.w("Network ", "Error " + statusCode + " for URL " + url);  // before = getClass().getSimpleName()
-	            	//if (statusCode != 422)  //  Enlever ca plus tard !!!  erreur webservice connection
-	            	//	return null;
-	            	//if (statusCode == 401)   //  pour erreur token
-	            		//return null;
-	            }
-	       
-	            //Log.w("Network RET", "Error " + statusCode + " for URL " + url);
-	           if (mode == 2)
-	        	   return null;
-	           HttpEntity getResponseEntity = getResponse.getEntity();
-	           return getResponseEntity.getContent();	     
+	        		break;
+	        	}
+	        }        
+	        statusCode = getResponse.getStatusLine().getStatusCode();
+	        
+	        //before HttpStatus.SC_OK && statusCode != HttpStatus.SC_CREATED
+	        if (statusCode < 200 || statusCode > 226) {
+	        	Log.w("Network ", "Error " + statusCode + " for URL " + url);  // before = getClass().getSimpleName()
+	        	//if (statusCode != 422 || statusCode == 401)  //erreur webservice et erreur token
+	        		//return null;
+	        	//return null ?
 	        }
-	        catch (IOException e) {
-	        	if (mode == 0)
-	        		getRequestGet.abort();
-	        	else if(mode == 1)
-	        		getRequestPost.abort();
-	        	else
-	        		getRequestPut.abort();
-	           Log.w("Network ", "Exeption Error for URL " + url, e);
-	        }
-	        return null;	
-	     }
-	  
+	            
+	        if (getResponse != null)
+	        	return getResponse.getEntity().getContent();
+	    }
+	    catch (IOException e) {
+	       	getRequestGet.abort();
+	       	getRequestPost.abort();
+	       	getRequestPut.abort();
+	       	Log.w("Network ", "Exeption Error for URL " + url, e);
+	    }
+    	return null;
+	}
+	
 	/**
 	 * <p>Displays the contents of the return response of the WS on the log, and return a String data</p>
 	 * @param readerResp
@@ -155,6 +222,7 @@ public class Network {
 	 * @see retrieveStream
 	 * 
 	 */
+	
 	public static String checkInputStream(Reader readerResp) throws IOException
 	{
 		BufferedReader br = new BufferedReader(readerResp);
@@ -163,7 +231,6 @@ public class Network {
 			System.out.println(ligne);
 			str2 += ligne + "\n";
 		}
-		//Log.w("RECUS", "receive =  ::::::::::::::::::::::::: " + str2);
 		br.close();
 		return str2;
 	}
@@ -177,7 +244,6 @@ public class Network {
 	        bitmap = BitmapFactory.decodeStream(in);
 	        in.close();
 	    } catch (IOException e1) {
-	        // TODO Auto-generated catch block
 	        e1.printStackTrace();
 	    }
 	    return bitmap;                
@@ -192,6 +258,7 @@ public class Network {
 	 * The InputStream object containing the data sent by the Web Service.
 	 * @see InputStream
 	 */
+	
 	private static InputStream OpenHttpConnection(String urlString) 
 	        throws IOException
 	        {

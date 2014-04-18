@@ -271,9 +271,9 @@ public class MapView extends FragmentActivity implements LocationListener{
     	    public void handleMessage(Message msg)
     	    {
     	    	Bundle pack = msg.getData();
-    	    	switch (pack.getInt("action"))
+    	    	switch (Network.ACTION.values()[pack.getInt("action")])
     	    	{
-    		    	case Network.GET_PLACES:    		
+    		    	case GET_PLACES:    		
     		    		
     			    	int Error = pack.getInt("error");		    	
     			    	if (Error == 1)
