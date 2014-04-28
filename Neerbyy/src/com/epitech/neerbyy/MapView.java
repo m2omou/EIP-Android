@@ -67,6 +67,7 @@ public class MapView extends FragmentActivity implements LocationListener{
         gMap.getUiSettings().setZoomControlsEnabled(false);
         gMap.setOnCameraChangeListener(cc);
         
+        Log.d("MERDE", "iciiiiiiiiiiii0");
         
         cc = new OnCameraChangeListener(){
         	@Override
@@ -87,6 +88,7 @@ public class MapView extends FragmentActivity implements LocationListener{
         		}
         	}	
         };
+        
         gMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			
 			@Override
@@ -148,6 +150,8 @@ public class MapView extends FragmentActivity implements LocationListener{
     	
         //Obtention de la référence du service
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        
+        Log.d("MERDE", "iciiiiiiiiiiii3");
  
         //Si le GPS est disponible, on s'y abonne
         if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
@@ -180,6 +184,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     
     public void abonnementWIFI() {
         //On s'abonne
+    	Log.d("MERDE", "iciiiiiiiiiiii4");
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, this);
     }
     
@@ -209,6 +214,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     @Override
     public void onLocationChanged(final Location location) {
         //On affiche dans un Toat la nouvelle Localisation
+    	Log.d("MERDE", "iciiiiiiiiiiii");
     	if (location != null)
     	{
     		final StringBuilder msg = new StringBuilder("lat : ");
@@ -246,7 +252,7 @@ public class MapView extends FragmentActivity implements LocationListener{
  
     @Override
     public void onProviderEnabled(final String provider) {
-        
+    	Log.d("MERDE", "iciiiiiiiiiiii6");
     	if("NETWORK_PROVIDER".equals(provider)){
         	abonnementWIFI();
         }

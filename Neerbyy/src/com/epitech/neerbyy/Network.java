@@ -14,10 +14,13 @@ import javax.net.ssl.HttpsURLConnection;
  
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.ManagedClientConnection;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -76,8 +79,8 @@ public class Network {
 	}
 		
 	static public enum PARAMS {
-		CONNECTION_TIME_OUT(5000),   // def 0 for not taking
-		SOCKET_TIME_OUT(3000);
+		CONNECTION_TIME_OUT(6000),   // def 0 for not taking
+		SOCKET_TIME_OUT(4000);
 	
 		private final int value;
 		
@@ -121,6 +124,9 @@ public class Network {
 	
 	static public User USER = null;
 	
+	//static MultiThreadedHttpConnectionManager connman = new MultiThreadedHttpConnectionManager();
+	ClientConnectionManager cm;
+	
 	static DefaultHttpClient client = new DefaultHttpClient();
 
     static boolean isInit = false;
@@ -158,6 +164,11 @@ public class Network {
 		HttpGet getRequestGet = new HttpGet(url);
 	    HttpPost getRequestPost = new HttpPost(url);
 	    HttpPut getRequestPut = new HttpPut(url);
+	   
+	    
+	    //DefaultHttpClient client = new DefaultHttpClient();
+	    
+	    //ClientConnectionManager cm = client.getConnectionManager();
 	    
 	    if (!isInit)
 			init();
@@ -199,8 +210,7 @@ public class Network {
 	        	//if (statusCode != 422 || statusCode == 401)  //erreur webservice et erreur token
 	        		//return null;
 	        	//return null ?
-	        }
-	            
+	        }            
 	        if (getResponse != null)
 	        	return getResponse.getEntity().getContent();
 	    }
@@ -289,3 +299,17 @@ public class Network {
 	            return in;     
 	        }
 }
+
+//-------------A  TEST BIEN
+/*
+ * new Thread(new Runnable() {
+        public void run() {
+            final Bitmap bitmap = loadImageFromNetwork("http://example.com/image.png");
+            mImageView.post(new Runnable() {
+                public void run() {
+                    mImageView.setImageBitmap(bitmap);
+                }
+            });
+        }
+    }).start();
+    */
