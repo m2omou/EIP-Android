@@ -25,7 +25,7 @@
         android:layout_below="@+id/btnCreatePost"
         android:layout_marginTop="43dp"
         android:ems="10"
-        android:hint="@string/hintPostComment"
+        android:hint="@string/hintPostMemory"
         android:inputType="textMultiLine"
         android:minHeight="90dp" >
 
@@ -38,7 +38,12 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/btnCreatePost"
         android:layout_below="@+id/postEditPost"
-        android:layout_marginTop="48dp" >
+        android:layout_marginTop="48dp"
+        android:background="@color/white"
+        android:divider="@drawable/separator_line"
+        android:dividerHeight="15dp"
+        tools:listitem="@android:layout/simple_expandable_list_item_1" >
+
     </ListView>
 
     <TextView
@@ -66,12 +71,6 @@
         android:layout_toLeftOf="@+id/postEditPost"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <TextView
-        android:id="@+id/postTextInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/postTextInfo"
-        android:layout_toLeftOf="@+id/postEditPost"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+  
 
 </RelativeLayout>

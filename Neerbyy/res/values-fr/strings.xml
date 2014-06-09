@@ -15,7 +15,8 @@
     <string name="hintPassword">Mot De Passe</string>
     <string name="hintConfirmPassword">Confirmer Mot De Passe</string>
     <string name="loginDefaultInfo">Entrez vos identifiants:</string>
-    <string name="hintPostComment">Envoie un commentaire</string>
+    <string name="hintPostMemory">Ajouter un souvenir</string>
+    <string name="hintPostComment">Ajouter un commentaire</string>
     <string name="postSendPost">envoyez</string>
     <string name="loginMessageInscr">Pas encore de compte ? Inscrivez vous !</string>
     <string name="loginMessageCGU">Pour l\'inscription je déclare accepter les CGU</string>

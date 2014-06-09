@@ -150,8 +150,6 @@ public class MapView extends FragmentActivity implements LocationListener{
     	
         //Obtention de la référence du service
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-        
-        Log.d("MERDE", "iciiiiiiiiiiii3");
  
         //Si le GPS est disponible, on s'y abonne
         if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))

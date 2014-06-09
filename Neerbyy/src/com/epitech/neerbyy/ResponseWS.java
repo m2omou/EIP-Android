@@ -46,7 +46,9 @@ public class ResponseWS {
 		
 		@SerializedName("publications")
 		public Post.PostInfos[] postes;
-		
+	
+		@SerializedName("comments")
+		public Commentary.CommInfos[] comms;
 		
 		//@SerializedName("error")
 		//public User user;
@@ -93,6 +95,12 @@ public class ResponseWS {
 									post.list = result.postes;
 									//return (T) result.places;
 									return (T) post;
+								}
+								else if (obj == Commentary.class) {
+									Log.w("DETECT", "DETECT COMM_UPDATE");								
+									Commentary comm = new Commentary();
+									comm.list = result.comms;
+									return (T) comm;
 								}
 							//return gson.fromJson(gg, obj);
 							

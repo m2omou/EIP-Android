@@ -81,8 +81,16 @@
             android:name="com.epitech.neerbyy.MapView"
             android:label="@string/title_activity_map_view" >
         </activity>
+        
         <activity
             android:name="com.epitech.neerbyy.ViewPost"
+            android:configChanges="keyboardHidden|orientation"
+        	android:windowSoftInputMode="stateHidden"
+            android:label="@string/title_activity_view_post" >
+        </activity>
+        
+        <activity
+            android:name="com.epitech.neerbyy.ViewMemory"
             android:configChanges="keyboardHidden|orientation"
         	android:windowSoftInputMode="stateHidden"
             android:label="@string/title_activity_view_post" >

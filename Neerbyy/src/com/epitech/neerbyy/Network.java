@@ -59,7 +59,11 @@ public class Network {
 		GET_PLACES(6),
 		RESET_PASSWORD(7),
 		CREATE_POST(8),
-		UPDATE_POST(9);
+		UPDATE_POST(9),
+		CREATE_COMM(10),
+		UPDATE_COMM(11),
+		GET_VOTES(12),
+		SEND_VOTE(13);
 		
 		private final int value;
 		

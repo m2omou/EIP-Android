@@ -18,11 +18,15 @@ public class Post implements Serializable {
 	/** This class represent the data of one post 
 	 * @author Seb
 	 */
-	public class PostInfos {
+	public class PostInfos implements Serializable {
     	@SerializedName("id")
     	public int id;
     	@SerializedName("user_id")
     	public int user_id;
+    	@SerializedName("like")
+    	public int nbLike;
+    	@SerializedName("dislike")
+    	public int nbDislike;
     	@SerializedName("title")
     	public String title; 
     	@SerializedName("content")

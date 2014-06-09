@@ -23,6 +23,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -52,6 +54,13 @@ public class ViewPost extends Activity {
 	public Post listPost;
 	public PlaceInfo place;
 	public String placeId;
+	
+	/*protected void onListIemClick(ListView lv , View v, int position, long id){
+		//super.(lv, v, position, id);
+	  //   Toast.makeText(this, "Id: " + lv.getAdapter().get(position), Toast.LENGTH_LONG).show();
+	     Toast.makeText(this, "Id: " + listPost.list[position].id, Toast.LENGTH_LONG).show();
+	}*/
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -226,16 +235,31 @@ public class ViewPost extends Activity {
 			    			Log.d("POST", "YA DEJA DES POSTS !!");
 			    			for (int i = 0; i < listPost.list.length; i++) {
 			    				listStrings[i] = listPost.list[i].content;
+			    				
 			    			}
 			    		 
-			    			listView.setAdapter(new ArrayAdapter<String>(ViewPost.this, android.R.layout.simple_list_item_1, listStrings));
+			    			listView.setAdapter(new ArrayAdapter<String>(ViewPost.this, android.R.layout.simple_list_item_1, listStrings));	
+			    			listView.setOnItemClickListener(new OnItemClickListener() {
+			    			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			    			    	 //Toast.makeText(this, "Id: " + lv.getAdapter().get(position), Toast.LENGTH_LONG).show();
+			    				     //Toast.makeText(ViewPost.this, "Id: " + listPost.list[position].id, Toast.LENGTH_LONG).show();
+			    				     
+			    				     Intent intent = new Intent(ViewPost.this, ViewMemory.class);
+			    						Bundle b = new Bundle();		    					
+			    						b.putSerializable("post", (Serializable)listPost.list[position]);
+			    						//listPost.list[position].nbLike;
+			    			    		intent.putExtras(b);					
+			    						startActivity(intent);
+			    						return;  
+			    			    }
+			    			});
 			    		}
 			            Toast.makeText(getApplicationContext(), "Update post success", Toast.LENGTH_LONG).show();
 			    	}
 			    	break;
 	    	} 	
 	    }
-	};
+	};	
 	
 }
 
