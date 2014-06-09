@@ -80,8 +80,11 @@ public class ViewPost extends Activity {
 		
 		Bundle b  = this.getIntent().getExtras();
 	//	place = (PlaceInfo)b.getSerializable("placeInfo");
+	
 		placeId = b.getString("placeId");
-		placeName.setText(b.getString("placeName"));
+	//	placeId = place.id;
+		placeName.setText(b.getString("placeName"));  
+	//	placeName.setText(place.name); 
 
 //		b.getSerializable(key)
 		sendButton.setOnClickListener(new OnClickListener() {
@@ -247,8 +250,10 @@ public class ViewPost extends Activity {
 			    				     Intent intent = new Intent(ViewPost.this, ViewMemory.class);
 			    						Bundle b = new Bundle();		    					
 			    						b.putSerializable("post", (Serializable)listPost.list[position]);
-			    						//listPost.list[position].nbLike;
-			    			    		intent.putExtras(b);					
+			    						b.putString("Place_id", placeId);
+			    			    		Log.w("LIKE", "dislike = " + listPost.list[position].downvotes);
+			    						
+			    						intent.putExtras(b);					
 			    						startActivity(intent);
 			    						return;  
 			    			    }

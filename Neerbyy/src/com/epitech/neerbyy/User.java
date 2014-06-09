@@ -25,55 +25,16 @@ public class User implements Serializable{
 	public String lastname;
 	@SerializedName("email")
 	public String mail;
-	
 	@SerializedName("avatar")
-	public String avatar;   //  Av  class Ava
+	public String avatar;
+	@SerializedName("auth_token")
+	public String token;
+	@SerializedName("avatar_thumb")
+	public String avatar_thumb;
 	
+	//   NO MORE USE  ??
 	@SerializedName("created_at")	
 	public String created_at;
 	@SerializedName("updated_at")
 	public String updated_at;
-	/**
-	 * This token is attributed by the WebService when the User connects to the app.
-	 * It should be allow this user to post new data.
-	 */
-	@SerializedName("auth_token")
-	public String token;
-	/**
-	 * Temporary debug variable
-	 */
-	@SerializedName("error")
-	public String error;
-	/**
-	 * Temporary debug variable
-	 */
-	@SerializedName("errors")
-	public String[] errors;
-	
-	@SerializedName("avatar_thumb")
-	public String avatar_thumb;
-
-	/**
-	 * This internal class represent the image of the user, and the path to image on the
-	 * Neerbyy server.
-	 * @author Seb
-	 *
-	 */
-	public class Avatar {
-		@SerializedName("url")
-		public String url;
-		@SerializedName("thumb")
-		public Thumb thumb;
-	}
-	
-	/**
-	 * This internal class represent the path to the Thumb image
-	 * on the Neerbyy server
-	 * @author Seb
-	 *
-	 */
-	public class Thumb {
-		@SerializedName("url")
-		public String url;
-	}
 }

@@ -21,30 +21,56 @@ public class Post implements Serializable {
 	public class PostInfos implements Serializable {
     	@SerializedName("id")
     	public int id;
-    	@SerializedName("user_id")
-    	public int user_id;
-    	@SerializedName("like")
-    	public int nbLike;
-    	@SerializedName("dislike")
-    	public int nbDislike;
-    	@SerializedName("title")
-    	public String title; 
     	@SerializedName("content")
     	public String content;
     	@SerializedName("create_at")
     	public String create_at;
     	@SerializedName("updated_at")
     	public String updated_at;
-    	@SerializedName("file")
-    	public FileInfos files;
-    	/**
-    	 * FileInfos represent data for an upload Media
-    	 * @author Seb
-    	 *
-    	 */
-    	private class FileInfos{
-    		@SerializedName("url")
-        	public String url;
+    	@SerializedName("longitude")
+    	public double longitude;
+    	@SerializedName("latitude")
+    	public double latitude;
+    	@SerializedName("type")
+    	public int type;
+    	@SerializedName("url")
+    	public String url;
+    	@SerializedName("thumb_url")
+    	public String thumb_url;
+    	@SerializedName("comments")
+    	public int comments;
+    	@SerializedName("upvotes")
+    	public int upvotes;
+    	@SerializedName("downvotes")
+    	public int downvotes;
+    	@SerializedName("user")
+    	public User user;                 //  or  InfoUserPost
+    	@SerializedName("vote")
+    	public Votes vote;                //  or  InfoVotePost
+    	@SerializedName("place")
+    	public Place place;               //  or  InfoPlacePost
+    	
+    	private class InfoUserPost {
+    		@SerializedName("id")
+        	public int id;
+        	@SerializedName("username")
+        	public String username;
+        	@SerializedName("avatar")
+        	public String avatar;
+        	@SerializedName("avatar_thumb")
+        	public String avatar_thumb;
+    	}
+    	private class InfoPlacePost {
+    		@SerializedName("id")
+        	public String id;
+        	@SerializedName("name")
+        	public String name;
+    	}
+    	private class InfoVotePost {
+    		@SerializedName("id")
+        	public String id;
+        	@SerializedName("value")
+        	public boolean value;
     	}
     }
 }

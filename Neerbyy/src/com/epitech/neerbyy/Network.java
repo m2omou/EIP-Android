@@ -63,7 +63,8 @@ public class Network {
 		CREATE_COMM(10),
 		UPDATE_COMM(11),
 		GET_VOTES(12),
-		SEND_VOTE(13);
+		SEND_VOTE(13),
+		FALLOW_PLACE(14);
 		
 		private final int value;
 		
@@ -242,10 +243,11 @@ public class Network {
 		BufferedReader br = new BufferedReader(readerResp);
 		String ligne, str2 = "";
 		while ((ligne = br.readLine())!=null){
-			System.out.println(ligne);
+			//System.out.println(ligne);
 			str2 += ligne + "\n";
 		}
 		br.close();
+		Log.w("RECEIVE", str2);
 		return str2;
 	}
 	

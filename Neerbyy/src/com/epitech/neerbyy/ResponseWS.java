@@ -1,12 +1,9 @@
 package com.epitech.neerbyy;
 
-import java.util.List;
-
 import android.util.Log;
 
-import com.epitech.neerbyy.Place.PlaceInfo;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 /**
@@ -34,8 +31,6 @@ public class ResponseWS {
 	//public Object result;
 	public Result result;
 	
-	
-	
 	public class Result {
 		
 		@SerializedName("user")
@@ -49,6 +44,9 @@ public class ResponseWS {
 	
 		@SerializedName("comments")
 		public Commentary.CommInfos[] comms;
+		
+		@SerializedName("votes")
+		public Votes[] votes;
 		
 		//@SerializedName("error")
 		//public User user;
@@ -65,19 +63,10 @@ public class ResponseWS {
 	 */
 	public <T> T getValue(Class<T> obj)
 	{
-		try {  //  mettre un champ user dans class response .......
-			Gson gson = new Gson();	
+		try {
+			//Gson gson = new Gson();	
 					if (responseCode != 1)
 							{
-								Log.w("PATH", "ICI");
-								/*String gg = "";
-								gg = gson.toJson(result);
-								Log.w("PATH", "ICI2");
-								gg = gg.substring(8,gg.length() - 1);
-								Log.w("TRANSFORM", "NEW USER =  " + gg);
-								Log.w("RECUS OBJ", "receiveOBJ vec code = " + this.responseCode + " nameClass " + obj.getName() + "::::::::::::::::::::::::: " + gson.toJson(result));
-								*/
-						
 								if (obj == User.class) {
 									Log.w("DETECT", "DETECT USER");
 									return (T) result.user;
@@ -102,8 +91,13 @@ public class ResponseWS {
 									comm.list = result.comms;
 									return (T) comm;
 								}
-							//return gson.fromJson(gg, obj);
-							
+								else if (obj == Votes.class) {
+									Log.w("DETECT", "DETECT GET_VOTES");								
+									//Votes[] votes = new Votes[]();
+									//comm.list = result.comms;
+									return (T) result.votes;
+								}
+							//return gson.fromJson(gg, obj);						
 							}
 					else
 					{
@@ -116,33 +110,6 @@ public class ResponseWS {
 			System.out.println("Exception nb 2 in check_exitrestrepWSResponse::"+e.toString());
 			return null;
 		}	
-		//return null;
-		return null;
-	}
-	
-	public <T> List<T> getTabValue(Class<T> obj)
-	{
-		try {
-			Gson gson = new Gson();
-			if (responseCode != 1 )
-				{
-					Log.w("RECUS OBJ", "receiveOBJ =  ::::::::::::::::::::::::: " + gson.toJson(result));
-				
-					//Type collectionType = new TypeToken<List<T>>(){}.getType();
-					//List<T> lcs = (List<T>)	new Gson().fromJson(gson.toJson(result) , collectionType);
-					//return lcs;
-			
-					
-			//		T[] mcArray = gson.fromJson(gson.toJson(result), T[].class);
-			//		return mcArray;
-					
-					//return gson.fromJson(gson.toJson(result), collectionType);
-				}
-			}
-		catch(JsonParseException e)
-		{
-			System.out.println("Exception in synthaxe Json :: "+e.toString());
-		}		
 		return null;
 	}
 }

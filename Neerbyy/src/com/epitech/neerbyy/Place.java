@@ -36,7 +36,10 @@ public class Place implements Serializable {
     	public String country;
     	@SerializedName("icon")
     	public String icon;
-    	public Marker marker;
+    	@SerializedName("followed_place_id")
+    	public int followed_place_id;
+    	
+    	public Marker marker;   //  Always util ?
     }
 }
 

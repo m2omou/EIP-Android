@@ -84,9 +84,10 @@
         android:id="@+id/commViewLike"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/commBtnLike"
+        android:layout_alignLeft="@+id/commContentMemory"
+        android:layout_alignBottom="@+id/commBtnDislike"
         android:layout_marginLeft="21dp"
-        android:layout_toLeftOf="@+id/commContentMemory"
+     
         android:text="0"
         android:textColor="@color/greenNeerbyy" />
 

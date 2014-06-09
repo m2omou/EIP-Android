@@ -127,6 +127,7 @@ public class Login extends MainMenu {
 							Log.w("PATH", "ICI2");
 							Reader readerResp = new InputStreamReader(input);
 							String ret = Network.checkInputStream(readerResp);
+							Log.w("PATH", "ICI3");
 							
 							if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
 							{

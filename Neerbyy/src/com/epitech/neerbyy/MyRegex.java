@@ -17,7 +17,7 @@ public class MyRegex {
 	
 	private static Pattern pattMail = Pattern.compile("^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Za-z]{2,4}$");  //  ptete mettre en min
 	//private static Pattern pattMail = Pattern.compile("^[_a-z0-9-]+(\\.[_wwwww-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)+$");
-	private static Pattern pattName = Pattern.compile("^[ A-Za-z]+$");
+	private static Pattern pattName = Pattern.compile("^[ A-Za-z0-9]+$");   //  enleverChVerifCreateAccount
 	private static Pattern pattLogin = Pattern.compile("^[ A-Za-z0-9]+$");
 	private static Pattern pattPassword = Pattern.compile("^[ A-Za-z0-9-_]+$");
 	//Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);

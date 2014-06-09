@@ -102,8 +102,9 @@ public class MapView extends FragmentActivity implements LocationListener{
 		    		Toast.makeText(getApplicationContext(), "Error find postInfo", Toast.LENGTH_SHORT).show();
 					return;
 				}
-				//intent.put
-	    		//b.putSerializable("placeInfo", pi);
+	    		
+				//b.putSerializable("placeInfo", pi);
+				
 				b.putString("placeId", pi.id);
 				b.putString("placeName", pi.name);
 	    		intent.putExtras(b);					
@@ -212,7 +213,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     @Override
     public void onLocationChanged(final Location location) {
         //On affiche dans un Toat la nouvelle Localisation
-    	Log.d("MERDE", "iciiiiiiiiiiii");
+    	Log.d("LOCATION_CHANGE", "iciiiiiiiiiiii");
     	if (location != null)
     	{
     		final StringBuilder msg = new StringBuilder("lat : ");

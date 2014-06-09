@@ -150,7 +150,7 @@ public class CreateAccount extends MainMenu {
 					                myHandler.sendMessage(msgPb);
 							        return;
 							    }
-								if (user == null || user.errors != null)
+								if (user == null)
 								{
 									messageBundle.putInt("error", 2);
 									String err = "";

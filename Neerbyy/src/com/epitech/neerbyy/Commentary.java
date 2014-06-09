@@ -21,15 +21,26 @@ public class Commentary implements Serializable {
 	public class CommInfos implements Serializable {
     	@SerializedName("id")
     	public int id;
-    	@SerializedName("user_id")
-    	public int user_id;
-    	@SerializedName("publication_id")
-    	public int publicationId; 
     	@SerializedName("content")
     	public String content;
+    	@SerializedName("publication_id")
+    	public int publicationId; 
     	@SerializedName("create_at")
     	public String create_at;
     	@SerializedName("updated_at")
     	public String updated_at;
+    	@SerializedName("user")
+    	public User user;      // or InfoUserCommentary
+    	
+    	private class InfoUserCommentary {
+    		@SerializedName("id")
+        	public int id;
+        	@SerializedName("username")
+        	public String username;
+        	@SerializedName("avatar")
+        	public String avatar;
+        	@SerializedName("avatar_thumb")
+        	public String avatar_thumb;
+    	}
     }
 }

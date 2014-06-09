@@ -52,6 +52,7 @@ public class ViewMemory extends Activity {
 	
 	private ImageButton btnLike;
 	private ImageButton btnDislike;
+	private ImageButton btnFallow;
 	private TextView viewLike;
 	private TextView viewDislike;
 	
@@ -63,6 +64,8 @@ public class ViewMemory extends Activity {
 	public Commentary listComm;
 	public Post.PostInfos memory;
 	
+	public String place_id;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,6 +73,8 @@ public class ViewMemory extends Activity {
 	
 		btnLike = (ImageButton)findViewById(R.id.commBtnLike);
 		btnDislike = (ImageButton)findViewById(R.id.commBtnDislike);
+		btnFallow = (ImageButton)findViewById(R.id.btnCreateComm);
+		
 		viewLike = (TextView)findViewById(R.id.commViewLike);                   
 		viewDislike = (TextView)findViewById(R.id.commViewDislike);
 		
@@ -85,10 +90,81 @@ public class ViewMemory extends Activity {
 		Bundle b  = this.getIntent().getExtras();
 		memory = (Post.PostInfos)b.getSerializable("post");
 		memoryContent = (TextView)findViewById(R.id.commContentMemory);
+		place_id = (String)b.getString("Place_id");
+		
+		viewLike.setText(Integer.toString(memory.upvotes));
+		viewDislike.setText(Integer.toString(memory.downvotes));
+		
+		btnFallow.setOnClickListener(new OnClickListener() {	
+			@Override
+			public void onClick(View v) {
+		
+				mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
+						"Long operation starts...", true);
+				
+				Thread threadFallow = new Thread(){
+			        public void run(){	        	      
+					try {	
+		            	Gson gson = new Gson();
+		            	String url = Network.URL + Network.PORT + "/followed_places.json";
+		            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		            	    	
+		            	nameValuePairs.add(new BasicNameValuePair("followed_place[place_id]", place_id));
+		            	
+		            	Message myMessage, msgPb;
+		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
+		                myHandler.sendMessage(msgPb);
+				
+						Bundle messageBundle = new Bundle();
+						messageBundle.putInt("action", ACTION.FALLOW_PLACE.getValue());
+				        myMessage = myHandler.obtainMessage();	
+   		        
+				        InputStream input = Network.retrieveStream(url, METHOD.POST, nameValuePairs);
+						if (input == null)
+							messageBundle.putInt("error", 1);
+						else
+						{	
+							Reader readerResp = new InputStreamReader(input);
+							String ret = Network.checkInputStream(readerResp);
+							
+							if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+							{
+								messageBundle.putInt("error", 3);
+								messageBundle.putString("msgError", ret);
+							}
+							else
+							{
+								try {		    
+									rep = gson.fromJson(ret, ResponseWS.class);
+								}
+								catch(JsonParseException e)
+							    {
+							        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
+							    }
+								
+								if (rep.responseCode == 1)
+								{
+									messageBundle.putInt("error", 2);
+									messageBundle.putString("msgError", rep.responseMessage);
+								}
+							}
+						}						
+						myMessage.setData(messageBundle);
+	                    myHandler.sendMessage(myMessage);
+	                    
+	                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
+		                myHandler.sendMessage(msgPb);
+	                }
+					catch (Exception e) {
+		                e.printStackTrace();}		
+				}};
+			threadFallow.start();
+			}
+		});
 		
 		
-		btnLike.setOnClickListener(new OnClickListener() {
-			
+		
+		btnLike.setOnClickListener(new OnClickListener() {	
 			@Override
 			public void onClick(View v) {
 		
@@ -112,6 +188,7 @@ public class ViewMemory extends Activity {
 				
 						Bundle messageBundle = new Bundle();
 						messageBundle.putInt("action", ACTION.SEND_VOTE.getValue());
+						messageBundle.putInt("type", 1);  //  for like
 				        myMessage = myHandler.obtainMessage();	
    		        
 				        InputStream input = Network.retrieveStream(url, METHOD.POST, nameValuePairs);
@@ -154,6 +231,8 @@ public class ViewMemory extends Activity {
 					catch (Exception e) {
 		                e.printStackTrace();}
 					
+				
+					
 				}};
 			threadSendLike.start();
 			}
@@ -185,6 +264,7 @@ public class ViewMemory extends Activity {
 				
 						Bundle messageBundle = new Bundle();
 						messageBundle.putInt("action", ACTION.SEND_VOTE.getValue());
+						messageBundle.putInt("type", 0);  //  for Dislike
 				        myMessage = myHandler.obtainMessage();	
    		        
 				        InputStream input = Network.retrieveStream(url, METHOD.POST, nameValuePairs);
@@ -226,6 +306,7 @@ public class ViewMemory extends Activity {
 	                }
 					catch (Exception e) {
 		                e.printStackTrace();}
+					
 					
 				}};
 			threadSendDislike.start();
@@ -298,8 +379,7 @@ public class ViewMemory extends Activity {
         	Log.w("THREAD", "FIN THREAD UPDATE COMM");
 			
 		}};
-	threadGetLike.start();
-		
+	//threadGetLike.start();
 		
 		sendButton.setOnClickListener(new OnClickListener() {
 			
@@ -485,9 +565,8 @@ public class ViewMemory extends Activity {
 			    		info.setText("Ws error :\n" + pack.getString("msgError"));
 			    	else
 			    	{
-			    		
-			    		viewLike.setText(Integer.toString(memory.nbLike));
-			    		viewDislike.setText(Integer.toString(memory.nbDislike));	    		
+			    		viewLike.setText(Integer.toString(memory.upvotes));
+			    		viewDislike.setText(Integer.toString(memory.downvotes));	    		
 			    	}
 			    	break;
 			    	
@@ -505,7 +584,30 @@ public class ViewMemory extends Activity {
 			    	{
 			    		
 			    		Toast.makeText(getApplicationContext(), "Send vote success", Toast.LENGTH_LONG).show();
+			    		int type = pack.getInt("type");
+			    		if (type == 1)
+			    			viewLike.setText(Integer.toString(memory.upvotes + 1));   //  verif si auth
+			    		else
+			    			viewDislike.setText(Integer.toString(memory.upvotes + 1));   //  verif si auth
 			    		//threadGetLike.start();
+			    	}
+			    	break;
+		    	case FALLOW_PLACE:
+		    		info.setText("");		    	
+			    	if (Error == 1)
+			    		info.setText("Error: connection with WS fail");
+			    	else if (Error == 2)
+			    	{
+			    		info.setText("Fallow Place error :\n" + pack.getString("msgError"));
+			    	}
+			    	else if (Error == 3)
+			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    	else
+			    	{
+			    		
+			    		Toast.makeText(getApplicationContext(), "Fallow Place success", Toast.LENGTH_LONG).show();
+			    		//btnFallow.setBackgroundResource(R.drawable.iconmortel_f);
+			    		btnFallow.setImageResource(R.drawable.iconmortel_f);
 			    	}
 			    	break;
 	    	} 	
