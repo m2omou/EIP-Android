@@ -58,6 +58,10 @@ public class MainMenu extends Activity {
         	   intent = new Intent(this, CreateAccount.class);
 			   startActivity(intent);
         	   return true;
+           case R.id.Feed:
+        	   intent = new Intent(this, ViewFeed.class);
+			   startActivity(intent);
+        	   return true;
            case R.id.Menu:
         	   intent = new Intent(this, MainMenu.class);
 			   startActivity(intent);

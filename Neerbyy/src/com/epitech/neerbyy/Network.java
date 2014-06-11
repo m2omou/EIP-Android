@@ -64,7 +64,8 @@ public class Network {
 		UPDATE_COMM(11),
 		GET_VOTES(12),
 		SEND_VOTE(13),
-		FALLOW_PLACE(14);
+		FALLOW_PLACE(14),
+		GET_FEED(15);
 		
 		private final int value;
 		
@@ -84,8 +85,8 @@ public class Network {
 	}
 		
 	static public enum PARAMS {
-		CONNECTION_TIME_OUT(6000),   // def 0 for not taking
-		SOCKET_TIME_OUT(4000);
+		CONNECTION_TIME_OUT(8000),   // def 0 for not taking
+		SOCKET_TIME_OUT(8000);
 	
 		private final int value;
 		

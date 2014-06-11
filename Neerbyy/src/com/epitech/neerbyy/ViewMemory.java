@@ -603,10 +603,8 @@ public class ViewMemory extends Activity {
 			    	else if (Error == 3)
 			    		info.setText("Ws error :\n" + pack.getString("msgError"));
 			    	else
-			    	{
-			    		
+			    	{		
 			    		Toast.makeText(getApplicationContext(), "Fallow Place success", Toast.LENGTH_LONG).show();
-			    		//btnFallow.setBackgroundResource(R.drawable.iconmortel_f);
 			    		btnFallow.setImageResource(R.drawable.iconmortel_f);
 			    	}
 			    	break;

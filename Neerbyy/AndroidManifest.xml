@@ -88,6 +88,10 @@
         	android:windowSoftInputMode="stateHidden"
             android:label="@string/title_activity_view_post" >
         </activity>
+         <activity
+            android:name="com.epitech.neerbyy.ViewFeed"
+            android:label="@string/title_activity_view_post" >
+        </activity>
         
         <activity
             android:name="com.epitech.neerbyy.ViewMemory"

@@ -17,6 +17,8 @@
 		       android:title="Create account"   />		 
 		 <item android:id="@+id/getUser"
 		       android:title="Edit user info"  />
+		 <item android:id="@+id/Feed"
+		       android:title="View feed"   />	
 	     </menu>
 	   
 	</item>
