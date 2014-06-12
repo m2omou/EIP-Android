@@ -112,8 +112,6 @@ public class Login extends MainMenu {
 		            	Message myMessage, msgPb;
 		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
 		                myHandler.sendMessage(msgPb);
-				
-		                Log.w("PATH", "ICI1");
 		                
 						Bundle messageBundle = new Bundle();
 						messageBundle.putInt("action", ACTION.LOGIN.getValue());
@@ -124,10 +122,8 @@ public class Login extends MainMenu {
 							messageBundle.putInt("error", 1);
 						else
 						{	
-							Log.w("PATH", "ICI2");
 							Reader readerResp = new InputStreamReader(input);
 							String ret = Network.checkInputStream(readerResp);
-							Log.w("PATH", "ICI3");
 							
 							if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
 							{
@@ -250,6 +246,10 @@ public class Login extends MainMenu {
 			    		info.setText("Login success with : " + user.username);
 			    		login.setEnabled(false);   		
 			    		Network.USER = user;
+			    		
+			    		Intent intent = new Intent(Login.this, MainMenu.class);
+						startActivity(intent);
+						
 			    	}
 			    	break;
 		    	case RESET_PASSWORD:

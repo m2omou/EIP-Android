@@ -16,12 +16,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.ManagedClientConnection;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
@@ -65,7 +67,8 @@ public class Network {
 		GET_VOTES(12),
 		SEND_VOTE(13),
 		FALLOW_PLACE(14),
-		GET_FEED(15);
+		GET_FEED(15),
+		CANCEL_VOTE(16);
 		
 		private final int value;
 		
@@ -82,6 +85,7 @@ public class Network {
 		GET,
 		POST,
 		PUT,
+		DELETE,
 	}
 		
 	static public enum PARAMS {
@@ -98,20 +102,6 @@ public class Network {
 			return this.value;
 		}
 	}
-	
-	/*static final public int GET_UNTRUC = 0;
-	static final public int GET_USER = 1;
-	static final public int GET_INFO = 2;
-	static final public int LOGIN = 3;
-	static final public int CREATE_ACCOUNT = 4;
-	static final public int EDIT_USER = 5;
-	static final public int GET_PLACES = 6;
-	static final public int RESET_PASSWORD = 7;
-	static final public int CREATE_POST = 8;
-	static final public int UPDATE_POST = 9;*/
-	
-	//static final public int CONNECTION_TIME_OUT = 5000;    // def 0 for not take
-	//static final public int SOCKET_TIME_OUT = 3000;
 	
 	 /**
 	  * The URL of the Web Service
@@ -131,14 +121,14 @@ public class Network {
 	static public User USER = null;
 	
 	//static MultiThreadedHttpConnectionManager connman = new MultiThreadedHttpConnectionManager();
-	ClientConnectionManager cm;
 	
-	static DefaultHttpClient client = new DefaultHttpClient();
-
-    static boolean isInit = false;
-     
-    static final HttpParams httpParameters = client.getParams();
-     
+	static DefaultHttpClient clientTmp = new DefaultHttpClient();
+	static ClientConnectionManager cm = clientTmp.getConnectionManager();	
+	static final HttpParams httpParameters = clientTmp.getParams();
+	
+	static DefaultHttpClient client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParameters, cm.getSchemeRegistry()), httpParameters);
+	
+	static boolean isInit = false; 
     static int statusCode = 0;
     static HttpResponse getResponse = null;
 	
@@ -170,11 +160,13 @@ public class Network {
 		HttpGet getRequestGet = new HttpGet(url);
 	    HttpPost getRequestPost = new HttpPost(url);
 	    HttpPut getRequestPut = new HttpPut(url);
-	   
-	    
-	    //DefaultHttpClient client = new DefaultHttpClient();
-	    
+	    HttpDelete getRequestDelete = new HttpDelete(url);
+	     
+	    //DefaultHttpClient client = new DefaultHttpClient();	    
 	    //ClientConnectionManager cm = client.getConnectionManager();
+	    
+	    //String html = EntityUtils.toString(rp.getEntity() /*, Encoding */);
+	    //EntityUtils.consume(rp.getEntity());
 	    
 	    if (!isInit)
 			init();
@@ -205,6 +197,15 @@ public class Network {
 	        		if (USER != null)
 	    	        	getRequestPut.setHeader("Authorization", "Token token=" + USER.token);
 	        		getResponse = client.execute(getRequestPut);
+	        		break;
+	        	}
+	        	case DELETE: {
+	        		Log.w("Network ", "SENDING : " + getRequestDelete.getMethod() + " -- " + getRequestDelete.getRequestLine());
+	        		/*if (nameValuePairs != null)
+	    	    		getRequestDelete.setEntity(new UrlEncodedFormEntity(nameValuePairs));*/
+	        		if (USER != null)
+	    	        	getRequestDelete.setHeader("Authorization", "Token token=" + USER.token);
+	        		getResponse = client.execute(getRequestDelete);
 	        		break;
 	        	}
 	        }        

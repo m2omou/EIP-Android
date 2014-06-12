@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -29,6 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -189,15 +191,43 @@ public class ViewFeed extends Activity {
 			    		//Log.w("PATH", "LAAA");
 			    		//List listStrings = new ArrayList<String>() ;//= {"France","Allemagne","Russie"};
 			    		String[] listStrings = new String[listPost.list.length] ;//= {"France","Allemagne","Russie"};
+			    		
+			    		
+			    		//Création de la ArrayList qui nous permettra de remplir la listView
+			            ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+			     
+			            //On déclare la HashMap qui contiendra les informations pour un item
+			            HashMap<String, String> map;
+			    		
+			    		
 			    		if (listPost.list.length > 0)
 			    		{
 			    			Log.d("FEED", "YA DEJA DES FEED !!");
 			    			for (int i = 0; i < listPost.list.length; i++) {
 			    				listStrings[i] = listPost.list[i].content;
 			    				
+			    				 //Création d'une HashMap pour insérer les informations du premier item de notre listView
+					            map = new HashMap<String, String>();
+					            //on insère un élément titre que l'on récupérera dans le textView titre créé dans le fichier affichageitem.xml
+					            map.put("username", listPost.list[i].user.username + " :");
+					            //on insère un élément description que l'on récupérera dans le textView description créé dans le fichier affichageitem.xml
+					            map.put("content", listPost.list[i].content);
+					            //on insère la référence à l'image (converti en String car normalement c'est un int) que l'on récupérera dans l'imageView créé dans le fichier affichageitem.xml
+					            map.put("avatar", String.valueOf(R.drawable.avatar));
+					            //enfin on ajoute cette hashMap dans la arrayList
+					            listItem.add(map);
+			    				
 			    			}
+			    			
+			    			//Création d'un SimpleAdapter qui se chargera de mettre les items présents dans notre list (listItem) dans la vue affichageitem
+			    	        SimpleAdapter mSchedule = new SimpleAdapter (ViewFeed.this, listItem, R.layout.view_item_list,
+			    	               new String[] {"avatar", "username", "content"}, new int[] {R.id.avatar, R.id.username, R.id.content});
+			    	 
+			    	        //On attribue à notre listView l'adapter que l'on vient de créer
+			    	        listView.setAdapter(mSchedule);
+			    	        
 			    		 
-			    			listView.setAdapter(new ArrayAdapter<String>(ViewFeed.this, android.R.layout.simple_list_item_1, listStrings));	
+			    			//listView.setAdapter(new ArrayAdapter<String>(ViewFeed.this, android.R.layout.simple_list_item_1, listStrings));	
 			    			listView.setOnItemClickListener(new OnItemClickListener() {
 			    			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			    			    	 //Toast.makeText(this, "Id: " + lv.getAdapter().get(position), Toast.LENGTH_LONG).show();

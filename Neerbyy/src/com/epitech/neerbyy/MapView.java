@@ -107,6 +107,8 @@ public class MapView extends FragmentActivity implements LocationListener{
 				
 				b.putString("placeId", pi.id);
 				b.putString("placeName", pi.name);
+				b.putDouble("latitude", pi.lat);
+				b.putDouble("longitude", pi.lon);
 	    		intent.putExtras(b);					
 				startActivity(intent);
 				return;

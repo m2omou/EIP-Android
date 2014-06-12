@@ -9,7 +9,7 @@
     tools:context=".ViewPost" >
 
     <ImageButton
-        android:id="@+id/btnCreatePost"
+        android:id="@+id/btnFallowPost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -21,8 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/postViewListPost"
-        android:layout_alignRight="@+id/btnCreatePost"
-        android:layout_below="@+id/btnCreatePost"
+        android:layout_alignRight="@+id/btnFallowPost"
+        android:layout_below="@+id/btnFallowPost"
         android:layout_marginTop="43dp"
         android:ems="10"
         android:hint="@string/hintPostMemory"
@@ -36,7 +36,7 @@
         android:id="@+id/postViewListPost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/btnCreatePost"
+        android:layout_alignRight="@+id/btnFallowPost"
         android:layout_below="@+id/postEditPost"
         android:layout_marginTop="48dp"
         android:background="@color/white"
@@ -59,7 +59,7 @@
         android:id="@+id/postNamePlace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/btnCreatePost"
+        android:layout_alignBottom="@+id/btnFallowPost"
         android:layout_alignLeft="@+id/postTextInfo"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -67,7 +67,7 @@
         android:id="@+id/postTextInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btnCreatePost"
+        android:layout_alignTop="@+id/btnFallowPost"
         android:layout_toLeftOf="@+id/postEditPost"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

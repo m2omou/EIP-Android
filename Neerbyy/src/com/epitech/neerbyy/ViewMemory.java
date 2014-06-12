@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -31,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +68,10 @@ public class ViewMemory extends Activity {
 	
 	public String place_id;
 	
+	public int actionVote;
+	
+	public Thread threadCancelLike;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,6 +80,8 @@ public class ViewMemory extends Activity {
 		btnLike = (ImageButton)findViewById(R.id.commBtnLike);
 		btnDislike = (ImageButton)findViewById(R.id.commBtnDislike);
 		btnFallow = (ImageButton)findViewById(R.id.btnCreateComm);
+		
+		btnFallow.setEnabled(false);
 		
 		viewLike = (TextView)findViewById(R.id.commViewLike);                   
 		viewDislike = (TextView)findViewById(R.id.commViewDislike);
@@ -90,11 +98,18 @@ public class ViewMemory extends Activity {
 		Bundle b  = this.getIntent().getExtras();
 		memory = (Post.PostInfos)b.getSerializable("post");
 		memoryContent = (TextView)findViewById(R.id.commContentMemory);
-		place_id = (String)b.getString("Place_id");
+		place_id = (String)b.getString("Place_id");  //  inut  deja dans mem.pla
 		
-		viewLike.setText(Integer.toString(memory.upvotes));
-		viewDislike.setText(Integer.toString(memory.downvotes));
-		
+		if (memory.vote == null)
+			actionVote = -1;
+		else if(memory.vote.value) 
+			actionVote = 1;
+		else
+			actionVote = 0;
+		//if (Integer.getInteger(viewLike.getText().toString()) == 0 && Integer.getInteger(viewDislike.getText().toString()) == 0) {
+			viewLike.setText(Integer.toString(memory.upvotes));
+			viewDislike.setText(Integer.toString(memory.downvotes));
+		//}
 		btnFallow.setOnClickListener(new OnClickListener() {	
 			@Override
 			public void onClick(View v) {
@@ -162,8 +177,6 @@ public class ViewMemory extends Activity {
 			}
 		});
 		
-		
-		
 		btnLike.setOnClickListener(new OnClickListener() {	
 			@Override
 			public void onClick(View v) {
@@ -173,7 +186,15 @@ public class ViewMemory extends Activity {
 				
 				Thread threadSendLike = new Thread(){
 			        public void run(){	        	      
-					try {	
+					try {
+						
+						if (actionVote == 1) {
+							actionVote = -2;
+							threadCancelLike.start();
+							return;
+						}
+						actionVote = 1;
+						
 		            	Gson gson = new Gson();
 		            	String url = Network.URL + Network.PORT + "/votes.json";
 		            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -237,7 +258,62 @@ public class ViewMemory extends Activity {
 			threadSendLike.start();
 			}
 		});
+			
+		threadCancelLike = new Thread(){
+	        public void run(){	        	      
+			try {	
+            	Gson gson = new Gson();
+            	String url = Network.URL + Network.PORT + "/votes/" + memory.vote.id + ".json";
+            	
+            	Message myMessage, msgPb;
+            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
+                myHandler.sendMessage(msgPb);
 		
+				Bundle messageBundle = new Bundle();
+				messageBundle.putInt("action", ACTION.CANCEL_VOTE.getValue());
+		        myMessage = myHandler.obtainMessage();	
+	        
+		        InputStream input = Network.retrieveStream(url, METHOD.DELETE, null);
+				if (input == null)
+					messageBundle.putInt("error", 1);
+				else
+				{	
+					Reader readerResp = new InputStreamReader(input);
+					String ret = Network.checkInputStream(readerResp);
+					
+					if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+					{
+						messageBundle.putInt("error", 3);
+						messageBundle.putString("msgError", ret);
+					}
+					else
+					{
+						try {		    
+							rep = gson.fromJson(ret, ResponseWS.class);
+							//user = rep.getValue(Post.class, 1);
+						}
+						catch(JsonParseException e)
+					    {
+					        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
+					    }
+						
+						if (rep.responseCode == 1)
+						{
+							messageBundle.putInt("error", 2);
+							messageBundle.putString("msgError", rep.responseMessage);
+						}
+					}
+				}						
+				myMessage.setData(messageBundle);
+                myHandler.sendMessage(myMessage);
+                
+                msgPb = myHandler.obtainMessage(1, (Object) "Success");
+                myHandler.sendMessage(msgPb);
+            }
+			catch (Exception e) {
+                e.printStackTrace();}			
+		}};
+	
 		
 		btnDislike.setOnClickListener(new OnClickListener() {
 			
@@ -250,6 +326,15 @@ public class ViewMemory extends Activity {
 				Thread threadSendDislike = new Thread(){
 			        public void run(){	        	      
 					try {	
+						
+						if (actionVote == 0) {
+							actionVote = -3;
+							threadCancelLike.start();
+							
+							return;
+						}
+						actionVote = 0;
+						
 		            	Gson gson = new Gson();
 		            	String url = Network.URL + Network.PORT + "/votes.json";
 		            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -534,6 +619,14 @@ public class ViewMemory extends Activity {
 			    		//List listStrings = new ArrayList<String>() ;//= {"France","Allemagne","Russie"};
 			    		String[] listStrings = new String[listComm.list.length];
 			    		
+			    		
+			    		//Création de la ArrayList qui nous permettra de remplir la listView
+			            ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
+			     
+			            //On déclare la HashMap qui contiendra les informations pour un item
+			            HashMap<String, String> map;
+			    		
+			            
 			    		//listStrings[0] = memory.content;
 			    		memoryContent.setText(memory.content);
 			    		
@@ -541,9 +634,29 @@ public class ViewMemory extends Activity {
 			    		{
 			    			Log.d("COMM", "YA DEJA DES COMM !!, vec first comment = " + memory.content);
 			    			for (int i = 0; i < listComm.list.length; i++) {
-			    				listStrings[i] = listComm.list[i].content; 				
+			    				listStrings[i] = listComm.list[i].content; 	
+			    				
+			    				 //Création d'une HashMap pour insérer les informations du premier item de notre listView
+					            map = new HashMap<String, String>();
+					            //on insère un élément titre que l'on récupérera dans le textView titre créé dans le fichier affichageitem.xml
+					            map.put("username", listComm.list[i].user.username + " :");
+					            //on insère un élément description que l'on récupérera dans le textView description créé dans le fichier affichageitem.xml
+					            map.put("content", listComm.list[i].content);
+					            //on insère la référence à l'image (converti en String car normalement c'est un int) que l'on récupérera dans l'imageView créé dans le fichier affichageitem.xml
+					            map.put("avatar", String.valueOf(R.drawable.avatar));
+					            //enfin on ajoute cette hashMap dans la arrayList
+					            listItem.add(map);
+			    				
 			    			}
-			    			listView.setAdapter(new ArrayAdapter<String>(ViewMemory.this, android.R.layout.simple_list_item_1, listStrings));
+			    			
+			    			//Création d'un SimpleAdapter qui se chargera de mettre les items présents dans notre list (listItem) dans la vue affichageitem
+			    	        SimpleAdapter mSchedule = new SimpleAdapter (ViewMemory.this, listItem, R.layout.view_item_list,
+			    	               new String[] {"avatar", "username", "content"}, new int[] {R.id.avatar, R.id.username, R.id.content});
+			    	 
+			    	        //On attribue à notre listView l'adapter que l'on vient de créer
+			    	        listView.setAdapter(mSchedule);
+			    	        
+			    			//listView.setAdapter(new ArrayAdapter<String>(ViewMemory.this, android.R.layout.simple_list_item_1, listStrings));
 			    		}
 			    		
 			           // listView.getAdapter().getView(0, null, listView).setBackgroundColor(getResources().getColor(R.color.greenNeerbyy));
@@ -581,15 +694,36 @@ public class ViewMemory extends Activity {
 			    	else if (Error == 3)
 			    		info.setText("Ws error :\n" + pack.getString("msgError"));
 			    	else
-			    	{
-			    		
+			    	{    		
 			    		Toast.makeText(getApplicationContext(), "Send vote success", Toast.LENGTH_LONG).show();
-			    		int type = pack.getInt("type");
-			    		if (type == 1)
+			    		if (actionVote == 1)
 			    			viewLike.setText(Integer.toString(memory.upvotes + 1));   //  verif si auth
-			    		else
-			    			viewDislike.setText(Integer.toString(memory.upvotes + 1));   //  verif si auth
-			    		//threadGetLike.start();
+			    		else if(actionVote == 0)
+			    			viewDislike.setText(Integer.toString(memory.downvotes + 1));   //  verif si auth
+			    		/*else if(actionVote == -2)
+			    			viewDislike.setText(Integer.toString(memory.upvotes - 1));
+			    		else if(actionVote == -3)
+			    			viewDislike.setText(Integer.toString(memory.downvotes - 1));*/
+			    		threadGetLike.start();
+			    	}
+			    	break;
+		    	case CANCEL_VOTE:
+		    		info.setText("");		    	
+			    	if (Error == 1)
+			    		info.setText("Error: connection with WS fail");
+			    	else if (Error == 2)
+			    	{
+			    		info.setText("Cancel vote error :\n" + pack.getString("msgError"));
+			    	}
+			    	else if (Error == 3)
+			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    	else
+			    	{   		
+			    		Toast.makeText(getApplicationContext(), "Cancel vote success " + actionVote, Toast.LENGTH_LONG).show();
+			    		if(actionVote == -2)
+			    			viewLike.setText(Integer.toString(memory.upvotes - 1));
+			    		else if(actionVote == -3)
+			    			viewDislike.setText(Integer.toString(memory.downvotes - 1));
 			    	}
 			    	break;
 		    	case FALLOW_PLACE:
