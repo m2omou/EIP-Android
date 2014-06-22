@@ -68,7 +68,9 @@ public class Network {
 		SEND_VOTE(13),
 		FALLOW_PLACE(14),
 		GET_FEED(15),
-		CANCEL_VOTE(16);
+		CANCEL_VOTE(16),
+		REPORT_PUB(17),
+		REPORT_COM(18);
 		
 		private final int value;
 		

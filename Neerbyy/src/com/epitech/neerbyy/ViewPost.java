@@ -32,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -56,6 +57,7 @@ public class ViewPost extends Activity {
 	private TextView placeName;
 	private EditText editPost;
 	private ListView listView;
+	// Button report;
 	
 	ResponseWS rep;
 	ProgressDialog mProgressDialog;
@@ -85,6 +87,7 @@ public class ViewPost extends Activity {
 		placeName = (TextView)findViewById(R.id.postNamePlace);
 		editPost = (EditText)findViewById(R.id.postEditPost);
 		listView = (ListView)findViewById(R.id.postViewListPost);
+		//report = (Button)findViewById(R.id.btnPostReport);
 		
 		//listView.removeAllViews();
 		listView.clearChoices();
@@ -102,6 +105,16 @@ public class ViewPost extends Activity {
 
 //		b.getSerializable(key)
 		
+		/*report.setOnClickListener(new OnClickListener() {	
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(ViewPost.this, Report_pub.class);		
+				Bundle b = new Bundle();
+				b.putInt("pub_id", this.);	
+	    		intent.putExtras(b);
+				startActivity(intent);		
+			}
+		});*/
 		
 		btnFallow.setOnClickListener(new OnClickListener() {	
 			@Override

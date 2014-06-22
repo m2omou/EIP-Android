@@ -28,7 +28,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewDebug.IntToString;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -57,6 +59,8 @@ public class ViewMemory extends Activity {
 	private ImageButton btnFallow;
 	private TextView viewLike;
 	private TextView viewDislike;
+	
+	private Button report;
 	
 	private Votes votes;
 	public Thread threadGetLike;
@@ -91,6 +95,8 @@ public class ViewMemory extends Activity {
 		editPost = (EditText)findViewById(R.id.postEditCommentary);
 		listView = (ListView)findViewById(R.id.postViewListCommentary);
 		
+		report = (Button)findViewById(R.id.btnCommReport);
+		
 		//listView.removeAllViews();
 		listView.clearChoices();
 		
@@ -110,6 +116,18 @@ public class ViewMemory extends Activity {
 			viewLike.setText(Integer.toString(memory.upvotes));
 			viewDislike.setText(Integer.toString(memory.downvotes));
 		//}
+			
+		report.setOnClickListener(new OnClickListener() {	
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(ViewMemory.this, Report_pub.class);		
+				Bundle b = new Bundle();
+				b.putInt("pub_id", memory.id);	
+	    		intent.putExtras(b);
+				startActivity(intent);		
+			}
+		});
+			
 		btnFallow.setOnClickListener(new OnClickListener() {	
 			@Override
 			public void onClick(View v) {
@@ -659,8 +677,42 @@ public class ViewMemory extends Activity {
 			    			//listView.setAdapter(new ArrayAdapter<String>(ViewMemory.this, android.R.layout.simple_list_item_1, listStrings));
 			    		}
 			    		
-			           // listView.getAdapter().getView(0, null, listView).setBackgroundColor(getResources().getColor(R.color.greenNeerbyy));
+			    		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+							@Override
+							public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+								
+								Intent intent = new Intent(ViewMemory.this, Report_com.class);		
+								Bundle b = new Bundle();
+								b.putInt("com_id", listComm.list[position].id);	
+					    		intent.putExtras(b);
+								startActivity(intent);	
+								return false;
+							}
+						});			    		
 			    		
+			           // listView.getAdapter().getView(0, null, listView).setBackgroundColor(getResources().getColor(R.color.greenNeerbyy));	
+			    		
+			    		/*listView.setOnItemClickListener(new OnItemClickListener() {
+		    			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		    			    	 //Toast.makeText(this, "Id: " + lv.getAdapter().get(position), Toast.LENGTH_LONG).show();
+		    				     //Toast.makeText(ViewPost.this, "Id: " + listPost.list[position].id, Toast.LENGTH_LONG).show();
+		    				     
+		    				     Intent intent = new Intent(ViewPost.this, ViewMemory.class);
+		    						Bundle b = new Bundle();				
+		    						b.putSerializable("post", (Serializable)listPost.list[position]);
+		    						b.putString("Place_id", placeId);
+		    			    		Log.w("LIKE", "dislike = " + listPost.list[position].downvotes);
+		    						
+		    						intent.putExtras(b);					
+		    						startActivity(intent);
+		    						return;  
+		    			    }
+		    			});
+		    		}*/
+			    		
+			    		
+			    		
+			    					    		
 			    		Toast.makeText(getApplicationContext(), "Update comm success", Toast.LENGTH_LONG).show();
 			    		//threadGetLike.start();
 			    	}
@@ -744,7 +796,6 @@ public class ViewMemory extends Activity {
 			    	break;
 	    	} 	
 	    }
-	};	
-	
+	};
 }
 

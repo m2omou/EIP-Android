@@ -37,7 +37,6 @@
             android:id="@+id/tableRow2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:baselineAligned="_baseline"
             android:gravity="center"
             android:paddingTop="0dp" >
 
@@ -52,7 +51,7 @@
                 android:textSize="22sp" />
 
             <CheckBox
-                android:id="@+id/checkBox1"
+                android:id="@+id/reportComCheckBox1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingRight="30dp" />
@@ -77,7 +76,7 @@
                 android:textSize="22sp" />
 
             <CheckBox
-                android:id="@+id/CheckBox01"
+                android:id="@+id/reportComCheckBox2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingRight="30dp" />
@@ -101,7 +100,7 @@
                 android:textSize="22sp" />
 
             <CheckBox
-                android:id="@+id/CheckBox02"
+                android:id="@+id/reportComCheckBox3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingRight="30dp" />
@@ -125,7 +124,7 @@
                 android:textSize="22sp" />
 
             <CheckBox
-                android:id="@+id/CheckBox03"
+                android:id="@+id/reportComCheckBox4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingRight="30dp" />
