@@ -187,13 +187,15 @@ public class ViewConv extends MainMenu {
 			    			Log.d("CONV", "YA DEJA DES CONV !!");
 			    			for (int i = 0; i < listConv.list.length; i++) {
 			    				listStrings[i] = listConv.list[i].messages[0].content;
-			    				
+			    				int lastMessageIndice = listConv.list[i].messages.length - 1;
+			    				if (lastMessageIndice < 0)
+			    					lastMessageIndice = 0;
 			    				 //Création d'une HashMap pour insérer les informations du premier item de notre listView
 					            map = new HashMap<String, String>();
 					            //on insère un élément titre que l'on récupérera dans le textView titre créé dans le fichier affichageitem.xml
-					            map.put("username", listConv.list[i].messages[0].sender.username + " :");
+					            map.put("username", listConv.list[i].messages[lastMessageIndice].sender.username + " :");
 					            //on insère un élément description que l'on récupérera dans le textView description créé dans le fichier affichageitem.xml
-					            map.put("content", listConv.list[i].messages[0].content);
+					            map.put("content", listConv.list[i].messages[lastMessageIndice].content);
 					            //on insère la référence à l'image (converti en String car normalement c'est un int) que l'on récupérera dans l'imageView créé dans le fichier affichageitem.xml
 					            map.put("avatar", String.valueOf(R.drawable.avatar));
 					            //enfin on ajoute cette hashMap dans la arrayList

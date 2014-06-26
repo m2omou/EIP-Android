@@ -47,12 +47,12 @@ public class ViewMessages extends MainMenu {
 	
 	private Conversation conv;
 	
-	private Thread threadGetMessages;
+	//private Thread threadGetMessages;
 	
 	ResponseWS rep;
 	ProgressDialog mProgressDialog;
 	public Messages listMessages;
-	int conv_id;
+	public int conv_id;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -143,71 +143,9 @@ public class ViewMessages extends MainMenu {
 			}
 		});
 		
-		threadGetMessages = new Thread(){
-	        public void run(){	        	      
-			try {	
-            	Gson gson = new Gson();
-            	String url = Network.URL + Network.PORT + "/messages.json?conversation_id=" + conv_id;
-            	
-            	Message myMessage, msgPb;
-            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");
-            	myHandler.sendMessage(msgPb);
-            
-            	Bundle messageBundle = new Bundle();
-    			messageBundle.putInt("action", ACTION.GET_MESSAGES.getValue());
-    	        myMessage = myHandler.obtainMessage();	
-           
-    	        InputStream input = Network.retrieveStream(url, METHOD.GET, null);
-            	
-    	        if (input == null)
-    				messageBundle.putInt("error", 1);
-    			else
-    			{	
-    				Reader readerResp = new InputStreamReader(input);
-    				String ret = Network.checkInputStream(readerResp);
-    				
-    				if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
-    				{
-    					messageBundle.putInt("error", 3);
-    					messageBundle.putString("msgError", ret);
-    				}
-    				else
-    				{
-    					try {		    
-    						rep = gson.fromJson(ret, ResponseWS.class);
-    						listMessages = rep.getValue(Messages.class);
-    						
-    					}
-    					catch(JsonParseException e)
-    				    {
-    				        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
-    				    }
-    					if (listMessages == null)
-    					{
-    						messageBundle.putInt("error", 2);
-    						messageBundle.putString("msgError", rep.responseMessage);
-    					}
-    					else
-    						Log.w("RECUP", "JAI RECUP DES MESSAGES ");
-    					//else		  	                   
-    						//messageBundle.putSerializable("post", (Serializable) vp.listPost);
-    				}
-    			}     
-    	        myMessage.setData(messageBundle);
-                myHandler.sendMessage(myMessage);
-                
-                msgPb = myHandler.obtainMessage(1, (Object) "Success");
-                myHandler.sendMessage(msgPb);
-                
-        	}
-        	catch (Exception e) {
-                e.printStackTrace();}
-        	Log.w("THREAD", "FIN THREAD UPDATE MESSAGES");
-			
-		}};
 		mProgressDialog = ProgressDialog.show(ViewMessages.this, "Please wait",
 				"Long operation starts...", true);
-	threadGetMessages.start();	
+		new ThreadUpdateMessages(ViewMessages.this).start();
 }
 	
 	
@@ -324,9 +262,9 @@ public class ViewMessages extends MainMenu {
 			    	{
 			    		editMessage.setText("");
 			    		info.setText("Message send success" );
+			    		new ThreadUpdateMessages(ViewMessages.this).start();
 			    		//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
 			    			//	"Long operation starts...", true);
-			    		//new ThreadUpdateComm(ViewMemory.this).start();
 			    	}
 			    	break;
 	    	} 	
