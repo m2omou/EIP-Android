@@ -62,6 +62,10 @@ public class MainMenu extends Activity {
         	   intent = new Intent(this, ViewFeed.class);
 			   startActivity(intent);
         	   return true;
+           case R.id.Conv:
+        	   intent = new Intent(this, ViewConv.class);
+			   startActivity(intent);
+        	   return true;
            case R.id.Menu:
         	   intent = new Intent(this, MainMenu.class);
 			   startActivity(intent);

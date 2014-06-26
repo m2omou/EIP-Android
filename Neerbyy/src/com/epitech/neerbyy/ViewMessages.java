@@ -11,6 +11,10 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.epitech.neerbyy.Conversations.Conversation;
+import com.epitech.neerbyy.Network.ACTION;
+import com.epitech.neerbyy.Network.METHOD;
+import com.epitech.neerbyy.Place.PlaceInfo;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
@@ -25,74 +29,132 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
-import com.epitech.neerbyy.Network.ACTION;
-import com.epitech.neerbyy.Network.METHOD;
-import com.epitech.neerbyy.Place.PlaceInfo;
+public class ViewMessages extends MainMenu {
 
-/**
- * This class represent the feed associate to a user.
- * @author Seb
- */
-public class ViewFeed extends MainMenu {
-
-	private ImageButton btnCreatePost;
 	private TextView info;
-	private TextView placeName;
+	private EditText editMessage;
+	private Button btnSendMessage;
 	private ListView listView;
 	
-	private Thread threadGetFeed;
+	private Conversation conv;
+	
+	private Thread threadGetMessages;
 	
 	ResponseWS rep;
 	ProgressDialog mProgressDialog;
-	public Post listPost;
-	public PlaceInfo place;
-	public String placeId;
+	public Messages listMessages;
+	int conv_id;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_view_feed);
+		setContentView(R.layout.activity_view_messages);
 	
-		btnCreatePost = (ImageButton)findViewById(R.id.btnCreatePost);
-		info = (TextView)findViewById(R.id.feedTextInfo);
-		placeName = (TextView)findViewById(R.id.feedNamePlace);
-		listView = (ListView)findViewById(R.id.feedViewListFeed);
+		info = (TextView)findViewById(R.id.messagesTextInfo);
+		editMessage = (EditText)findViewById(R.id.textViewMessagesEditMessage);
+		btnSendMessage = (Button)findViewById(R.id.btnMessagesSendMess);
+		
+		listView = (ListView)findViewById(R.id.messagesViewList);
+		
 		
 		//listView.removeAllViews();
 		listView.clearChoices();
 		
 		
 		Bundle b  = this.getIntent().getExtras();
-	//	place = (PlaceInfo)b.getSerializable("placeInfo");
-	
-	//	placeId = b.getString("placeId");
-	//	placeId = place.id;
-	//	placeName.setText(b.getString("placeName"));  
-	//	placeName.setText(place.name); 
-
-//		b.getSerializable(key)
-	
-		threadGetFeed = new Thread(){
+		conv = (Conversation)b.getSerializable("conv");
+		conv_id = b.getInt("convId");
+		
+		btnSendMessage.setOnClickListener(new OnClickListener() {	
+			@Override
+			public void onClick(View v) {
+		
+				mProgressDialog = ProgressDialog.show(ViewMessages.this, "Please wait",
+						"Long operation starts...", true);
+				
+				Thread thread1 = new Thread(){
+			        public void run(){	        	      
+					try {	
+		            	Gson gson = new Gson();
+		            	String url = Network.URL + Network.PORT + "/messages.json";
+		            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		            	
+		            	nameValuePairs.add(new BasicNameValuePair("message[recipient_id]", Integer.toString(conv.recipient.id)));
+		            	nameValuePairs.add(new BasicNameValuePair("message[content]", editMessage.getText().toString()));
+		            	
+		            	Message myMessage, msgPb;
+		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
+		                myHandler.sendMessage(msgPb);
+				
+						Bundle messageBundle = new Bundle();
+						messageBundle.putInt("action", ACTION.POST_MESSAGE.getValue());
+				        myMessage = myHandler.obtainMessage();	
+   		        
+				        InputStream input = Network.retrieveStream(url, METHOD.POST, nameValuePairs);
+						if (input == null)
+							messageBundle.putInt("error", 1);
+						else
+						{	
+							Reader readerResp = new InputStreamReader(input);
+							String ret = Network.checkInputStream(readerResp);
+							
+							if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+							{
+								messageBundle.putInt("error", 3);
+								messageBundle.putString("msgError", ret);
+							}
+							else
+							{
+								try {		    
+									rep = gson.fromJson(ret, ResponseWS.class);
+									//user = rep.getValue(Post.class, 1);
+								}
+								catch(JsonParseException e)
+							    {
+							        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
+							    }
+								
+								if (rep.responseCode == 1)
+								{
+									messageBundle.putInt("error", 2);
+									messageBundle.putString("msgError", rep.responseMessage);
+								}
+							}
+						}						
+						myMessage.setData(messageBundle);
+	                    myHandler.sendMessage(myMessage);
+	                    
+	                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
+		                myHandler.sendMessage(msgPb);
+	                }
+					catch (Exception e) {
+		                e.printStackTrace();}			
+				}};
+			thread1.start();
+			}
+		});
+		
+		threadGetMessages = new Thread(){
 	        public void run(){	        	      
 			try {	
             	Gson gson = new Gson();
-            	String url = Network.URL + Network.PORT + "/feed.json";
+            	String url = Network.URL + Network.PORT + "/messages.json?conversation_id=" + conv_id;
             	
             	Message myMessage, msgPb;
             	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");
             	myHandler.sendMessage(msgPb);
             
             	Bundle messageBundle = new Bundle();
-    			messageBundle.putInt("action", ACTION.GET_FEED.getValue());
+    			messageBundle.putInt("action", ACTION.GET_MESSAGES.getValue());
     	        myMessage = myHandler.obtainMessage();	
            
     	        InputStream input = Network.retrieveStream(url, METHOD.GET, null);
@@ -113,20 +175,20 @@ public class ViewFeed extends MainMenu {
     				{
     					try {		    
     						rep = gson.fromJson(ret, ResponseWS.class);
-    						listPost = rep.getValue(Post.class);
+    						listMessages = rep.getValue(Messages.class);
     						
     					}
     					catch(JsonParseException e)
     				    {
     				        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
     				    }
-    					if (listPost == null)
+    					if (listMessages == null)
     					{
     						messageBundle.putInt("error", 2);
     						messageBundle.putString("msgError", rep.responseMessage);
     					}
     					else
-    						Log.w("RECUP", "JAI RECUP DES FEED ");
+    						Log.w("RECUP", "JAI RECUP DES MESSAGES ");
     					//else		  	                   
     						//messageBundle.putSerializable("post", (Serializable) vp.listPost);
     				}
@@ -140,12 +202,12 @@ public class ViewFeed extends MainMenu {
         	}
         	catch (Exception e) {
                 e.printStackTrace();}
-        	Log.w("THREAD", "FIN THREAD UPDATE FEED");
+        	Log.w("THREAD", "FIN THREAD UPDATE MESSAGES");
 			
 		}};
-		mProgressDialog = ProgressDialog.show(ViewFeed.this, "Please wait",
+		mProgressDialog = ProgressDialog.show(ViewMessages.this, "Please wait",
 				"Long operation starts...", true);
-	threadGetFeed.start();	
+	threadGetMessages.start();	
 }
 	
 	
@@ -175,13 +237,13 @@ public class ViewFeed extends MainMenu {
 	    	int Error = pack.getInt("error");
 	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{    	
-		    	case GET_FEED:
+		    	case GET_MESSAGES:
 		    		info.setText("");		    	
 			    	if (Error == 1)
 			    		info.setText("Error: connection with WS fail");
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Update feed error :\n" + pack.getString("msgError"));
+			    		info.setText("Update messages error :\n" + pack.getString("msgError"));
 			    	}
 			    	else if (Error == 3)
 			    		info.setText("Ws error :\n" + pack.getString("msgError"));
@@ -190,7 +252,7 @@ public class ViewFeed extends MainMenu {
 			    		//listPost = (Post)pack.getSerializable("post");   //  utile ?????? 
 			    		//Log.w("PATH", "LAAA");
 			    		//List listStrings = new ArrayList<String>() ;//= {"France","Allemagne","Russie"};
-			    		String[] listStrings = new String[listPost.list.length] ;//= {"France","Allemagne","Russie"};
+			    		String[] listStrings = new String[listMessages.list.length] ;//= {"France","Allemagne","Russie"};
 			    		
 			    		
 			    		//Création de la ArrayList qui nous permettra de remplir la listView
@@ -200,18 +262,18 @@ public class ViewFeed extends MainMenu {
 			            HashMap<String, String> map;
 			    		
 			    		
-			    		if (listPost.list.length > 0)
+			    		if (listMessages.list.length > 0)
 			    		{
-			    			Log.d("FEED", "YA DEJA DES FEED !!");
-			    			for (int i = 0; i < listPost.list.length; i++) {
-			    				listStrings[i] = listPost.list[i].content;
+			    			Log.d("MESSAGES", "YA DEJA DES MESSAGES !!");
+			    			for (int i = 0; i < listMessages.list.length; i++) {
+			    				listStrings[i] = listMessages.list[i].content;
 			    				
 			    				 //Création d'une HashMap pour insérer les informations du premier item de notre listView
 					            map = new HashMap<String, String>();
 					            //on insère un élément titre que l'on récupérera dans le textView titre créé dans le fichier affichageitem.xml
-					            map.put("username", listPost.list[i].user.username + " :");
+					            map.put("username", listMessages.list[i].sender.username + " :");
 					            //on insère un élément description que l'on récupérera dans le textView description créé dans le fichier affichageitem.xml
-					            map.put("content", listPost.list[i].content);
+					            map.put("content", listMessages.list[i].content);
 					            //on insère la référence à l'image (converti en String car normalement c'est un int) que l'on récupérera dans l'imageView créé dans le fichier affichageitem.xml
 					            map.put("avatar", String.valueOf(R.drawable.avatar));
 					            //enfin on ajoute cette hashMap dans la arrayList
@@ -220,7 +282,7 @@ public class ViewFeed extends MainMenu {
 			    			}
 			    			
 			    			//Création d'un SimpleAdapter qui se chargera de mettre les items présents dans notre list (listItem) dans la vue affichageitem
-			    	        SimpleAdapter mSchedule = new SimpleAdapter (ViewFeed.this, listItem, R.layout.view_item_list,
+			    	        SimpleAdapter mSchedule = new SimpleAdapter (ViewMessages.this, listItem, R.layout.view_item_list,
 			    	               new String[] {"avatar", "username", "content"}, new int[] {R.id.avatar, R.id.username, R.id.content});
 			    	 
 			    	        //On attribue à notre listView l'adapter que l'on vient de créer
@@ -233,7 +295,7 @@ public class ViewFeed extends MainMenu {
 			    			    	 //Toast.makeText(this, "Id: " + lv.getAdapter().get(position), Toast.LENGTH_LONG).show();
 			    				     //Toast.makeText(ViewPost.this, "Id: " + listPost.list[position].id, Toast.LENGTH_LONG).show();
 			    				     
-			    				     Intent intent = new Intent(ViewFeed.this, ViewMemory.class);
+			    				     	/*Intent intent = new Intent(ViewConv.this, ViewMemory.class);
 			    						Bundle b = new Bundle();		    					
 			    						b.putSerializable("post", (Serializable)listPost.list[position]);
 			    						b.putString("Place_id", placeId);
@@ -241,15 +303,33 @@ public class ViewFeed extends MainMenu {
 			    						
 			    						intent.putExtras(b);					
 			    						startActivity(intent);
-			    						return;  
+			    						return;  */
 			    			    }
 			    			});
 			    		}
-			            Toast.makeText(getApplicationContext(), "Update feed success", Toast.LENGTH_LONG).show();
+			            Toast.makeText(getApplicationContext(), "Update messages success", Toast.LENGTH_LONG).show();
+			    	}
+			    	break;
+		    	case POST_MESSAGE:
+		    		info.setText("");
+			    	if (Error == 1)
+			    		info.setText("Error: connection with WS fail");
+			    	else if (Error == 2)
+			    	{
+			    		info.setText("Message error :\n" + pack.getString("msgError"));
+			    	}
+			    	else if (Error == 3)
+			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    	else
+			    	{
+			    		editMessage.setText("");
+			    		info.setText("Message send success" );
+			    		//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
+			    			//	"Long operation starts...", true);
+			    		//new ThreadUpdateComm(ViewMemory.this).start();
 			    	}
 			    	break;
 	    	} 	
 	    }
-	};	
+	};
 }
-

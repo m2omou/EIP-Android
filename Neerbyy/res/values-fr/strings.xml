@@ -11,6 +11,7 @@
     <string name="hintFirstname">Prénom</string>
     <string name="hintLastname">Nom</string>
     <string name="hintMail">Mail</string>
+    <string name="hintMailLogin">Mail / Nom utilisateur</string>
     <string name="hintConfirmMail">Confirmer mail</string>
     <string name="hintPassword">Mot De Passe</string>
     <string name="hintConfirmPassword">Confirmer Mot De Passe</string>

@@ -17,6 +17,7 @@ public class MyRegex {
 	
 	private static Pattern pattMail = Pattern.compile("^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Za-z]{2,4}$");  //  ptete mettre en min
 	//private static Pattern pattMail = Pattern.compile("^[_a-z0-9-]+(\\.[_wwwww-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)+$");
+	private static Pattern pattMailUsername = Pattern.compile("^[ A-Za-z0-9+@.]+$");   //  A ameliorer pour si @ need one .
 	private static Pattern pattName = Pattern.compile("^[ A-Za-z0-9]+$");   //  enleverChVerifCreateAccount
 	private static Pattern pattLogin = Pattern.compile("^[ A-Za-z0-9]+$");
 	private static Pattern pattPassword = Pattern.compile("^[ A-Za-z0-9-_]+$");
@@ -51,6 +52,21 @@ public class MyRegex {
 		return false;
 	}
 	
+	public static boolean checkById(EditText text)
+	{
+		switch (text.getId())
+		{
+			case R.id.txtLoginMail2:
+				return forMailUsername(text.getText().toString());
+			case R.id.txtLoginPassword2:
+				return forPassword(text.getText().toString());
+			default:
+				Log.w("REGEX ", "Error to find Id of view " + text.getId());
+			break;	
+		}
+		return false;
+	}
+	
 	/**
 	 * This method compare if two fields are different or not
 	 * @param text
@@ -70,7 +86,20 @@ public class MyRegex {
 	 */
 	private static boolean forMail(String text)
 	{
+		Log.w("sdsdfsd", "ICI0");
 		m = pattMail.matcher(text);
+		return m.matches();
+		
+		//return android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches();		
+	}
+	
+	/**
+	 * Check if the mail text is correct
+	 */
+	private static boolean forMailUsername(String text)
+	{
+		Log.w("sdsdfsd", "ICI1");
+		m = pattMailUsername.matcher(text);
 		return m.matches();
 		
 		//return android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches();		
@@ -81,6 +110,7 @@ public class MyRegex {
 	 */
 	private static boolean forName(String text)
 	{
+		Log.w("sdsdfsd", "ICI2");
 		m = pattName.matcher(text);
 		return m.matches();
 	}
@@ -90,6 +120,7 @@ public class MyRegex {
 	 */
 	private static boolean forLogin(String text)
 	{
+		Log.w("sdsdfsd", "ICI3");
 		m = pattLogin.matcher(text);
 		return m.matches();
 	}
@@ -99,6 +130,7 @@ public class MyRegex {
 	 */
 	private static boolean forPassword(String text)
 	{
+		Log.w("sdsdfsd", "ICI4");
 		m = pattPassword.matcher(text);
 		return m.matches();
 	}

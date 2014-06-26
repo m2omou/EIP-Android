@@ -185,7 +185,7 @@ public class Login extends MainMenu {
 		
 		for (EditText field : list)
 		{
-			if (!MyRegex.check(field)) {
+			if (!MyRegex.checkById(field)) {
 		    	field.setText("");
 		    	field.setHintTextColor(Color.RED);
 		    	//field.setTextColor(Color.RED);

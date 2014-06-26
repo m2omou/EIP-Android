@@ -49,7 +49,7 @@ import com.epitech.neerbyy.Place.PlaceInfo;
  * This class represent the view associate to a place, and allow to list all posts of this place.
  * @author Seb
  */
-public class ViewPost extends Activity {
+public class ViewPost extends MainMenu {
 
 	private ImageButton btnFallow;
 	private TextView sendButton;

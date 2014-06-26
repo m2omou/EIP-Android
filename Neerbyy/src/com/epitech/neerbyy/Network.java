@@ -70,7 +70,10 @@ public class Network {
 		GET_FEED(15),
 		CANCEL_VOTE(16),
 		REPORT_PUB(17),
-		REPORT_COM(18);
+		REPORT_COM(18),
+		GET_CONV(19),
+		GET_MESSAGES(20),
+		POST_MESSAGE(21);
 		
 		private final int value;
 		

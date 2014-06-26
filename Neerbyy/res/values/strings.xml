@@ -14,6 +14,7 @@
     <string name="hintFirstname">Firstname</string>
     <string name="hintLastname">Lastname</string>
     <string name="hintMail">Mail</string>
+    <string name="hintMailLogin">Mail / Username</string>
     <string name="hintConfirmMail">Confirm mail</string>
     <string name="hintPassword">Password</string>
     <string name="hintConfirmPassword">Confirm password</string>
@@ -45,5 +46,6 @@
     <string name="loginMessageInscr">Don\'t have an account yet ? create one now</string>
     <string name="title_activity_report_pub">Report_pub</string>
     <string name="title_activity_report_com">Report_com</string>
+    <string name="title_activity_view_conv">ViewConv</string>
 
 </resources>

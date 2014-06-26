@@ -100,6 +100,16 @@
             android:name="com.epitech.neerbyy.Report_com"
             android:label="@string/title_activity_report_com" >
         </activity>
+        <activity
+            android:name="com.epitech.neerbyy.ViewConv"
+            android:label="@string/title_activity_view_conv" >
+        </activity>
+        <activity
+            android:name="com.epitech.neerbyy.ViewMessages"
+            android:label="@string/title_activity_view_conv"
+            android:configChanges="keyboardHidden|orientation"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
     </application>
 
 </manifest>

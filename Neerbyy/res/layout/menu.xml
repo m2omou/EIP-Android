@@ -18,7 +18,9 @@
 		 <item android:id="@+id/getUser"
 		       android:title="Edit user info"  />
 		 <item android:id="@+id/Feed"
-		       android:title="View feed"   />	
+		       android:title="View feed"   />
+		 <item android:id="@+id/Conv"
+		       android:title="View conversation"   />		
 	     </menu>
 	   
 	</item>

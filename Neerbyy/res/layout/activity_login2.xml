@@ -46,8 +46,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/greyNeerbyy"
                 android:ems="10"
-                android:hint="@string/hintMail"
-                android:inputType="textEmailAddress"
+                android:hint="@string/hintMailLogin"
+                android:inputType="textEmailAddress|textPersonName"
                 android:padding="10dp" />
 
         </TableRow>

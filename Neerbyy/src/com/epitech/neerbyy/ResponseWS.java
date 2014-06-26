@@ -2,6 +2,8 @@ package com.epitech.neerbyy;
 
 import android.util.Log;
 
+import com.epitech.neerbyy.Conversations.Conversation;
+import com.epitech.neerbyy.Messages.Message;
 import com.google.gson.annotations.SerializedName;
 //import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -47,6 +49,14 @@ public class ResponseWS {
 		
 		@SerializedName("votes")
 		public Votes[] votes;
+		
+		@SerializedName("conversations")
+		//public Conversations conversations;
+		public Conversation[] conversations;
+		
+		@SerializedName("messages")
+		//public Conversations conversations;
+		public Message[] messages;
 		
 		//@SerializedName("error")
 		//public User user;
@@ -96,6 +106,18 @@ public class ResponseWS {
 									//Votes[] votes = new Votes[]();
 									//comm.list = result.comms;
 									return (T) result.votes;
+								}
+								else if (obj == Conversations.class) {
+									Log.w("DETECT", "DETECT GET_CONV");	
+									Conversations conv = new Conversations();
+									conv.list = result.conversations;
+									return (T) conv;
+								}
+								else if (obj == Messages.class) {
+									Log.w("DETECT", "DETECT GET_MESSAGES");	
+									Messages mess = new Messages();
+									mess.list = result.messages;
+									return (T) mess;
 								}
 							//return gson.fromJson(gg, obj);						
 							}

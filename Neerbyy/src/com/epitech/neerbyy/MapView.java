@@ -26,6 +26,7 @@ import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 /**
@@ -265,12 +266,12 @@ public class MapView extends FragmentActivity implements LocationListener{
     @Override
     public void onStatusChanged(final String provider, final int status, final Bundle extras) { }
     
-    @Override
+   /* @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.map, menu);
 		return true;
-	}
+	}*/
     
      Handler myHandler = new Handler()
     	{
@@ -373,6 +374,65 @@ public class MapView extends FragmentActivity implements LocationListener{
     	        return false;
     	    }
     	    return true;
-    	}  	
+    	}
+    	
+    	@Override
+    	public boolean onCreateOptionsMenu(Menu menu) {
+    		getMenuInflater().inflate(R.layout.menu, menu);
+    		menu.getItem(2).getSubMenu().setHeaderIcon(R.drawable.ic_launcher);
+    		return super.onCreateOptionsMenu(menu);
+    	}
+    	
+    	@Override
+    	
+    	public boolean onOptionsItemSelected(MenuItem item) {
+    		Intent intent;
+            switch (item.getItemId()) {
+               case R.id.LocateMe:
+                  //intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.fr"));
+                  intent = new Intent(this, Geoloc.class);
+                  startActivity(intent);
+                  return true;
+               case R.id.getUser:
+                   intent = new Intent(this, EditInfoUser.class);
+    			   startActivity(intent);
+                   return true;
+               case R.id.User:
+                   return true;
+               case R.id.Login:
+            	   intent = new Intent(this, Login.class);
+    			   startActivity(intent);
+            	   return true;
+               case R.id.CreateAccount:
+            	   intent = new Intent(this, CreateAccount.class);
+    			   startActivity(intent);
+            	   return true;
+               case R.id.Feed:
+            	   intent = new Intent(this, ViewFeed.class);
+    			   startActivity(intent);
+            	   return true;
+               case R.id.Conv:
+            	   intent = new Intent(this, ViewConv.class);
+    			   startActivity(intent);
+            	   return true;
+               case R.id.Menu:
+            	   intent = new Intent(this, MainMenu.class);
+    			   startActivity(intent);
+            	   return true;
+               case R.id.quit:
+                  finish();
+                  return true;
+               case R.id.testToken:
+            	   intent = new Intent(this, GetUserById.class);
+    			   startActivity(intent);
+    			   break;   //  ou return true ??
+               case R.id.mapView:
+            	   intent = new Intent(this, MapView.class);
+    			   startActivity(intent);
+    			   break;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+
 }
 
