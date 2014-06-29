@@ -29,6 +29,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/** This class describe the view who allow the user to report a given commentary
+ * @see Commentary
+ * @author Seb
+ */
 public class Report_com extends MainMenu {
 	
 	public enum REASON {

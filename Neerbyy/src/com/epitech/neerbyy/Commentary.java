@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 /** This class represent the list of commentary send by the WebService.
  * Each of this commentary are associate to the same memory.
- * @see Post
+ * @see ViewMemory
  * @author Seb
  */
 public class Commentary implements Serializable {
@@ -15,7 +15,7 @@ public class Commentary implements Serializable {
 	@SerializedName("comments") 
     public CommInfos[] list;
     
-	/** This class represent the data of one post 
+	/** This class represent the data of one commentary 
 	 * @author Seb
 	 */
 	public class CommInfos implements Serializable {
@@ -32,6 +32,9 @@ public class Commentary implements Serializable {
     	@SerializedName("user")
     	public User user;      // or InfoUserCommentary
     	
+    	/** This class represent the data of the user associate of the coentary
+    	 * @author Seb
+    	 */
     	private class InfoUserCommentary {
     		@SerializedName("id")
         	public int id;

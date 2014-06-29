@@ -22,6 +22,11 @@ import com.google.gson.JsonParseException;
  */
 public class ThreadUpdateMessages extends Thread {
 	
+	/**
+	 *vm represent the instance of the view "ViewMessages",
+	 *and allow this thread to communicate with it handler
+	 *@see ViewMessages
+	 */
 	private ViewMessages vm;
 	
     public ThreadUpdateMessages(ViewMessages vm) {

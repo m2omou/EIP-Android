@@ -29,8 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * This class represent the view for logging an user.
- * Each field must be check for error with the MyRegex class
+ * This class describe the view for regenere a new password.
+ * The field must be check for error with the MyRegex class
  *@see User
  *@see MyRegex
  */

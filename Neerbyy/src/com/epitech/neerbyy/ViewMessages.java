@@ -20,6 +20,7 @@ import com.google.gson.JsonParseException;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -38,6 +39,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * This class describe the view who list all messages associate to a given conversation.
+ * @author Seb
+ * @see Messages
+ * @see Conversations
+ */
 public class ViewMessages extends MainMenu {
 
 	private TextView info;
@@ -148,6 +155,15 @@ public class ViewMessages extends MainMenu {
 		new ThreadUpdateMessages(ViewMessages.this).start();
 }
 	
+	/*Message message = new Message();
+	Callback callback = new Callback() {
+	    public boolean handleMessage(Message msg) {
+	    	new ThreadUpdateMessages(ViewMessages.this).start();
+	    }
+	};
+
+	Handler handler = new Handler(callback);
+	handler.sendMessage(message);*/
 	
 	Handler myHandler = new Handler()
 	{

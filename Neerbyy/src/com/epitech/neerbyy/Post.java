@@ -5,7 +5,7 @@ import java.io.Serializable;
 import com.google.gson.annotations.SerializedName;
 
 /** This class represent the list of post send by the WebService.
- * Each of this post are associate to the same place.
+ * Each post is associate to the same place.
  * @see Place
  * @author Seb
  */
@@ -50,6 +50,9 @@ public class Post implements Serializable {
     	@SerializedName("place")
     	public Place place;               //  or  InfoPlacePost
     	
+    	/** This class represent the data of the author of this post 
+    	 * @author Seb
+    	 */
     	private class InfoUserPost {
     		@SerializedName("id")
         	public int id;
@@ -60,12 +63,20 @@ public class Post implements Serializable {
         	@SerializedName("avatar_thumb")
         	public String avatar_thumb;
     	}
+    	/** This class represent the data of the place associate to the publication 
+    	 * @author Seb
+    	 */
     	private class InfoPlacePost {
     		@SerializedName("id")
         	public String id;
         	@SerializedName("name")
         	public String name;
     	}
+    	/** This class represent the statue of the current user about he have already vote or not 
+    	 * for the current Post 
+    	 * @author Seb
+    	 * @see Post
+    	 */
     	private class InfoVotePost {
     		@SerializedName("id")
         	public String id;

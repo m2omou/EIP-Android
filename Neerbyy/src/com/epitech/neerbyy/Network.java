@@ -44,9 +44,24 @@ import android.util.Log;
  *<li>RESET_PASSWORD : prepares to receive confirmation about the modification's user password 
  *<li>CREATE_POST : prepares to receive confirmation about the new created post
  *<li>UPDATE_POST : prepares to receive information about list of post from a place
+ *<li>GET_VOTES : Obtain the list of votes for one publication
+ *<li>SEND_VOTE : Send a vote for an  existing publication
+ *<li>FALLOW_PLACE : Allow to follow the current place in the user view
+ *<li>GET_FEED : Obtain the list of the user's following places.
+ *<li>CANCEL_VOTE : Cancel an existing vote
+ *<li>REPORT_PUB : Allow to report a publication
+ *<li>REPORT_COM : Allow to report a commentary
+ *<li>GET_CONV : Obtain the list of conversation for the current user. 
+ *<li>GET_MESSAGES : Obtain the list of messages for a given conversation.
+ *<li>POST_MESSAGE : Allow to send a new message in a given conversation.
  *</ul>
  *</p>
  *@see User
+ *@see Messages
+ *@see Conversations
+ *@see Post
+ *@see Place
+ *@see Votes
  */
 
 public class Network {
@@ -92,7 +107,9 @@ public class Network {
 		PUT,
 		DELETE,
 	}
-		
+	 /**
+	  * Define the connection settings
+	  */
 	static public enum PARAMS {
 		CONNECTION_TIME_OUT(8000),   // def 0 for not taking
 		SOCKET_TIME_OUT(8000);

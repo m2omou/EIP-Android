@@ -16,15 +16,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 /**
- *This class can launch a request for obtain list of posts from a given place. 
+ *This class can launch a request for obtain list of Commentary from a given place. 
  *This class can be instantiated as a Thread
- * @see Post
+ * @see Commentary
  */
 public class ThreadUpdateComm extends Thread {
 	/**
-	 *vp represent the instance of the view "ViewPost",
+	 *vm represent the instance of the view "ViewMemory",
 	 *and allow this thread to communicate with it handler
-	 *@see ViewPost
+	 *@see ViewMemory
 	 */
 	private ViewMemory vm;
 	

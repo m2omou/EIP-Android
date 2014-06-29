@@ -39,8 +39,9 @@ import com.epitech.neerbyy.Network.METHOD;
 import com.epitech.neerbyy.Place.PlaceInfo;
 
 /**
- * This class represent the feed associate to a user.
+ * This class describe the view to see the feed associate to a user.
  * @author Seb
+ * 
  */
 public class ViewFeed extends MainMenu {
 

@@ -29,6 +29,9 @@ public class Messages implements Serializable {
     	@SerializedName("sender")
     	public InfoUserMessage sender; 
     	
+    	/** This class represent the data of the sender of one Message
+    	 * @author Seb
+    	 */
     	public class InfoUserMessage implements Serializable{
     		@SerializedName("id")
         	public int id;
@@ -42,6 +45,9 @@ public class Messages implements Serializable {
         	public Settings settings;
     	}
     	
+    	/** This class describe the parameters of the sender's user.
+    	 * @author Seb
+    	 */
     	public class Settings implements Serializable{
     		@SerializedName("allow_messages")
         	public boolean allow_messages;

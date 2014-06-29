@@ -29,6 +29,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/** This class describe the view who allow the user to report a given publication
+ * @see Post
+ * @author Seb
+ */
 public class Report_pub extends MainMenu {
 	
 	public enum REASON {

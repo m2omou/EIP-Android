@@ -247,7 +247,7 @@ public class Login extends MainMenu {
 			    		login.setEnabled(false);   		
 			    		Network.USER = user;
 			    		
-			    		Intent intent = new Intent(Login.this, MainMenu.class);
+			    		Intent intent = new Intent(Login.this, MapView.class);
 						startActivity(intent);
 						
 			    	}

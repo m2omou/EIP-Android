@@ -5,7 +5,7 @@ import java.io.Serializable;
 import com.epitech.neerbyy.Messages.Message;
 import com.google.gson.annotations.SerializedName;
 
-/** This class represent a conversation.
+/** This class represent the data of conversation.
  * @author Seb
  */
 public class Conversations implements Serializable {
@@ -28,6 +28,9 @@ public class Conversations implements Serializable {
     	@SerializedName("recipient")
     	public InfoUserConversation recipient; 
     	
+    	/** This class represent the data of the recipient user
+    	 * @author Seb
+    	 */
     	public class InfoUserConversation implements Serializable{
     		@SerializedName("id")
         	public int id;

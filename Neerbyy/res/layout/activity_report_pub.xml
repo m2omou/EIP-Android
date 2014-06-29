@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@color/greenNeerbyy"
         android:gravity="left|center_horizontal"
-        android:text="NEERBYY SIGNALER"
+        android:text="NEERBYY SIGNALER \nPUBLICATION"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"

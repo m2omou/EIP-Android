@@ -30,6 +30,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * This class describe the view to see the list of conversations associate to a user.
+ * @author Seb
+ * 
+ */
 public class ViewConv extends MainMenu {
 
 	private TextView info;
