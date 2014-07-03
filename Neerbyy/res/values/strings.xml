@@ -47,5 +47,6 @@
     <string name="title_activity_report_pub">Report_pub</string>
     <string name="title_activity_report_com">Report_com</string>
     <string name="title_activity_view_conv">ViewConv</string>
+    <string name="title_activity_menu2">Menu2</string>
 
 </resources>

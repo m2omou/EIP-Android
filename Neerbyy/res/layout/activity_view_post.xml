@@ -7,6 +7,18 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ViewPost" >
+    
+    <Button
+        android:id="@+id/TitleViewPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/greenNeerbyy"
+        android:gravity="left|center_horizontal"
+        android:text="NEERBYY SOUVENIR"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:typeface="normal" />
 
     <ImageButton
         android:id="@+id/btnFallowPost"
@@ -67,10 +79,9 @@
         android:id="@+id/postTextInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btnFallowPost"
-        android:layout_toLeftOf="@+id/postEditPost"
+        android:layout_alignLeft="@+id/TitleViewPost"
+        android:layout_below="@+id/TitleViewPost"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-  
 
 </RelativeLayout>

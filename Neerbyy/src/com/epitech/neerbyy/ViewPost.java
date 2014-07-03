@@ -69,6 +69,9 @@ public class ViewPost extends MainMenu {
 	
 	public Bitmap img;
 	
+	SimpleAdapter mSchedule = null;
+	ArrayList<HashMap<String, Object>> listItem;
+	
 	/*protected void onListIemClick(ListView lv , View v, int position, long id){
 		//super.(lv, v, position, id);
 	  //   Toast.makeText(this, "Id: " + lv.getAdapter().get(position), Toast.LENGTH_LONG).show();
@@ -248,14 +251,17 @@ public class ViewPost extends MainMenu {
 								{
 									messageBundle.putInt("error", 2);
 									messageBundle.putString("msgError", rep.responseMessage);
+									Log.w("COORD", "lat: " + lat + " Lon: " + lon);
 								}
 							}
 						}						
 						myMessage.setData(messageBundle);
 	                    myHandler.sendMessage(myMessage);
 	                    
-	                   // msgPb = myHandler.obtainMessage(1, (Object) "Success");
-		                //myHandler.sendMessage(msgPb);
+	                    
+	                    
+	                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
+		                myHandler.sendMessage(msgPb);
 	                }
 					catch (Exception e) {
 		                e.printStackTrace();}
@@ -329,88 +335,53 @@ public class ViewPost extends MainMenu {
 			    		info.setText("Ws error :\n" + pack.getString("msgError"));
 			    	else
 			    	{
-			    		//listPost = (Post)pack.getSerializable("post");   //  utile ?????? 
-			    		//Log.w("PATH", "LAAA");
-			    		//List listStrings = new ArrayList<String>() ;//= {"France","Allemagne","Russie"};
-			    		
-			    		
-			    		  //Création de la ArrayList qui nous permettra de remplir la listView
-			            ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			     
+			    		//Création de la ArrayList qui nous permettra de remplir la listView
+			            listItem = new ArrayList<HashMap<String, Object>>();
+			            listView.removeAllViewsInLayout();
 			            //On déclare la HashMap qui contiendra les informations pour un item
-			            HashMap<String, String> map;
+			            
 			    		
-			    		
-			    		String[] listStrings = new String[listPost.list.length] ;//= {"France","Allemagne","Russie"};
+			    		String[] listStrings = new String[listPost.list.length] ;
 			    		if (listPost.list.length > 0)
 			    		{
 			    			Log.d("POST", "YA DEJA DES POSTS !!");
 			    			for (int i = 0; i < listPost.list.length; i++) {
 			    				listStrings[i] = listPost.list[i].content;
-			    				
-			    				 //Création d'une HashMap pour insérer les informations du premier item de notre listView
-					            map = new HashMap<String, String>();
-					            //on insère un élément titre que l'on récupérera dans le textView titre créé dans le fichier affichageitem.xml
-					            map.put("username", listPost.list[i].user.username + " :");
-					            //on insère un élément description que l'on récupérera dans le textView description créé dans le fichier affichageitem.xml
-					            map.put("content", listPost.list[i].content);
-					            //on insère la référence à l'image (converti en String car normalement c'est un int) que l'on récupérera dans l'imageView créé dans le fichier affichageitem.xml
-					            map.put("avatar", String.valueOf(R.drawable.avatar));
-					            //enfin on ajoute cette hashMap dans la arrayList
-					            
-					            
-					            
-					            /*if (listPost.list[i].url != null) {
-					            	try {
-										img = BitmapFactory.decodeStream(new URL(listPost.list[i].url).openStream());
-									} catch (MalformedURLException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									} catch (IOException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-					            	
-					            	//final ImageView imgView = (ImageView)findViewById(R.id.img);
-					            	//imgView.setImageBitmap(img);
-					            	map.put("img", String.valueOf(img));   	
-					            }*/
-					            
-					            listItem.add(map);
-			    				
+			    				HashMap<String, Object> map = new HashMap<String, Object>();			    				
+			    				listItem.add(map);
+			    				new ThreadDownloadImage(ViewPost.this, i, listView, listPost, listItem, map).start();
 			    			}
 			    		 
 			    			//Création d'un SimpleAdapter qui se chargera de mettre les items présents dans notre list (listItem) dans la vue affichageitem
-			    	        SimpleAdapter mSchedule = new SimpleAdapter (ViewPost.this, listItem, R.layout.view_item_list,
+			    	       /* mSchedule = new SimpleAdapter (ViewPost.this, listItem, R.layout.view_item_list,
 			    	               new String[] {"avatar", "username", "content"}, new int[] {R.id.avatar, R.id.username, R.id.content});
-			    	 
-			    	        //On attribue à notre listView l'adapter que l'on vient de créer
-			    	        listView.setAdapter(mSchedule);
-			    	 
-			    	        
-			    			//listView.setAdapter(new ArrayAdapter<String>(ViewPost.this, android.R.layout.simple_list_item_1, listStrings));	
-			    			listView.setOnItemClickListener(new OnItemClickListener() {
+			    	         
+			    	        mSchedule.setViewBinder(new MyViewBinder());
+			    	        listView.setAdapter(mSchedule);*/
+			    			
+			    	        listView.setOnItemClickListener(new OnItemClickListener() {
 			    			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			    			    	 //Toast.makeText(this, "Id: " + lv.getAdapter().get(position), Toast.LENGTH_LONG).show();
-			    				     //Toast.makeText(ViewPost.this, "Id: " + listPost.list[position].id, Toast.LENGTH_LONG).show();
 			    				     
-			    				     Intent intent = new Intent(ViewPost.this, ViewMemory.class);
-			    						Bundle b = new Bundle();		    					
-			    						b.putSerializable("post", (Serializable)listPost.list[position]);
-			    						b.putString("Place_id", placeId);
-			    			    		Log.w("LIKE", "dislike = " + listPost.list[position].downvotes);
+			    			    	Intent intent = new Intent(ViewPost.this, ViewMemory.class);
+			    					Bundle b = new Bundle();		    					
+			    					b.putSerializable("post", (Serializable)listPost.list[position]);
+			    					b.putString("Place_id", placeId);
+			    			    	Log.w("LIKE", "dislike = " + listPost.list[position].downvotes);
 			    						
-			    						intent.putExtras(b);					
-			    						startActivity(intent);
-			    						return;  
+			    					intent.putExtras(b);					
+			    					startActivity(intent);
+			    					return;  
 			    			    }
 			    			});
 			    		}
-			            Toast.makeText(getApplicationContext(), "Update post success", Toast.LENGTH_LONG).show();
+	    				
+			    		//new ThreadDownloadImage(listView, listPost, ViewPost.this).start();			    		
+			    		Toast.makeText(getApplicationContext(), "Update post success", Toast.LENGTH_LONG).show();
 			    	}
 			    	break;
 		    	case FALLOW_PLACE:
-		    		info.setText("");		    	
+		    		info.setText("");	
+		    		
 			    	if (Error == 1)
 			    		info.setText("Error: connection with WS fail");
 			    	else if (Error == 2)
@@ -425,9 +396,33 @@ public class ViewPost extends MainMenu {
 			    		btnFallow.setImageResource(R.drawable.iconmortel_f);
 			    	}
 			    	break;
+		    	case UPDATE_AVATAR:
+		    		//Bundle pack2 = msg.getData();
+			    	//int pos = pack2.getInt("pos");
+			    	
+		    		Toast.makeText(getApplicationContext(), "update img", Toast.LENGTH_SHORT).show();
+			    	//view.findViewById(R.id.avatar);
+			    	
+			    	//image.setImageBitmap(bitmap);
+		    		
+		    		mSchedule = new SimpleAdapter (ViewPost.this, listItem, R.layout.view_item_list,
+		    				new String[] {"avatar", "username", "content"}, new int[] {R.id.avatar, R.id.username, R.id.content});
+		    	        
+		    		mSchedule.setViewBinder(new MyViewBinder());
+		    		
+		    		listView.requestLayout();
+	    			//listView.removeAllViewsInLayout();
+		    	    listView.setAdapter(mSchedule);
+		    	        
+		    		
+		    		/*if (mSchedule != null)
+		    		{
+		    			listView.removeAllViewsInLayout();
+		    			mSchedule.notifyDataSetChanged();
+		    		}*/
+		    		break;
 	    	} 	
 	    }
 	};	
-	
 }
 

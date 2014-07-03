@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/tools">
+
+    <Button
+        android:id="@+id/TitleViewPublication"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/greenNeerbyy"
+        android:gravity="left|center_horizontal"
+        android:text="NEERBYY SOUVENIR"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:typeface="normal" />
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_vertical|center_horizontal"
+            android:paddingTop="30dp" >
+
+            <TextView
+                android:id="@+id/PostTextInfo2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           	android:gravity="top|center_vertical|center_horizontal"
+            android:paddingTop="15dp" >
+
+            <Button
+                android:id="@+id/btnFallowPost2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greenNeerbyy"
+                android:padding="5dp"
+                android:text="Ajouter le lieu aux favoris"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_vertical|center_horizontal"
+            android:paddingTop="15dp" >
+
+            <Button
+                android:id="@+id/btnLoginLostPasswordMail2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greenNeerbyy"
+                android:padding="5dp"
+                android:text="Ajouter un souvenir"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_vertical|center_horizontal"
+            android:paddingTop="15dp" >
+
+            <EditText
+                android:id="@+id/postEditPost2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="clip_vertical"
+                android:background="@color/greyNeerbyy"
+                android:gravity="center_vertical|center_horizontal"
+                android:hint="Description du souvenir..."
+                android:inputType="textMultiLine"
+                android:minHeight="90dp" >
+
+                <requestFocus />
+            </EditText>
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_vertical|center_horizontal" >
+
+            <TextView
+                android:id="@+id/postSendPost2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/postSendPost"
+                android:textColor="@color/blue" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_vertical|center_horizontal"
+            android:paddingTop="25dp" >
+
+            <ListView
+                android:id="@+id/postViewListPost2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:divider="@drawable/separator_line"
+                android:dividerHeight="15dp"
+                app:listitem="@android:layout/simple_expandable_list_item_1" >
+            </ListView>
+
+        </TableRow>
+
+    </TableLayout>
+
+</TableLayout>

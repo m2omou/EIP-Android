@@ -88,7 +88,8 @@ public class Network {
 		REPORT_COM(18),
 		GET_CONV(19),
 		GET_MESSAGES(20),
-		POST_MESSAGE(21);
+		POST_MESSAGE(21),
+		UPDATE_AVATAR(22);
 		
 		private final int value;
 		
@@ -299,7 +300,7 @@ public class Network {
 	 * @see InputStream
 	 */
 	
-	private static InputStream OpenHttpConnection(String urlString) 
+	public static InputStream OpenHttpConnection(String urlString) 
 	        throws IOException
 	        {
 	            InputStream in = null;

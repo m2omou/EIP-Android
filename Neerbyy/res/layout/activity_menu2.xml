@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Button
+        android:id="@+id/TitleMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/greenNeerbyy"
+        android:gravity="left|center_horizontal"
+        android:text="NEERBYY MENU"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:typeface="normal" />
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp" >
+
+            <TextView
+                android:id="@+id/txtCreateAccountInfo2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            
+            android:paddingTop="35dp" >
+
+            <Button
+                android:id="@+id/btnMenuMap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="@color/greenNeerbyy"
+                android:padding="3dp"
+                android:text="Carte"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            
+            android:paddingTop="20dp" >
+
+            <Button
+                android:id="@+id/btnMenuFlux"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                
+                android:background="@color/greenNeerbyy"
+                android:padding="3dp"
+                android:text="Mon Flux"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="15dp" >
+
+            <Button
+                android:id="@+id/BbtnMenuFavoris"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="@color/greenNeerbyy"
+                android:gravity="left|center_horizontal"
+                android:padding="3dp"
+                android:text="Mes Lieux Favoris"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="15dp" >
+
+            <Button
+                android:id="@+id/btnMenuMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greenNeerbyy"
+                android:gravity="left|center_horizontal"
+                android:padding="3dp"
+                android:text="Mes Messages"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="15dp" >
+
+            <Button
+                android:id="@+id/btnMenuMyInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greenNeerbyy"
+                android:gravity="left|center_horizontal"
+                android:padding="3dp"
+                android:text="Mes Infos"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="25dp" >
+
+            <Button
+                android:id="@+id/btnMenuCoDeco"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greenNeerbyy"
+                android:gravity="left|center_horizontal"
+                android:padding="3dp"
+                android:text="Connexion"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="15dp" >
+
+            <Button
+                android:id="@+id/btnMenuOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greenNeerbyy"
+                android:gravity="left|center_horizontal"
+                android:padding="3dp"
+                android:text="Options"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+    </TableLayout>
+
+</TableLayout>
+
