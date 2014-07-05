@@ -39,6 +39,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name="com.epitech.neerbyy.Geoloc"
@@ -113,6 +114,7 @@
         <activity
             android:name="com.epitech.neerbyy.Menu2"
             android:label="@string/title_activity_menu2" >
+            
         </activity>
     </application>
 

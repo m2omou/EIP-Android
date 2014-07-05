@@ -416,7 +416,10 @@ public class MapView extends FragmentActivity implements LocationListener{
     			   startActivity(intent);
             	   return true;
                case R.id.Menu:
-            	   intent = new Intent(this, MainMenu.class);
+            	   if (Network.USER == null)
+            		   intent = new Intent(this, Login.class);
+            	   else
+            		   intent = new Intent(this, Menu2.class);
     			   startActivity(intent);
             	   return true;
                case R.id.quit:

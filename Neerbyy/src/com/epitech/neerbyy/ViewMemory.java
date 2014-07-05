@@ -19,7 +19,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
@@ -657,7 +659,8 @@ public class ViewMemory extends MainMenu {
 			    				 //Création d'une HashMap pour insérer les informations du premier item de notre listView
 					            map = new HashMap<String, String>();
 					            //on insère un élément titre que l'on récupérera dans le textView titre créé dans le fichier affichageitem.xml
-					            map.put("username", listComm.list[i].user.username + " :");
+					            //map.put("username", listComm.list[i].user.username + " :");
+					            map.put("username", "bugbugbug :");
 					            //on insère un élément description que l'on récupérera dans le textView description créé dans le fichier affichageitem.xml
 					            map.put("content", listComm.list[i].content);
 					            //on insère la référence à l'image (converti en String car normalement c'est un int) que l'on récupérera dans l'imageView créé dans le fichier affichageitem.xml
@@ -679,14 +682,96 @@ public class ViewMemory extends MainMenu {
 			    		
 			    		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
 							@Override
-							public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-								
-								Intent intent = new Intent(ViewMemory.this, Report_com.class);		
-								Bundle b = new Bundle();
-								b.putInt("com_id", listComm.list[position].id);	
-					    		intent.putExtras(b);
-								startActivity(intent);	
+							public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+										
+								final CharSequence[] items = {"Signaler", "Supprimer"};
+
+								AlertDialog.Builder builder = new AlertDialog.Builder(ViewMemory.this);
+								builder.setTitle("Que voulez vous faire ?");
+								builder.setItems(items, new DialogInterface.OnClickListener() {
+								          
+										public void onClick(DialogInterface dialog, int item) {
+								                Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
+								               switch (item) {
+								               case 0:
+								            	   
+								            	   	Intent intent = new Intent(ViewMemory.this, Report_com.class);		
+													Bundle b = new Bundle();
+													b.putInt("com_id", listComm.list[position].id);	
+										    		intent.putExtras(b);
+													startActivity(intent);	
+													break;
+								               
+								               case 1:
+								            	   
+								            	   mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
+															"Long operation starts...", true);
+													Thread thread1 = new Thread(){
+												        public void run(){
+												        	
+														try {	
+											            	Gson gson = new Gson();
+											            	String url = Network.URL + Network.PORT + "/comments/" + listComm.list[position].id + ".json";
+									     	
+											            	Message myMessage, msgPb;
+											            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
+											                myHandler.sendMessage(msgPb);
+											                
+															Bundle messageBundle = new Bundle();
+															messageBundle.putInt("action", ACTION.DELETE_COMM.getValue());
+													        myMessage = myHandler.obtainMessage();	
+									   		        
+													        InputStream input = Network.retrieveStream(url, METHOD.DELETE, null);
+													        
+															if (input == null)
+															{
+																messageBundle.putInt("error", 1);
+															}
+															Reader readerResp = new InputStreamReader(input);
+															String ret = Network.checkInputStream(readerResp);
+															
+															if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+															{
+																messageBundle.putInt("error", 3);
+																messageBundle.putString("msgError", ret);
+															}
+															else
+															{
+																try {
+																	rep = gson.fromJson(ret, ResponseWS.class);
+																}
+																catch(JsonParseException e)
+															    {
+															        System.out.println("Exception n3 in check_exitrestrepWSResponse::"+e.toString());
+															    }
+																
+																if (rep.responseCode == 1 || rep.responseCode == -1)   //  ERREUR DU WS  -1
+																{
+																	messageBundle.putInt("error", 2);
+																	messageBundle.putString("msgError", rep.responseMessage);
+																}
+																//else		  	                   
+																	//Network.USER = user;	
+														}						
+														myMessage.setData(messageBundle);
+									                    myHandler.sendMessage(myMessage);
+									                    
+									                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
+										                myHandler.sendMessage(msgPb);
+									                }
+													catch (Exception e) {
+										                e.printStackTrace();}
+												    }};
+												thread1.start();			
+	
+								            	break;
+								               }
+								          	}
+								        });
+								AlertDialog alert = builder.create();
+								alert.show();
 								return false;
+									
 							}
 						});			    		
 			    		
@@ -759,6 +844,7 @@ public class ViewMemory extends MainMenu {
 			    		threadGetLike.start();
 			    	}
 			    	break;
+			    	
 		    	case CANCEL_VOTE:
 		    		info.setText("");		    	
 			    	if (Error == 1)
@@ -792,6 +878,21 @@ public class ViewMemory extends MainMenu {
 			    	{		
 			    		Toast.makeText(getApplicationContext(), "Fallow Place success", Toast.LENGTH_LONG).show();
 			    		btnFallow.setImageResource(R.drawable.iconmortel_f);
+			    	}
+			    	break;
+		    	case DELETE_COMM:
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+			    	else if (Error == 2)
+			    	{
+		    			Toast.makeText(getApplicationContext(), "Delete comm error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+			    	}
+			    	else if (Error == 3)
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	else
+			    	{		
+			    		Toast.makeText(getApplicationContext(), "Delete Comm success", Toast.LENGTH_LONG).show();
+			    		new ThreadUpdateComm(ViewMemory.this).start();
 			    	}
 			    	break;
 	    	} 	

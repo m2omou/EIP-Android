@@ -9,59 +9,135 @@
     tools:context=".EditInfoUser" >
 
     <TextView
-        android:id="@+id/txtInfoEditUser"
+        android:id="@+id/TxtEditUserMail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_alignBaseline="@+id/EditTextInfoUserMail"
+        android:layout_alignBottom="@+id/EditTextInfoUserMail"
+        android:text="Email :"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/TxtInfoUserUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/EditTextInfoUserUsername"
+        android:layout_alignBottom="@+id/EditTextInfoUserUsername"
+        android:layout_alignLeft="@+id/TxtEditUserMail"
+        android:text="Login:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/TxtInfoUserLastname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/EditTextInfoUserLastname"
+        android:layout_alignBottom="@+id/EditTextInfoUserLastname"
+        android:layout_alignParentLeft="true"
+        android:text="Nom: "
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/TxtInfoUserFirstname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/EditTextInfoUserFirsname"
+        android:layout_alignBottom="@+id/EditTextInfoUserFirsname"
+        android:layout_alignParentLeft="true"
+        android:text="Prenom: "
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
-        android:id="@+id/txtEditUsername"
+        android:id="@+id/EditTextInfoUserFirsname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="49dp"
+        android:layout_alignLeft="@+id/EditTextInfoUserLastname"
+        android:layout_centerVertical="true"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <ImageButton
+        android:id="@+id/imgUserInfoAvatar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignLeft="@+id/TxtInfoUserUsername"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="19dp"
+        android:layout_marginTop="14dp"
+        android:src="@drawable/avatar" />
+
+    <EditText
+        android:id="@+id/EditTextInfoUserMail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/EditTextInfoUserLastname"
+        android:layout_toRightOf="@+id/TxtInfoUserFirstname"
+        android:ems="10"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/EditTextInfoUserLastname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/EditTextInfoUserFirsname"
+        android:layout_toRightOf="@+id/TxtInfoUserFirstname"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/EditTextInfoUserUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/EditTextInfoUserFirsname"
+        android:layout_toRightOf="@+id/TxtInfoUserFirstname"
         android:ems="10"
         android:inputType="textPersonName" />
 
     <Button
-        android:id="@+id/btnEditOk"
+        android:id="@+id/btnInfoUserValid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtEditMail"
-        android:layout_below="@+id/txtEditMail"
-        android:layout_marginTop="25dp"
-        android:text="@string/ok" />
+    
+        android:layout_below="@+id/EditTextInfoUserMail"
+        android:background="@color/greenNeerbyy"
+        android:gravity="left|center_horizontal"
+        android:padding="7dp"
+        android:text="Valider"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:typeface="normal" />
 
-    <EditText
-        android:id="@+id/txtEditMail"
+    <Button
+        android:id="@+id/btnInfoUserChangePass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtEditUsername"
-        android:layout_below="@+id/txtEditUsername"
-        android:layout_marginTop="52dp"
-        android:ems="10"
-        android:inputType="textEmailAddress" />
+        android:layout_alignBaseline="@+id/btnInfoUserValid"
+        android:layout_alignBottom="@+id/btnInfoUserValid"
+        android:layout_alignRight="@+id/EditTextInfoUserMail"
+        android:background="@color/orangeNeerbyy"
+        android:gravity="left|center_horizontal"
+        android:padding="7dp"
+        android:text="Changer le mot de passe"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:typeface="normal" />
 
-    <TextView
-        android:id="@+id/postSendCommentary"
+    <Button
+        android:id="@+id/btnInfoUserDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtEditUsername"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="27dp"
-        android:text="Username :"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/txtLostPasswordInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtEditMail"
-        android:layout_below="@+id/txtEditUsername"
-        android:layout_marginTop="26dp"
-        android:text="Email :"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
+        android:layout_alignLeft="@+id/btnInfoUserChangePass"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/btnInfoUserChangePass"
+        android:background="@color/orangeNeerbyy"
+        android:gravity="left|center_horizontal"
+        android:padding="7dp"
+        android:text="Supprimer mon compte"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:typeface="normal" />
+   
 </RelativeLayout>

@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingTop="20dp" >
+            android:paddingTop="15dp" >
 
             <EditText
                 android:id="@+id/txtLoginMail2"
@@ -140,7 +140,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingTop="35dp" >
+            android:paddingTop="25dp" >
 
             <Button
                 android:id="@+id/btnLoginLostPasswordMail2"
@@ -150,6 +150,28 @@
                 android:gravity="left|center_horizontal"
                 android:padding="10dp"
                 android:text="@string/btnLoginLostPassword"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:gravity="center"
+            android:paddingTop="25dp" >
+
+            <Button
+                android:id="@+id/btnLoginMapView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/redNeerbyy"
+                android:gravity="left|center_horizontal"
+                android:padding="10dp"
+                android:text="CONTINUER SANS COMPTE"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"

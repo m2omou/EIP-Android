@@ -28,6 +28,9 @@ import com.google.gson.JsonParseException;
 
 public class ThreadDownloadImage extends Thread {
 	
+	int mode;                   // 0 = avatar listview  / 1 bitmap editInfoUser
+	
+	EditInfoUser eiu;
 	int pos;
 	Post listPost;
 	Bitmap bitmap;
@@ -37,6 +40,7 @@ public class ThreadDownloadImage extends Thread {
 	
 	ListView listView;
 	ViewPost vp;
+	Message myMessage, msgPb;
 	
 	public ThreadDownloadImage(ViewPost vp_, int pos_, ListView listView_, Post listPost_, ArrayList<HashMap<String, Object>> listItem_, HashMap<String, Object> map_) {
         super();
@@ -46,6 +50,8 @@ public class ThreadDownloadImage extends Thread {
         listItem = listItem_;
         map = map_;
         vp = vp_;
+        
+        mode = 0;
     }
 	
 	public ThreadDownloadImage(ListView listView_, Post listPost_, ViewPost vp_) {
@@ -53,11 +59,30 @@ public class ThreadDownloadImage extends Thread {
         listView = listView_;
         listPost = listPost_;
         vp = vp_;
+        
+        mode = 0;
+	}
+	
+	public ThreadDownloadImage(EditInfoUser eiu_) {
+		super();
+		eiu = eiu_;
+		
+		mode = 1;
 	}
 	
 	public void run() {	 
-		 
-		Message myMessage;
+		
+		switch (mode){
+		case 0:
+			downloadMode0();
+			break;
+		case 1:
+			downloadMode1();
+			break;
+		}	
+	}
+	
+	private void downloadMode0() {
 		//for (int i = 0; i < listPost.list.length; i++) {
 	     		
 		//Log.w("MAP", listPost.list[pos].user.avatar_thumb);
@@ -99,9 +124,7 @@ public class ThreadDownloadImage extends Thread {
      	}
      	map.put("avatar",bitmap);
      	
-     	
 	    //listItem.add(pos, map);
-	    
 	    
 	    Bundle messageBundle = new Bundle();
     	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
@@ -110,4 +133,32 @@ public class ThreadDownloadImage extends Thread {
         myMessage.setData(messageBundle);
         vp.myHandler.sendMessage(myMessage);
 	}
+	
+	private void downloadMode1() {
+		
+		URL pictureURL = null;
+     	try {
+     			pictureURL = new URL(Network.USER.avatar);
+     			//pictureURL = new URL("http://api.neerbyy.com/uploads/user/avatar/21/thumb_user_avatar_.png");
+     		}
+     	catch (MalformedURLException e){
+     		e.printStackTrace();
+     	}
+     	try {
+     		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
+     	} 
+     	catch (IOException e) {
+     		e.printStackTrace();
+     	}
+		eiu.bitmap = bitmap;	
+	    Bundle messageBundle = new Bundle();
+    	messageBundle.putInt("action", ACTION.UPDATE_IMG_INFO_USER.getValue());
+        myMessage = eiu.myHandler.obtainMessage();
+        myMessage.setData(messageBundle);
+        eiu.myHandler.sendMessage(myMessage);
+        
+        msgPb = eiu.myHandler.obtainMessage(1, (Object) "Success");
+        eiu.myHandler.sendMessage(msgPb);
+	}
+	
 }

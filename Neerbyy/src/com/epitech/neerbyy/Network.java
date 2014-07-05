@@ -89,7 +89,12 @@ public class Network {
 		GET_CONV(19),
 		GET_MESSAGES(20),
 		POST_MESSAGE(21),
-		UPDATE_AVATAR(22);
+		UPDATE_AVATAR(22),
+		UPDATE_IMG_INFO_USER(23),
+		DECO(24),
+		DELETE_USER(25),
+		DELETE_COMM(26),
+		DELETE_PUB(27);
 		
 		private final int value;
 		

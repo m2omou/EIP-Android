@@ -21,7 +21,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,6 +33,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -374,6 +377,100 @@ public class ViewPost extends MainMenu {
 			    			    }
 			    			});
 			    		}
+			    		
+			    		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+							@Override
+							public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+										
+								final CharSequence[] items = {"Signaler", "Supprimer"};
+
+								AlertDialog.Builder builder = new AlertDialog.Builder(ViewPost.this);
+								builder.setTitle("Que voulez vous faire ?");
+								builder.setItems(items, new DialogInterface.OnClickListener() {
+								          
+										public void onClick(DialogInterface dialog, int item) {
+								                Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
+								               switch (item) {
+								               case 0:
+								            	   
+								            	   	Intent intent = new Intent(ViewPost.this, Report_pub.class);		
+													Bundle b = new Bundle();
+													b.putInt("com_id", listPost.list[position].id);	
+										    		intent.putExtras(b);
+													startActivity(intent);	
+													break;
+								               
+								               case 1:
+								            	   
+								            	   mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
+															"Long operation starts...", true);
+													Thread thread1 = new Thread(){
+												        public void run(){
+												        	
+														try {	
+											            	Gson gson = new Gson();
+											            	String url = Network.URL + Network.PORT + "/publications/" + listPost.list[position].id + ".json";
+									     	
+											            	Message myMessage, msgPb;
+											            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
+											                myHandler.sendMessage(msgPb);
+											                
+															Bundle messageBundle = new Bundle();
+															messageBundle.putInt("action", ACTION.DELETE_PUB.getValue());
+													        myMessage = myHandler.obtainMessage();	
+									   		        
+													        InputStream input = Network.retrieveStream(url, METHOD.DELETE, null);
+													        
+															if (input == null)
+															{
+																messageBundle.putInt("error", 1);
+															}
+															Reader readerResp = new InputStreamReader(input);
+															String ret = Network.checkInputStream(readerResp);
+															
+															if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+															{
+																messageBundle.putInt("error", 3);
+																messageBundle.putString("msgError", ret);
+															}
+															else
+															{
+																try {
+																	rep = gson.fromJson(ret, ResponseWS.class);
+																}
+																catch(JsonParseException e)
+															    {
+															        System.out.println("Exception n3 in check_exitrestrepWSResponse::"+e.toString());
+															    }
+																
+																if (rep.responseCode == 1 || rep.responseCode == -1)   //  ERREUR DU WS  -1
+																{
+																	messageBundle.putInt("error", 2);
+																	messageBundle.putString("msgError", rep.responseMessage);
+																}
+																//else		  	                   
+																	//Network.USER = user;	
+														}						
+														myMessage.setData(messageBundle);
+									                    myHandler.sendMessage(myMessage);
+									                    
+									                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
+										                myHandler.sendMessage(msgPb);
+									                }
+													catch (Exception e) {
+										                e.printStackTrace();}
+												    }};
+												thread1.start();			
+	
+								            	break;
+								               }
+								          	}
+								        });
+								AlertDialog alert = builder.create();
+								alert.show();
+								return false;							
+							}
+						});   		
 	    				
 			    		//new ThreadDownloadImage(listView, listPost, ViewPost.this).start();			    		
 			    		Toast.makeText(getApplicationContext(), "Update post success", Toast.LENGTH_LONG).show();
@@ -400,7 +497,7 @@ public class ViewPost extends MainMenu {
 		    		//Bundle pack2 = msg.getData();
 			    	//int pos = pack2.getInt("pos");
 			    	
-		    		Toast.makeText(getApplicationContext(), "update img", Toast.LENGTH_SHORT).show();
+		    		//Toast.makeText(getApplicationContext(), "update img", Toast.LENGTH_SHORT).show();
 			    	//view.findViewById(R.id.avatar);
 			    	
 			    	//image.setImageBitmap(bitmap);
@@ -421,6 +518,21 @@ public class ViewPost extends MainMenu {
 		    			mSchedule.notifyDataSetChanged();
 		    		}*/
 		    		break;
+		    	case DELETE_PUB:
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+			    	else if (Error == 2)
+			    	{
+		    			Toast.makeText(getApplicationContext(), "Delete pub error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+			    	}
+			    	else if (Error == 3)
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	else
+			    	{		
+			    		Toast.makeText(getApplicationContext(), "Delete Comm success", Toast.LENGTH_LONG).show();
+			    		new ThreadUpdatePost(ViewPost.this).start();
+			    	}
+			    	break;
 	    	} 	
 	    }
 	};	

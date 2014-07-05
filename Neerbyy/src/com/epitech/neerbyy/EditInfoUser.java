@@ -1,12 +1,37 @@
 package com.epitech.neerbyy;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.epitech.neerbyy.Network.ACTION;
+import com.epitech.neerbyy.Network.METHOD;
+import com.google.android.gms.internal.gt;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This class stock temporary the informations of the user. It is use for debugging case
@@ -15,28 +40,42 @@ import android.widget.TextView;
 public class EditInfoUser extends MainMenu {
 	
 	Button btnOk;
-	TextView info;
+	Button btnChangePass;
+	Button btnDelete;
 	EditText username; 
 	EditText firstname;
 	EditText lastname; 
 	EditText mail;
-	EditText password;
+	ImageView avatar;
+	
+	Bitmap bitmap;
+	
 	User user;
-	//EditText avatar; 
+	ProgressDialog mProgressDialog;
+	ResponseWS rep;
+	
+	List<EditText> list;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_info_user);
 		
-		btnOk = (Button)findViewById(R.id.btnEditOk);
-		username = (EditText)findViewById(R.id.txtEditUsername);
-		//firstname = (EditText)findViewById(R.id.txtEditFirstname);
-		//lastname = (EditText)findViewById(R.id.txtEditLastname);
-		mail = (EditText)findViewById(R.id.txtEditMail);
-	//	password = (EditText)findViewById(R.id.txtEditPassword);
+		btnOk = (Button)findViewById(R.id.btnInfoUserValid);
+		btnChangePass = (Button)findViewById(R.id.btnInfoUserChangePass);
+		btnDelete = (Button)findViewById(R.id.btnInfoUserDelete);
+		username = (EditText)findViewById(R.id.EditTextInfoUserUsername);
+		firstname = (EditText)findViewById(R.id.EditTextInfoUserFirsname);
+		lastname = (EditText)findViewById(R.id.EditTextInfoUserLastname);
+		mail = (EditText)findViewById(R.id.EditTextInfoUserMail);
+		avatar = (ImageView)findViewById(R.id.imgUserInfoAvatar);
 		
-		//Bundle b  = this.getIntent().getExtras();		
+		list = new ArrayList<EditText>();
+		list.add(username);
+		list.add(firstname);
+		list.add(lastname);
+		list.add(mail);
+			
 		if (Network.USER == null)
 		{
 			Intent intent = new Intent(this, Login.class);
@@ -44,90 +83,293 @@ public class EditInfoUser extends MainMenu {
 			return;
 		}
 		
-		//user = (User)b.getSerializable("user");
 		user = Network.USER;
 		
 		username.setText(user.username);
-		//firstname.setText(user.firstname);
-		//lastname.setText(user.lastname);
+		firstname.setText(user.firstname);
+		lastname.setText(user.lastname);
 		mail.setText(user.mail);
-//		password.setText(user.password);
-
 		
-		/*btnOk.setOnClickListener(new View.OnClickListener() {
+		btnChangePass.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(EditInfoUser.this, LostPassword.class);
+				startActivity(intent);
+			}
+		});
+		
+		btnOk.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
 				
+				if (!checkFormu())
+			    	return;
+				mProgressDialog = ProgressDialog.show(EditInfoUser.this, "Please wait",
+						"Long operation starts...", true);
+				
 				Thread thread1 = new Thread(){
-			        public void run(){	        	      
+			        public void run(){
+			        	
 					try {	
 		            	Gson gson = new Gson();
 		            	String url = Network.URL + Network.PORT + "/users/" + user.id + ".json";
-		            	Log.w("Error", "jenvoie  :::::::::::::::::::::::::::::: " + url);
+		            	//String url = Network.URL + Network.PORT + "/users/21.json";
+		            	
 		            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
   	
 		            	nameValuePairs.add(new BasicNameValuePair("user[username]", username.getText().toString()));           	
 		            	nameValuePairs.add(new BasicNameValuePair("user[firstname]", firstname.getText().toString()));
 		            	nameValuePairs.add(new BasicNameValuePair("user[lastname]", lastname.getText().toString()));
 		            	nameValuePairs.add(new BasicNameValuePair("user[email]", mail.getText().toString()));
-		            	nameValuePairs.add(new BasicNameValuePair("user[password]", password.getText().toString()));
-		            	nameValuePairs.add(new BasicNameValuePair("user[avatar]", "dorothee.jpg"));
+		            	//nameValuePairs.add(new BasicNameValuePair("user[password]", password.getText().toString()));
+		            	//nameValuePairs.add(new BasicNameValuePair("user[avatar]", "dorothee.jpg"));
 		            	
-						InputStream input = Network.retrieveStream(url, 2, nameValuePairs);
-						
+		            	Message myMessage, msgPb;
+		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
+		                myHandler.sendMessage(msgPb);
+		                
 						Bundle messageBundle = new Bundle();
-				        Message myMessage;
-				        myMessage=myHandler.obtainMessage();	
+						messageBundle.putInt("action", ACTION.EDIT_USER.getValue());
+				        myMessage = myHandler.obtainMessage();	
+   		        
+				        InputStream input = Network.retrieveStream(url, METHOD.PUT, nameValuePairs);
 				        
-				        messageBundle.putInt("action", Network.EDIT_USER);			        
-						if (input == null)  //  diff  null ans error WS
+						if (input == null)
 						{
 							messageBundle.putInt("error", 1);
-							//Toast.makeText(getApplicationContext(), "Modified account success", Toast.LENGTH_SHORT).show();
+						}
+						Reader readerResp = new InputStreamReader(input);
+						String ret = Network.checkInputStream(readerResp);
+						
+						if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+						{
+							messageBundle.putInt("error", 3);
+							messageBundle.putString("msgError", ret);
 						}
 						else
 						{
-							Reader readerResp = new InputStreamReader(input);				
-							User user = gson.fromJson(readerResp, User.class);
-							messageBundle.putSerializable("user", (Serializable) user);
-						}						
-						myMessage.setData(messageBundle);
-	                    myHandler.sendMessage(myMessage);	
-	                }
-					catch (Exception e) {
-		                e.printStackTrace();}
-				}};
-			thread1.start();				
+							try {
+								rep = gson.fromJson(ret, ResponseWS.class);
+								user = rep.getValue(User.class);
+							}
+							catch(JsonParseException e)
+						    {
+						        System.out.println("Exception n3 in check_exitrestrepWSResponse::"+e.toString());
+						    }
+							
+							if (rep.responseCode == 1)
+							{
+								messageBundle.putInt("error", 2);
+								messageBundle.putString("msgError", rep.responseMessage);
+							}
+							else		  	                   
+								Network.USER = user;	
+					}						
+					myMessage.setData(messageBundle);
+                    myHandler.sendMessage(myMessage);
+                    
+                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
+	                myHandler.sendMessage(msgPb);
+                }
+				catch (Exception e) {
+	                e.printStackTrace();}
+			    }};
+			thread1.start();			
 			}
-		});*/
+		});
+		
+		
+	
+		btnDelete.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(EditInfoUser.this);
+		 
+					// set title
+					alertDialogBuilder.setTitle("Voulez vous vraiment supprimer votre compte ?");
+		 
+					// set dialog message
+					alertDialogBuilder
+						.setMessage("Cliquez sur oui pour confirmer")
+						.setCancelable(false)
+						.setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,int id) {
+					
+								mProgressDialog = ProgressDialog.show(EditInfoUser.this, "Please wait",
+										"Long operation starts...", true);
+								Thread thread1 = new Thread(){
+							        public void run(){
+							        	
+									try {	
+						            	Gson gson = new Gson();
+						            	String url = Network.URL + Network.PORT + "/users/" + user.id + ".json";
+				     	
+						            	Message myMessage, msgPb;
+						            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
+						                myHandler.sendMessage(msgPb);
+						                
+										Bundle messageBundle = new Bundle();
+										messageBundle.putInt("action", ACTION.DELETE_USER.getValue());
+								        myMessage = myHandler.obtainMessage();	
+				   		        
+								        InputStream input = Network.retrieveStream(url, METHOD.DELETE, null);
+								        
+										if (input == null)
+										{
+											messageBundle.putInt("error", 1);
+										}
+										Reader readerResp = new InputStreamReader(input);
+										String ret = Network.checkInputStream(readerResp);
+										
+										if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+										{
+											messageBundle.putInt("error", 3);
+											messageBundle.putString("msgError", ret);
+										}
+										else
+										{
+											try {
+												rep = gson.fromJson(ret, ResponseWS.class);
+												user = rep.getValue(User.class);
+											}
+											catch(JsonParseException e)
+										    {
+										        System.out.println("Exception n3 in check_exitrestrepWSResponse::"+e.toString());
+										    }
+											
+											if (rep.responseCode == 1)
+											{
+												messageBundle.putInt("error", 2);
+												messageBundle.putString("msgError", rep.responseMessage);
+											}
+											//else		  	                   
+												//Network.USER = user;	
+									}						
+									myMessage.setData(messageBundle);
+				                    myHandler.sendMessage(myMessage);
+				                    
+				                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
+					                myHandler.sendMessage(msgPb);
+				                }
+								catch (Exception e) {
+					                e.printStackTrace();}
+							    }};
+							thread1.start();			
+		
+							}
+						  })
+						.setNegativeButton("Non",new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,int id) {
+								dialog.cancel();
+							}
+						});
+		 
+						// create alert dialog
+						AlertDialog alertDialog = alertDialogBuilder.create();
+		 
+						// show it
+						alertDialog.show();
+			}
+				
+		});
+		
+		mProgressDialog = ProgressDialog.show(EditInfoUser.this, "Please wait",
+				"Long operation starts...", true);
+		new ThreadDownloadImage(EditInfoUser.this).start();
 	}
 	
+	private boolean checkFormu()
+	{
+		boolean error = false;
+		
+		for (EditText field : list)
+		{
+			if (!MyRegex.check(field)) {
+		    	field.setText("");
+		    	field.setHintTextColor(Color.RED);
+		    	//field.setTextColor(Color.RED);
+		    	//field.setHint("Please enter a valid " + mail.getHint());
+		    	//field.setBackgroundColor(R.color.ErrorBackground);
+		    	error = true;
+		    }
+		}
+		if (error)
+		{
+			Toast.makeText(getApplicationContext(), "Svp entrer des valeurs correct", Toast.LENGTH_SHORT).show();
+	    	return false;
+		}
+		else
+			return true;
+	}
+			
 	Handler myHandler = new Handler()
 	{
 	    @Override 
 	    public void handleMessage(Message msg)
 	    {
+	    	switch (msg.what) {
+	        case 0:   //  begin
+	            if (mProgressDialog.isShowing()) {
+	                mProgressDialog.setMessage(((String) msg.obj));
+	                //return;
+	            }
+	            break;
+	        case 1:  //  finish
+	        	if (mProgressDialog.isShowing()) {
+	                mProgressDialog.dismiss();
+	                //return;
+	        	}
+	        	break;
+	        default: // should never happen
+	            break;
+	    	}
+	    	
 	    	Bundle pack = msg.getData();
+	    	int Error = pack.getInt("error");
 	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{
 		    	case EDIT_USER:    		
-		    		info = (TextView)findViewById(R.id.txtInfoEditUser);
-		    		info.setText("");
-		    		user = (User)pack.getSerializable("user");
-			    	
-			    	int Error = pack.getInt("error");
-			    	if (Error == 1)
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+			    	else if (Error == 2)
 			    	{
-			    		//Toast.makeText(getApplicationContext(), "Modified account success", Toast.LENGTH_SHORT).show();
-			    		info.setText("Modified account success");
+		    			Toast.makeText(getApplicationContext(), "Update account error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
+			    	else if (Error == 3)
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{
-			    		info.setText("Modify info user success for : " + user.username);
-			    		msg.obj = user;	    		
+			    		Toast.makeText(getApplicationContext(), "Update account success", Toast.LENGTH_SHORT).show();
+			    		Intent intent = new Intent(EditInfoUser.this, Menu2.class);
+						startActivity(intent);	    		
 			    	}
-	    	} 	
+			    break;
+		    	case UPDATE_IMG_INFO_USER:
+		    		avatar.setImageBitmap(bitmap);
+		    		Toast.makeText(getApplicationContext(), "Update avatar success", Toast.LENGTH_SHORT).show();
+		    	break;
+		    	case DELETE_USER:
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+			    	else if (Error == 2)
+			    	{
+		    			Toast.makeText(getApplicationContext(), "Delete error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+			    	}
+			    	else if (Error == 3)
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	else
+			    	{
+			    		Network.USER = null;
+			    		Toast.makeText(getApplicationContext(), "Delete account success", Toast.LENGTH_SHORT).show();
+			    		Intent intent = new Intent(EditInfoUser.this, Login.class);
+			    		startActivity(intent);
+			    	}
+		    	break;
+	    	}
 	    }
 	};
 }

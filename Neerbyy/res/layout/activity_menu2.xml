@@ -17,38 +17,43 @@
 
     <TableLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp" 
+        android:orientation="vertical">
 
         <TableRow
             android:id="@+id/tableRow1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp" >
+            android:paddingTop="10dp" 
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txtCreateAccountInfo2"
+                android:id="@+id/txtMenuInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                />
 
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow4"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            
-            android:paddingTop="35dp" >
+            android:gravity="center"
+            android:paddingTop="15dp" >
 
             <Button
-                android:id="@+id/btnMenuMap"
-                android:layout_width="match_parent"
+                android:id="@+id/btnMenuViewMap"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
                 android:background="@color/greenNeerbyy"
-                android:padding="3dp"
+                android:gravity="center_vertical"
+                android:height="35dp"
+                android:padding="5dp"
                 android:text="Carte"
                 android:textColor="@color/white"
                 android:textSize="20sp"
@@ -59,20 +64,19 @@
 
         <TableRow
             android:id="@+id/tableRow2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            
-            android:paddingTop="20dp" >
+            android:gravity="center"
+            android:paddingTop="25dp" >
 
             <Button
                 android:id="@+id/btnMenuFlux"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                
+                android:layout_weight="1"
                 android:background="@color/greenNeerbyy"
-                android:padding="3dp"
+                android:gravity="center_vertical"
+                android:padding="5dp"
                 android:text="Mon Flux"
                 android:textColor="@color/white"
                 android:textSize="20sp"
@@ -86,17 +90,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingTop="15dp" >
+            android:paddingTop="25dp" >
 
             <Button
-                android:id="@+id/BbtnMenuFavoris"
-                android:layout_width="match_parent"
+                android:id="@+id/btnMenuFavoris"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
                 android:background="@color/greenNeerbyy"
-                android:gravity="left|center_horizontal"
-                android:padding="3dp"
+                android:gravity="center_vertical"
+                android:padding="5dp"
                 android:text="Mes Lieux Favoris"
                 android:textColor="@color/white"
                 android:textSize="20sp"
@@ -110,15 +113,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingTop="15dp" >
+            android:paddingTop="25dp" >
 
             <Button
                 android:id="@+id/btnMenuMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@color/greenNeerbyy"
-                android:gravity="left|center_horizontal"
-                android:padding="3dp"
+                android:gravity="center_vertical"
+                android:padding="5dp"
                 android:text="Mes Messages"
                 android:textColor="@color/white"
                 android:textSize="20sp"
@@ -132,15 +136,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingTop="15dp" >
+            android:paddingTop="25dp" >
 
             <Button
                 android:id="@+id/btnMenuMyInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@color/greenNeerbyy"
-                android:gravity="left|center_horizontal"
-                android:padding="3dp"
+                android:gravity="center_vertical"
+                android:padding="5dp"
                 android:text="Mes Infos"
                 android:textColor="@color/white"
                 android:textSize="20sp"
@@ -160,10 +165,11 @@
                 android:id="@+id/btnMenuCoDeco"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/greenNeerbyy"
-                android:gravity="left|center_horizontal"
-                android:padding="3dp"
-                android:text="Connexion"
+                android:layout_weight="1"
+                android:background="@color/orangeNeerbyy"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="Deconnexion"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -176,15 +182,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingTop="15dp" >
+            android:paddingTop="25dp" >
 
             <Button
                 android:id="@+id/btnMenuOption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@color/greenNeerbyy"
-                android:gravity="left|center_horizontal"
-                android:padding="3dp"
+                android:gravity="center_vertical"
+                android:padding="5dp"
                 android:text="Options"
                 android:textColor="@color/white"
                 android:textSize="20sp"

@@ -38,6 +38,7 @@ public class Login extends MainMenu {
 
 	Button createAccount;
 	Button login;
+	Button map;
 	EditText loginMail; 
 	EditText password; 
 	TextView info;
@@ -57,6 +58,7 @@ public class Login extends MainMenu {
 		
 		createAccount = (Button)findViewById(R.id.btnGoCreateAccount2);
 		login = (Button)findViewById(R.id.btnLogin2);
+		map = (Button)findViewById(R.id.btnLoginMapView);
 		loginMail = (EditText)findViewById(R.id.txtLoginMail2);
 		password = (EditText)findViewById(R.id.txtLoginPassword2);
 		
@@ -84,6 +86,14 @@ public class Login extends MainMenu {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(Login.this, CreateAccount.class);
+				startActivity(intent);
+			}
+		});
+		map.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(Login.this, MapView.class);
 				startActivity(intent);
 			}
 		});
@@ -158,7 +168,6 @@ public class Login extends MainMenu {
 	                }
 					catch (Exception e) {
 		                e.printStackTrace();}
-					
 				}};
 			thread1.start();			
 			}
@@ -247,7 +256,7 @@ public class Login extends MainMenu {
 			    		login.setEnabled(false);   		
 			    		Network.USER = user;
 			    		
-			    		Intent intent = new Intent(Login.this, MapView.class);
+			    		Intent intent = new Intent(Login.this, Menu2.class);
 						startActivity(intent);
 						
 			    	}

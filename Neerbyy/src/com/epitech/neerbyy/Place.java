@@ -38,6 +38,12 @@ public class Place implements Serializable {
     	public String icon;
     	@SerializedName("followed_place_id")
     	public int followed_place_id;
+    	@SerializedName("distance")
+    	public int distance;
+    	@SerializedName("distance_boundary")
+    	public int distance_boundary;
+    	@SerializedName("can_publish")
+    	public boolean can_publish;
     	
     	public Marker marker;   //  Always util ?
     }
