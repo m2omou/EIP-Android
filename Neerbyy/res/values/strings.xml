@@ -24,6 +24,9 @@
     <string name="title_activity_menu">Neerbyy</string>
     <string name="loginDefaultInfo">Enter your identifier:</string>
     <string name="ok">OK</string>
+    
+    <string name="str_btn_find">Find</string>
+    <string name="hnt_et_location">Enter location</string>
 
     <color name="white">#FFFFFF</color>
     <color name="blue">#0000FF</color>

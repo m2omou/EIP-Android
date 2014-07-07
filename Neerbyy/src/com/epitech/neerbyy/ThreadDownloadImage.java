@@ -28,7 +28,7 @@ import com.google.gson.JsonParseException;
 
 public class ThreadDownloadImage extends Thread {
 	
-	int mode;                   // 0 = avatar listview  / 1 bitmap editInfoUser
+	int mode;                   // 0 = avatar listview  / 1 bitmap editInfoUser / 2 ViewFeed
 	
 	EditInfoUser eiu;
 	int pos;
@@ -40,6 +40,7 @@ public class ThreadDownloadImage extends Thread {
 	
 	ListView listView;
 	ViewPost vp;
+	ViewFeed vf;
 	Message myMessage, msgPb;
 	
 	public ThreadDownloadImage(ViewPost vp_, int pos_, ListView listView_, Post listPost_, ArrayList<HashMap<String, Object>> listItem_, HashMap<String, Object> map_) {
@@ -52,6 +53,18 @@ public class ThreadDownloadImage extends Thread {
         vp = vp_;
         
         mode = 0;
+    }
+	
+	public ThreadDownloadImage(ViewFeed vf_, int pos_, ListView listView_, Post listPost_, ArrayList<HashMap<String, Object>> listItem_, HashMap<String, Object> map_) {
+        super();
+        pos = pos_;
+        listView = listView_;
+        listPost = listPost_;
+        listItem = listItem_;
+        map = map_;
+        vf = vf_;
+        
+        mode = 2;
     }
 	
 	public ThreadDownloadImage(ListView listView_, Post listPost_, ViewPost vp_) {
@@ -79,6 +92,9 @@ public class ThreadDownloadImage extends Thread {
 		case 1:
 			downloadMode1();
 			break;
+		case 2:
+			downloadMode2();
+			break;
 		}	
 	}
 	
@@ -90,11 +106,79 @@ public class ThreadDownloadImage extends Thread {
 			map.put("username", "Unknown :");
 			map.put("content", listPost.list[pos].content);
 			map.put("avatar", String.valueOf(R.drawable.avatar));
+			map.put("date", listPost.list[pos].create_at);
 			return;
 		}
 		
 	     		map.put("username", listPost.list[pos].user.username + " :");
 		        map.put("content", listPost.list[pos].content);
+		        map.put("date", listPost.list[pos].create_at);
+		 
+		URL pictureURL = null;
+     	try {
+     			pictureURL = new URL(listPost.list[pos].user.avatar_thumb);
+     		}
+     	catch (MalformedURLException e){
+     		e.printStackTrace();
+     	}
+     	try {
+     		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
+     	} 
+     	catch (IOException e) {
+     		e.printStackTrace();
+     	}
+     	map.put("avatar",bitmap);
+ 
+	    Bundle messageBundle = new Bundle();
+    	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
+		//messageBundle.putInt("pos", i);
+        myMessage = vp.myHandler.obtainMessage();
+        myMessage.setData(messageBundle);
+        vp.myHandler.sendMessage(myMessage);
+	}
+	
+	private void downloadMode1() {
+		
+		URL pictureURL = null;
+     	try {
+     			pictureURL = new URL(Network.USER.avatar);
+     			//pictureURL = new URL("http://api.neerbyy.com/uploads/user/avatar/21/thumb_user_avatar_.png");
+     		}
+     	catch (MalformedURLException e){
+     		e.printStackTrace();
+     	}
+     	try {
+     		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
+     	} 
+     	catch (IOException e) {
+     		e.printStackTrace();
+     	}
+		eiu.bitmap = bitmap;	
+	    Bundle messageBundle = new Bundle();
+    	messageBundle.putInt("action", ACTION.UPDATE_IMG_INFO_USER.getValue());
+        myMessage = eiu.myHandler.obtainMessage();
+        myMessage.setData(messageBundle);
+        eiu.myHandler.sendMessage(myMessage);
+        
+        msgPb = eiu.myHandler.obtainMessage(1, (Object) "Success");
+        eiu.myHandler.sendMessage(msgPb);
+	}
+	
+	private void downloadMode2() {
+		//for (int i = 0; i < listPost.list.length; i++) {
+	     		
+		//Log.w("MAP", listPost.list[pos].user.avatar_thumb);
+		if (listPost.list[pos].user == null) {
+			map.put("username", "Unknown :");
+			map.put("content", listPost.list[pos].content);
+			map.put("avatar", String.valueOf(R.drawable.avatar));
+			map.put("date", listPost.list[pos].create_at);
+			return;
+		}
+		
+	     		map.put("username", listPost.list[pos].user.username + " :");
+		        map.put("content", listPost.list[pos].content);
+		        map.put("date", listPost.list[pos].create_at);
 		        //map.put("avatar", String.valueOf(R.drawable.avatar));
 	     		
 	     		
@@ -129,36 +213,9 @@ public class ThreadDownloadImage extends Thread {
 	    Bundle messageBundle = new Bundle();
     	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
 		//messageBundle.putInt("pos", i);
-        myMessage = vp.myHandler.obtainMessage();
+        myMessage = vf.myHandler.obtainMessage();
         myMessage.setData(messageBundle);
-        vp.myHandler.sendMessage(myMessage);
-	}
-	
-	private void downloadMode1() {
-		
-		URL pictureURL = null;
-     	try {
-     			pictureURL = new URL(Network.USER.avatar);
-     			//pictureURL = new URL("http://api.neerbyy.com/uploads/user/avatar/21/thumb_user_avatar_.png");
-     		}
-     	catch (MalformedURLException e){
-     		e.printStackTrace();
-     	}
-     	try {
-     		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
-     	} 
-     	catch (IOException e) {
-     		e.printStackTrace();
-     	}
-		eiu.bitmap = bitmap;	
-	    Bundle messageBundle = new Bundle();
-    	messageBundle.putInt("action", ACTION.UPDATE_IMG_INFO_USER.getValue());
-        myMessage = eiu.myHandler.obtainMessage();
-        myMessage.setData(messageBundle);
-        eiu.myHandler.sendMessage(myMessage);
-        
-        msgPb = eiu.myHandler.obtainMessage(1, (Object) "Success");
-        eiu.myHandler.sendMessage(msgPb);
+        vf.myHandler.sendMessage(myMessage);
 	}
 	
 }

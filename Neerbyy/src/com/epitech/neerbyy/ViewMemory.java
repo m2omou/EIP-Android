@@ -119,20 +119,27 @@ public class ViewMemory extends MainMenu {
 			viewDislike.setText(Integer.toString(memory.downvotes));
 		//}
 			
-		report.setOnClickListener(new OnClickListener() {	
+		/*report.setOnClickListener(new OnClickListener() {	
 			@Override
 			public void onClick(View v) {
+				
 				Intent intent = new Intent(ViewMemory.this, Report_pub.class);		
 				Bundle b = new Bundle();
 				b.putInt("pub_id", memory.id);	
 	    		intent.putExtras(b);
 				startActivity(intent);		
 			}
-		});
+		});*/
 			
 		btnFallow.setOnClickListener(new OnClickListener() {	
 			@Override
 			public void onClick(View v) {
+				if (Network.USER == null) {
+					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					//Intent intent = new Intent(ViewPost.this, Login.class);
+					//startActivity(intent);
+					return;
+				}
 		
 				mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
 						"Long operation starts...", true);
@@ -200,6 +207,12 @@ public class ViewMemory extends MainMenu {
 		btnLike.setOnClickListener(new OnClickListener() {	
 			@Override
 			public void onClick(View v) {
+				if (Network.USER == null) {
+					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					//Intent intent = new Intent(ViewPost.this, Login.class);
+					//startActivity(intent);
+					return;
+				}
 		
 				mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
 						"Long operation starts...", true);
@@ -280,7 +293,13 @@ public class ViewMemory extends MainMenu {
 		});
 			
 		threadCancelLike = new Thread(){
-	        public void run(){	        	      
+	        public void run(){
+	        	if (Network.USER == null) {
+					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					//Intent intent = new Intent(ViewPost.this, Login.class);
+					//startActivity(intent);
+					return;
+				}
 			try {	
             	Gson gson = new Gson();
             	String url = Network.URL + Network.PORT + "/votes/" + memory.vote.id + ".json";
@@ -339,6 +358,12 @@ public class ViewMemory extends MainMenu {
 			
 			@Override
 			public void onClick(View v) {
+				if (Network.USER == null) {
+					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					//Intent intent = new Intent(ViewPost.this, Login.class);
+					//startActivity(intent);
+					return;
+				}
 		
 				mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
 						"Long operation starts...", true);
@@ -491,6 +516,12 @@ public class ViewMemory extends MainMenu {
 			@Override
 			public void onClick(View v) {
 		
+				if (Network.USER == null) {
+					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					//Intent intent = new Intent(ViewPost.this, Login.class);
+					//startActivity(intent);
+					return;
+				}
 				mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
 						"Long operation starts...", true);
 				
@@ -694,7 +725,12 @@ public class ViewMemory extends MainMenu {
 								                Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
 								               switch (item) {
 								               case 0:
-								            	   
+								            	   if (Network.USER == null) {
+								   					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+								   					//Intent intent = new Intent(ViewPost.this, Login.class);
+								   					//startActivity(intent);
+								   					return;
+								   				}
 								            	   	Intent intent = new Intent(ViewMemory.this, Report_com.class);		
 													Bundle b = new Bundle();
 													b.putInt("com_id", listComm.list[position].id);	
@@ -703,7 +739,12 @@ public class ViewMemory extends MainMenu {
 													break;
 								               
 								               case 1:
-								            	   
+								            	   if (Network.USER == null) {
+								   					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+								   					//Intent intent = new Intent(ViewPost.this, Login.class);
+								   					//startActivity(intent);
+								   					return;
+								   				}
 								            	   mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
 															"Long operation starts...", true);
 													Thread thread1 = new Thread(){

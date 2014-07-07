@@ -22,4 +22,8 @@
     <string name="loginMessageInscr">Pas encore de compte ? Inscrivez vous !</string>
     <string name="loginMessageCGU">Pour l\'inscription je déclare accepter les CGU</string>
     <string name="msgLostPassword">Une procédure pour réinitialiser votre mot de passe vous sera envoyé à votre adresse email.</string>
+
+	<string name="str_btn_find">Cherche</string>
+    <string name="hnt_et_location">Entrer une adresse</string>
+
 </resources>

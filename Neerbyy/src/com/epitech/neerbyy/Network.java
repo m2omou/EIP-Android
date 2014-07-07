@@ -94,7 +94,9 @@ public class Network {
 		DECO(24),
 		DELETE_USER(25),
 		DELETE_COMM(26),
-		DELETE_PUB(27);
+		DELETE_PUB(27),
+		UNFALLOW(28),
+		GET_SEARCH_PLACE(29);
 		
 		private final int value;
 		

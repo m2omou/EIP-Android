@@ -17,6 +17,7 @@ import org.apache.http.message.BasicNameValuePair;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
+import android.R.color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -54,7 +55,7 @@ import com.epitech.neerbyy.Place.PlaceInfo;
  */
 public class ViewPost extends MainMenu {
 
-	private ImageButton btnFallow;
+	private Button btnFallow;
 	private TextView sendButton;
 	private TextView info;
 	private TextView placeName;
@@ -71,6 +72,7 @@ public class ViewPost extends MainMenu {
 	public double lon;
 	
 	public Bitmap img;
+	public int idFallowed;
 	
 	SimpleAdapter mSchedule = null;
 	ArrayList<HashMap<String, Object>> listItem;
@@ -87,7 +89,7 @@ public class ViewPost extends MainMenu {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_post);
 	
-		btnFallow = (ImageButton)findViewById(R.id.btnFallowPost);
+		btnFallow = (Button)findViewById(R.id.btnFallowPost2);
 		sendButton = (TextView)findViewById(R.id.postSendPost);
 		info = (TextView)findViewById(R.id.postTextInfo);
 		placeName = (TextView)findViewById(R.id.postNamePlace);
@@ -106,6 +108,7 @@ public class ViewPost extends MainMenu {
 		lat = b.getDouble("latitude");
 		lon = b.getDouble("longitude");
 	//	placeId = place.id;
+		idFallowed = b.getInt("isFallowed");
 		placeName.setText(b.getString("placeName"));  
 	//	placeName.setText(place.name); 
 
@@ -121,10 +124,18 @@ public class ViewPost extends MainMenu {
 				startActivity(intent);		
 			}
 		});*/
+
 		
-		btnFallow.setOnClickListener(new OnClickListener() {	
+		
+		View.OnClickListener fallowPlace =  new OnClickListener() {	
 			@Override
 			public void onClick(View v) {
+				if (Network.USER == null) {
+					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					//Intent intent = new Intent(ViewPost.this, Login.class);
+					//startActivity(intent);
+					return;
+				}
 		
 				mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
 						"Long operation starts...", true);
@@ -187,14 +198,100 @@ public class ViewPost extends MainMenu {
 				}};
 			threadFallow.start();
 			}
-		});
+		};
 		
+		View.OnClickListener unFallowPlace =  new OnClickListener() {	
+			@Override
+			public void onClick(View v) {
 		
+				if (Network.USER == null) {
+					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					//Intent intent = new Intent(ViewPost.this, Login.class);
+					//startActivity(intent);
+					return;
+				}
+				mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
+						"Long operation starts...", true);
+				Thread thread1 = new Thread(){
+			        public void run(){
+			        	
+					try {	
+		            	Gson gson = new Gson();
+		            	String url = Network.URL + Network.PORT + "/fallowed_places/" + idFallowed + ".json";
+     	
+		            	Message myMessage, msgPb;
+		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
+		                myHandler.sendMessage(msgPb);
+		                
+						Bundle messageBundle = new Bundle();
+						messageBundle.putInt("action", ACTION.UNFALLOW.getValue());
+				        myMessage = myHandler.obtainMessage();	
+   		        
+				        InputStream input = Network.retrieveStream(url, METHOD.DELETE, null);
+				        
+						if (input == null)
+						{
+							messageBundle.putInt("error", 1);
+						}
+						Reader readerResp = new InputStreamReader(input);
+						String ret = Network.checkInputStream(readerResp);
+						
+						if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+						{
+							messageBundle.putInt("error", 3);
+							messageBundle.putString("msgError", ret);
+						}
+						else
+						{
+							try {
+								rep = gson.fromJson(ret, ResponseWS.class);
+							}
+							catch(JsonParseException e)
+						    {
+						        System.out.println("Exception n3 in check_exitrestrepWSResponse::"+e.toString());
+						    }
+							
+							if (rep.responseCode == 1)
+							{
+								messageBundle.putInt("error", 2);
+								messageBundle.putString("msgError", rep.responseMessage);
+							}
+							//else		  	                   
+								//Network.USER = user;	
+					}						
+					myMessage.setData(messageBundle);
+                    myHandler.sendMessage(myMessage);
+                    
+                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
+	                myHandler.sendMessage(msgPb);
+                }
+				catch (Exception e) {
+	                e.printStackTrace();}
+			    }};
+			thread1.start();			
+
+			}
+		};
+		
+		if (idFallowed == 0)
+			btnFallow.setOnClickListener(fallowPlace);
+		else
+		{
+			btnFallow.setOnClickListener(unFallowPlace);
+			btnFallow.setText("Ne plus suivre ce lieu");
+    		//btnFallow.setBackgroundColor(R.color.orangeNeerbyy);
+    		btnFallow.setBackgroundColor(color.holo_orange_dark);	}
 		sendButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-		
+				
+				if (Network.USER == null) {
+					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					//Intent intent = new Intent(ViewPost.this, Login.class);
+					//startActivity(intent);
+					return;
+				}
 				mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
 						"Long operation starts...", true);
 				
@@ -362,6 +459,16 @@ public class ViewPost extends MainMenu {
 			    	        mSchedule.setViewBinder(new MyViewBinder());
 			    	        listView.setAdapter(mSchedule);*/
 			    			
+			    			
+			    			mSchedule = new SimpleAdapter (ViewPost.this, listItem, R.layout.view_item_list,
+				    				new String[] {"avatar", "username", "content", "date"}, new int[] {R.id.avatar, R.id.username, R.id.content, R.id.date});
+				    	        
+				    		mSchedule.setViewBinder(new MyViewBinder());
+				    		
+				    		listView.requestLayout();
+				    	    listView.setAdapter(mSchedule);
+				    	    
+			    			
 			    	        listView.setOnItemClickListener(new OnItemClickListener() {
 			    			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			    				     
@@ -392,7 +499,12 @@ public class ViewPost extends MainMenu {
 								                Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
 								               switch (item) {
 								               case 0:
-								            	   
+								            	   if (Network.USER == null) {
+								   					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+								   					//Intent intent = new Intent(ViewPost.this, Login.class);
+								   					//startActivity(intent);
+								   					return;
+								   				}
 								            	   	Intent intent = new Intent(ViewPost.this, Report_pub.class);		
 													Bundle b = new Bundle();
 													b.putInt("com_id", listPost.list[position].id);	
@@ -401,7 +513,12 @@ public class ViewPost extends MainMenu {
 													break;
 								               
 								               case 1:
-								            	   
+								            	   if (Network.USER == null) {
+								   					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+								   					//Intent intent = new Intent(ViewPost.this, Login.class);
+								   					//startActivity(intent);
+								   					return;
+								   				}
 								            	   mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
 															"Long operation starts...", true);
 													Thread thread1 = new Thread(){
@@ -476,6 +593,7 @@ public class ViewPost extends MainMenu {
 			    		Toast.makeText(getApplicationContext(), "Update post success", Toast.LENGTH_LONG).show();
 			    	}
 			    	break;
+			    	
 		    	case FALLOW_PLACE:
 		    		info.setText("");	
 		    		
@@ -490,10 +608,20 @@ public class ViewPost extends MainMenu {
 			    	else
 			    	{		
 			    		Toast.makeText(getApplicationContext(), "Fallow Place success", Toast.LENGTH_LONG).show();
-			    		btnFallow.setImageResource(R.drawable.iconmortel_f);
+			    		btnFallow.setText("Ne plus suivre ce lieu");
+			    		btnFallow.setBackgroundColor(R.color.orangeNeerbyy);
 			    	}
 			    	break;
 		    	case UPDATE_AVATAR:
+		    		
+		    		mSchedule = new SimpleAdapter (ViewPost.this, listItem, R.layout.view_item_list,
+		    				new String[] {"avatar", "username", "content", "date"}, new int[] {R.id.avatar, R.id.username, R.id.content, R.id.date});
+		    	        
+		    		mSchedule.setViewBinder(new MyViewBinder());
+		    		
+		    		listView.requestLayout();
+		    	    listView.setAdapter(mSchedule);
+		    	    
 		    		//Bundle pack2 = msg.getData();
 			    	//int pos = pack2.getInt("pos");
 			    	
@@ -502,14 +630,7 @@ public class ViewPost extends MainMenu {
 			    	
 			    	//image.setImageBitmap(bitmap);
 		    		
-		    		mSchedule = new SimpleAdapter (ViewPost.this, listItem, R.layout.view_item_list,
-		    				new String[] {"avatar", "username", "content"}, new int[] {R.id.avatar, R.id.username, R.id.content});
-		    	        
-		    		mSchedule.setViewBinder(new MyViewBinder());
 		    		
-		    		listView.requestLayout();
-	    			//listView.removeAllViewsInLayout();
-		    	    listView.setAdapter(mSchedule);
 		    	        
 		    		
 		    		/*if (mSchedule != null)
@@ -518,6 +639,7 @@ public class ViewPost extends MainMenu {
 		    			mSchedule.notifyDataSetChanged();
 		    		}*/
 		    		break;
+		    		
 		    	case DELETE_PUB:
 		    		if (Error == 1)
 		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
@@ -533,6 +655,23 @@ public class ViewPost extends MainMenu {
 			    		new ThreadUpdatePost(ViewPost.this).start();
 			    	}
 			    	break;
+			    	
+		    	case UNFALLOW:
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+			    	else if (Error == 2)
+			    	{
+		    			Toast.makeText(getApplicationContext(), "Unfallow place error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+			    	}
+			    	else if (Error == 3)
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	else
+			    	{
+			    		Toast.makeText(getApplicationContext(), "Unfallow place success", Toast.LENGTH_SHORT).show();
+			    		btnFallow.setText("Suivre ce lieu");
+			    		btnFallow.setBackgroundColor(R.color.greenNeerbyy);
+			    	}
+		    	break;
 	    	} 	
 	    }
 	};	
