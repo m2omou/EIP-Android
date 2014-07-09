@@ -1,5 +1,6 @@
 package com.epitech.neerbyy;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -15,16 +16,24 @@ import com.epitech.neerbyy.Network.METHOD;
 import com.google.android.gms.internal.gt;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.ipaulpro.afilechooser.utils.FileUtils;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -47,6 +56,7 @@ public class EditInfoUser extends MainMenu {
 	EditText lastname; 
 	EditText mail;
 	ImageView avatar;
+	String  passAvatar;
 	
 	Bitmap bitmap;
 	
@@ -99,6 +109,17 @@ public class EditInfoUser extends MainMenu {
 			}
 		});
 		
+		avatar.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				 	Intent getContentIntent = FileUtils.createGetContentIntent();
+
+				    Intent intent = Intent.createChooser(getContentIntent, "Select a file");
+				    startActivityForResult(intent, 1234);  //private static final int REQUEST_CHOOSER = 1234;
+			}	
+		});
+		
 		btnOk.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -106,8 +127,8 @@ public class EditInfoUser extends MainMenu {
 				
 				if (!checkFormu())
 			    	return;
-				mProgressDialog = ProgressDialog.show(EditInfoUser.this, "Please wait",
-						"Long operation starts...", true);
+				//mProgressDialog = ProgressDialog.show(EditInfoUser.this, "Please wait",
+					//	"Long operation starts...", true);
 				
 				Thread thread1 = new Thread(){
 			        public void run(){
@@ -124,8 +145,14 @@ public class EditInfoUser extends MainMenu {
 		            	nameValuePairs.add(new BasicNameValuePair("user[lastname]", lastname.getText().toString()));
 		            	nameValuePairs.add(new BasicNameValuePair("user[email]", mail.getText().toString()));
 		            	//nameValuePairs.add(new BasicNameValuePair("user[password]", password.getText().toString()));
-		            	//nameValuePairs.add(new BasicNameValuePair("user[avatar]", "dorothee.jpg"));
-		            	
+		            	 	
+		            	File extStore = Environment.getExternalStorageDirectory();
+		            	//File[] imageDirs = extStore.listFiles(filterForImageFolders);
+		                    	
+		            	//nameValuePairs.add(new BasicNameValuePair("user[avatar]", extStore.getAbsolutePath() + "/ic.png"));
+		            	 if (passAvatar != null)
+		            		 nameValuePairs.add(new BasicNameValuePair("user[avatar]", passAvatar));
+
 		            	Message myMessage, msgPb;
 		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
 		                myHandler.sendMessage(msgPb);
@@ -134,7 +161,11 @@ public class EditInfoUser extends MainMenu {
 						messageBundle.putInt("action", ACTION.EDIT_USER.getValue());
 				        myMessage = myHandler.obtainMessage();	
    		        
-				        InputStream input = Network.retrieveStream(url, METHOD.PUT, nameValuePairs);
+				        InputStream input;
+				        if (passAvatar != null)
+				        	input = Network.retrieveStream(url, METHOD.UPLOAD_PUT, nameValuePairs);
+				        else
+				        	input = Network.retrieveStream(url, METHOD.PUT, nameValuePairs);
 				        
 						if (input == null)
 						{
@@ -277,8 +308,8 @@ public class EditInfoUser extends MainMenu {
 				
 		});
 		
-		mProgressDialog = ProgressDialog.show(EditInfoUser.this, "Please wait",
-				"Long operation starts...", true);
+		//mProgressDialog = ProgressDialog.show(EditInfoUser.this, "Please wait",
+			//	"Long operation starts...", true);
 		new ThreadDownloadImage(EditInfoUser.this).start();
 	}
 	
@@ -311,7 +342,7 @@ public class EditInfoUser extends MainMenu {
 	    @Override 
 	    public void handleMessage(Message msg)
 	    {
-	    	switch (msg.what) {
+	    /*	switch (msg.what) {
 	        case 0:   //  begin
 	            if (mProgressDialog.isShowing()) {
 	                mProgressDialog.setMessage(((String) msg.obj));
@@ -326,7 +357,7 @@ public class EditInfoUser extends MainMenu {
 	        	break;
 	        default: // should never happen
 	            break;
-	    	}
+	    	}*/
 	    	
 	    	Bundle pack = msg.getData();
 	    	int Error = pack.getInt("error");
@@ -349,7 +380,11 @@ public class EditInfoUser extends MainMenu {
 			    	}
 			    break;
 		    	case UPDATE_IMG_INFO_USER:
+		    		
 		    		avatar.setImageBitmap(bitmap);
+		    		avatar.setAdjustViewBounds(true);
+		    		avatar.setMaxWidth(100);
+		    		avatar.setMaxHeight(100);
 		    		Toast.makeText(getApplicationContext(), "Update avatar success", Toast.LENGTH_SHORT).show();
 		    	break;
 		    	case DELETE_USER:
@@ -372,4 +407,24 @@ public class EditInfoUser extends MainMenu {
 	    	}
 	    }
 	};
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    switch (requestCode) {
+	        case 1234:     //private static final int REQUEST_CHOOSER = 1234;
+	            if (resultCode == RESULT_OK) {
+
+	                final Uri uri = data.getData();
+
+	                // Get the File path from the Uri
+	                String path = FileUtils.getPath(this, uri);
+	                passAvatar = path;
+	                // Alternatively, use FileUtils.getFile(Context, Uri)
+	                if (path != null && FileUtils.isLocal(path)) {
+	                    File file = new File(path);
+	                }
+	            }
+	            break;
+	    }
+	}   
 }

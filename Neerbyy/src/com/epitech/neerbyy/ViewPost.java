@@ -1,5 +1,6 @@
 package com.epitech.neerbyy;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,8 +17,10 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.ipaulpro.afilechooser.utils.FileUtils;
 
 import android.R.color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -61,7 +64,6 @@ public class ViewPost extends MainMenu {
 	private TextView placeName;
 	private EditText editPost;
 	private ListView listView;
-	// Button report;
 	
 	ResponseWS rep;
 	ProgressDialog mProgressDialog;
@@ -71,18 +73,14 @@ public class ViewPost extends MainMenu {
 	public double lat;
 	public double lon;
 	
+	public ImageButton mar;
+	public String passImg;
+	
 	public Bitmap img;
 	public int idFallowed;
 	
 	SimpleAdapter mSchedule = null;
 	ArrayList<HashMap<String, Object>> listItem;
-	
-	/*protected void onListIemClick(ListView lv , View v, int position, long id){
-		//super.(lv, v, position, id);
-	  //   Toast.makeText(this, "Id: " + lv.getAdapter().get(position), Toast.LENGTH_LONG).show();
-	     Toast.makeText(this, "Id: " + listPost.list[position].id, Toast.LENGTH_LONG).show();
-	}*/
-	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,41 +88,39 @@ public class ViewPost extends MainMenu {
 		setContentView(R.layout.activity_view_post);
 	
 		btnFallow = (Button)findViewById(R.id.btnFallowPost2);
+		mar = (ImageButton)findViewById(R.id.btnFallowPost);
+		
+		
 		sendButton = (TextView)findViewById(R.id.postSendPost);
 		info = (TextView)findViewById(R.id.postTextInfo);
 		placeName = (TextView)findViewById(R.id.postNamePlace);
 		editPost = (EditText)findViewById(R.id.postEditPost);
 		listView = (ListView)findViewById(R.id.postViewListPost);
-		//report = (Button)findViewById(R.id.btnPostReport);
 		
 		//listView.removeAllViews();
 		listView.clearChoices();
 		
 		
 		Bundle b  = this.getIntent().getExtras();
-	//	place = (PlaceInfo)b.getSerializable("placeInfo");
+		//place = (PlaceInfo)b.getSerializable("placeInfo");  //  impossible with Marker not ser
 	
 		placeId = b.getString("placeId");
 		lat = b.getDouble("latitude");
-		lon = b.getDouble("longitude");
-	//	placeId = place.id;
+		lon =  b.getDouble("longitude");
 		idFallowed = b.getInt("isFallowed");
-		placeName.setText(b.getString("placeName"));  
-	//	placeName.setText(place.name); 
-
-//		b.getSerializable(key)
+		placeName.setText(b.getString("placeName"));
 		
-		/*report.setOnClickListener(new OnClickListener() {	
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(ViewPost.this, Report_pub.class);		
-				Bundle b = new Bundle();
-				b.putInt("pub_id", this.);	
-	    		intent.putExtras(b);
-				startActivity(intent);		
-			}
-		});*/
+		
+		mar.setOnClickListener(new View.OnClickListener() {
 
+			@Override
+			public void onClick(View arg0) {
+				 	Intent getContentIntent = FileUtils.createGetContentIntent();
+
+				    Intent intent = Intent.createChooser(getContentIntent, "Select a file");
+				    startActivityForResult(intent, 1234);  //private static final int REQUEST_CHOOSER = 1234;
+			}	
+		});
 		
 		
 		View.OnClickListener fallowPlace =  new OnClickListener() {	
@@ -279,10 +275,11 @@ public class ViewPost extends MainMenu {
 		{
 			btnFallow.setOnClickListener(unFallowPlace);
 			btnFallow.setText("Ne plus suivre ce lieu");
-    		//btnFallow.setBackgroundColor(R.color.orangeNeerbyy);
-    		btnFallow.setBackgroundColor(color.holo_orange_dark);	}
-		sendButton.setOnClickListener(new OnClickListener() {
-			
+    		btnFallow.setBackgroundResource(R.color.orangeNeerbyy);
+    	}
+		
+		
+			sendButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				
@@ -304,17 +301,15 @@ public class ViewPost extends MainMenu {
 		            	
 		            	nameValuePairs.add(new BasicNameValuePair("publication[user_id]", Integer.toString(Network.USER.id)));
 		            	nameValuePairs.add(new BasicNameValuePair("publication[place_id]", placeId));
-		            	nameValuePairs.add(new BasicNameValuePair("publication[latitude]", Double.toString(lat)));
-		            	nameValuePairs.add(new BasicNameValuePair("publication[longitude]", Double.toString(lon)));
-		            	
-		            	
-		            	nameValuePairs.add(new BasicNameValuePair("publication[link]", ""));
-		            	
-		            	
+		            	nameValuePairs.add(new BasicNameValuePair("publication[user_latitude]", Double.toString(lat)));
+		            	nameValuePairs.add(new BasicNameValuePair("publication[user_longitude]", Double.toString(lon)));
 		            	nameValuePairs.add(new BasicNameValuePair("publication[title]", ""));
 		            	nameValuePairs.add(new BasicNameValuePair("publication[content]", editPost.getText().toString()));
-		            	nameValuePairs.add(new BasicNameValuePair("publication[file]", null));
 		            	
+		            	if (passImg != null){
+		            		nameValuePairs.add(new BasicNameValuePair("publication[link]", "2"));
+		            		nameValuePairs.add(new BasicNameValuePair("publication[file]", passImg));
+		            	}
 		            	Message myMessage, msgPb;
 		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
 		                myHandler.sendMessage(msgPb);
@@ -323,7 +318,12 @@ public class ViewPost extends MainMenu {
 						messageBundle.putInt("action", ACTION.CREATE_POST.getValue());
 				        myMessage = myHandler.obtainMessage();	
    		        
-				        InputStream input = Network.retrieveStream(url, METHOD.POST, nameValuePairs);
+				        InputStream input;
+				        if (passImg != null)
+				        	input = Network.retrieveStream(url, METHOD.UPLOAD_POST, nameValuePairs);
+				        else
+				        	input = Network.retrieveStream(url, METHOD.POST, nameValuePairs);
+				        
 						if (input == null)
 							messageBundle.putInt("error", 1);
 						else
@@ -565,8 +565,6 @@ public class ViewPost extends MainMenu {
 																	messageBundle.putInt("error", 2);
 																	messageBundle.putString("msgError", rep.responseMessage);
 																}
-																//else		  	                   
-																	//Network.USER = user;	
 														}						
 														myMessage.setData(messageBundle);
 									                    myHandler.sendMessage(myMessage);
@@ -609,7 +607,8 @@ public class ViewPost extends MainMenu {
 			    	{		
 			    		Toast.makeText(getApplicationContext(), "Fallow Place success", Toast.LENGTH_LONG).show();
 			    		btnFallow.setText("Ne plus suivre ce lieu");
-			    		btnFallow.setBackgroundColor(R.color.orangeNeerbyy);
+			    		btnFallow.setBackgroundResource(R.color.orangeNeerbyy);
+			    		//place.followed_place_id = 1;   //  mettre la vrai avec ret requ
 			    	}
 			    	break;
 		    	case UPDATE_AVATAR:
@@ -621,23 +620,6 @@ public class ViewPost extends MainMenu {
 		    		
 		    		listView.requestLayout();
 		    	    listView.setAdapter(mSchedule);
-		    	    
-		    		//Bundle pack2 = msg.getData();
-			    	//int pos = pack2.getInt("pos");
-			    	
-		    		//Toast.makeText(getApplicationContext(), "update img", Toast.LENGTH_SHORT).show();
-			    	//view.findViewById(R.id.avatar);
-			    	
-			    	//image.setImageBitmap(bitmap);
-		    		
-		    		
-		    	        
-		    		
-		    		/*if (mSchedule != null)
-		    		{
-		    			listView.removeAllViewsInLayout();
-		    			mSchedule.notifyDataSetChanged();
-		    		}*/
 		    		break;
 		    		
 		    	case DELETE_PUB:
@@ -669,11 +651,33 @@ public class ViewPost extends MainMenu {
 			    	{
 			    		Toast.makeText(getApplicationContext(), "Unfallow place success", Toast.LENGTH_SHORT).show();
 			    		btnFallow.setText("Suivre ce lieu");
-			    		btnFallow.setBackgroundColor(R.color.greenNeerbyy);
+			    		btnFallow.setBackgroundResource(R.color.greenNeerbyy);
+			    		//place.followed_place_id = 0;
 			    	}
 		    	break;
 	    	} 	
 	    }
-	};	
+	};
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    switch (requestCode) {
+	        case 1234:     //private static final int REQUEST_CHOOSER = 1234;
+	            if (resultCode == RESULT_OK) {
+
+	                final Uri uri = data.getData();
+
+	                // Get the File path from the Uri
+	                String path = FileUtils.getPath(this, uri);
+	                passImg = path;
+	                // Alternatively, use FileUtils.getFile(Context, Uri)
+	                if (path != null && FileUtils.isLocal(path)) {
+	                    File file = new File(path);
+	                }
+	            }
+	            break;
+	    }
+	}   
+	
 }
 

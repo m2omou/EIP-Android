@@ -1,6 +1,7 @@
 package com.epitech.neerbyy;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
  
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -30,6 +32,12 @@ import org.apache.http.params.HttpParams;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 
 /**
  * <b>Network is a static a class for performing network tasks.</b>
@@ -96,7 +104,8 @@ public class Network {
 		DELETE_COMM(26),
 		DELETE_PUB(27),
 		UNFALLOW(28),
-		GET_SEARCH_PLACE(29);
+		GET_SEARCH_PLACE(29),
+		UPDATE_IMG_MEMORY(30);
 		
 		private final int value;
 		
@@ -114,6 +123,8 @@ public class Network {
 		POST,
 		PUT,
 		DELETE,
+		UPLOAD_POST,
+		UPLOAD_PUT,
 	}
 	 /**
 	  * Define the connection settings
@@ -200,6 +211,7 @@ public class Network {
 	    
 	    if (!isInit)
 			init();
+	    
 	    try {
 	        if (USER != null)
 	        	Log.w("TOKEN USER", "TOKEN: " + USER.token);
@@ -236,6 +248,86 @@ public class Network {
 	        		if (USER != null)
 	    	        	getRequestDelete.setHeader("Authorization", "Token token=" + USER.token);
 	        		getResponse = client.execute(getRequestDelete);
+	        		break;
+	        	}
+	        	
+	        	case UPLOAD_POST: {
+	        		Log.w("Network ", "SENDING : " + getRequestPost.getMethod() + " -- " + getRequestPost.getRequestLine());
+	        		if (nameValuePairs != null) {
+	    	    		//getRequestPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+	        		
+//getRequestPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+	        			
+	        			MultipartEntityBuilder builder = MultipartEntityBuilder.create();        
+
+	        			/* example for setting a HttpMultipartMode */
+	        			builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+	        			/* example for adding an image part */
+	        			//FileBody fileBody = new FileBody(image); //image should be a String
+	        			//builder.addPart("my_file", fileBody); 
+	        			//and so on
+
+	    	            for(int index=0; index < nameValuePairs.size(); index++) {
+	    	                if(nameValuePairs.get(index).getName().equalsIgnoreCase("publication[file]")) {
+	    	                    // If the key equals to "image", we use FileBody to transfer the data 	
+	    	                	Log.w("IMGGGG", nameValuePairs.get(index).getValue());
+	    	                	builder.addPart(nameValuePairs.get(index).getName(), new FileBody(new File (nameValuePairs.get(index).getValue())));
+	    	                	//entity.addPart(nameValuePairs.get(index).getName(), new FileBody(new File (nameValuePairs.get(index).getValue())));
+	    	                } else {
+	    	                    // Normal string data
+	    	                	
+	    	                	builder.addTextBody(nameValuePairs.get(index).getName(), nameValuePairs.get(index).getValue());
+	    	                	//builder.addTextBody("toto", "tata");
+
+	    	                	//entity.addPart(nameValuePairs.get(index).getName(), new StringBody(nameValuePairs.get(index).getValue()));
+	    	                }
+	    	            }
+	    	            HttpEntity entity = builder.build();  	            
+	    	            getRequestPost.setEntity(entity);   
+	        		}
+	        		if (USER != null)
+	    	        	getRequestPost.setHeader("Authorization", "Token token=" + USER.token);	
+	        		getResponse = client.execute(getRequestPost);
+	        		break;
+	        	}
+	        	
+	        	case UPLOAD_PUT: {
+	        		Log.w("Network ", "SENDING UPLOAD PUT : " + getRequestPut.getMethod() + " -- " + getRequestPut.getRequestLine());
+	        		if (nameValuePairs != null) {
+	    	    		//getRequestPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+	        			
+	        			MultipartEntityBuilder builder = MultipartEntityBuilder.create();        
+
+	        			/* example for setting a HttpMultipartMode */
+	        			builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+	        			/* example for adding an image part */
+	        			//FileBody fileBody = new FileBody(image); //image should be a String
+	        			//builder.addPart("my_file", fileBody); 
+	        			//and so on
+
+	    	            for(int index=0; index < nameValuePairs.size(); index++) {
+	    	                if(nameValuePairs.get(index).getName().equalsIgnoreCase("user[avatar]")) {
+	    	                    // If the key equals to "image", we use FileBody to transfer the data 	
+	    	                	Log.w("IMGGGG", nameValuePairs.get(index).getValue());
+	    	                	builder.addPart(nameValuePairs.get(index).getName(), new FileBody(new File (nameValuePairs.get(index).getValue())));
+	    	                	//entity.addPart(nameValuePairs.get(index).getName(), new FileBody(new File (nameValuePairs.get(index).getValue())));
+	    	                } else {
+	    	                    // Normal string data
+	    	                	
+	    	                	builder.addTextBody(nameValuePairs.get(index).getName(), nameValuePairs.get(index).getValue());
+	    	                	//builder.addTextBody("toto", "tata");
+
+	    	                	//entity.addPart(nameValuePairs.get(index).getName(), new StringBody(nameValuePairs.get(index).getValue()));
+	    	                }
+	    	            }
+	    	            HttpEntity entity = builder.build();  	            
+	    	            getRequestPut.setEntity(entity);		
+	        		}
+	        		if (USER != null)
+	    	        	getRequestPut.setHeader("Authorization", "Token token=" + USER.token);	
+	        		getResponse = client.execute(getRequestPut);
 	        		break;
 	        	}
 	        }        

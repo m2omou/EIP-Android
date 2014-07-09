@@ -45,7 +45,7 @@ public class Place implements Serializable {
     	@SerializedName("can_publish")
     	public boolean can_publish;
     	
-    	public Marker marker;   //  Always util ?
+    	public Marker marker;
     }
 }
 

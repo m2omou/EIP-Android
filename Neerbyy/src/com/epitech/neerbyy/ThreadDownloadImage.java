@@ -41,6 +41,7 @@ public class ThreadDownloadImage extends Thread {
 	ListView listView;
 	ViewPost vp;
 	ViewFeed vf;
+	ViewMemory vm;
 	Message myMessage, msgPb;
 	
 	public ThreadDownloadImage(ViewPost vp_, int pos_, ListView listView_, Post listPost_, ArrayList<HashMap<String, Object>> listItem_, HashMap<String, Object> map_) {
@@ -83,6 +84,13 @@ public class ThreadDownloadImage extends Thread {
 		mode = 1;
 	}
 	
+	public ThreadDownloadImage(ViewMemory vm_) {
+	
+		vm = vm_;
+		
+		mode = 3;
+	}
+	
 	public void run() {	 
 		
 		switch (mode){
@@ -95,6 +103,9 @@ public class ThreadDownloadImage extends Thread {
 		case 2:
 			downloadMode2();
 			break;
+		case 3:
+			downloadMode3();
+			break;
 		}	
 	}
 	
@@ -103,7 +114,7 @@ public class ThreadDownloadImage extends Thread {
 	     		
 		//Log.w("MAP", listPost.list[pos].user.avatar_thumb);
 		if (listPost.list[pos].user == null) {
-			map.put("username", "Unknown :");
+			map.put("username", "Unknown user :");
 			map.put("content", listPost.list[pos].content);
 			map.put("avatar", String.valueOf(R.drawable.avatar));
 			map.put("date", listPost.list[pos].create_at);
@@ -131,7 +142,6 @@ public class ThreadDownloadImage extends Thread {
  
 	    Bundle messageBundle = new Bundle();
     	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
-		//messageBundle.putInt("pos", i);
         myMessage = vp.myHandler.obtainMessage();
         myMessage.setData(messageBundle);
         vp.myHandler.sendMessage(myMessage);
@@ -216,6 +226,32 @@ public class ThreadDownloadImage extends Thread {
         myMessage = vf.myHandler.obtainMessage();
         myMessage.setData(messageBundle);
         vf.myHandler.sendMessage(myMessage);
+	}
+	
+	private void downloadMode3() {
+		Log.w("LALALAL", "ICI1 pour " + vm.memory.url);
+		URL pictureURL = null;
+     	try {
+     			pictureURL = new URL(vm.memory.url);
+     		}
+     	catch (MalformedURLException e){
+     		e.printStackTrace();
+     	}
+     	try {
+     		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
+     		Log.w("LALALAL", "ICI2 pour " + vm.memory.url);
+     	} 
+     	catch (IOException e) {
+     		e.printStackTrace();
+     	}
+     	
+        vm.imgPlace = bitmap;
+ 
+	    Bundle messageBundle = new Bundle();
+    	messageBundle.putInt("action", ACTION.UPDATE_IMG_MEMORY.getValue());
+        myMessage = vm.myHandler.obtainMessage();
+        myMessage.setData(messageBundle);
+        vm.myHandler.sendMessage(myMessage);
 	}
 	
 }

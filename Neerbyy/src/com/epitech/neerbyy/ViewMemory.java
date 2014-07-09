@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -35,6 +36,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -50,19 +52,20 @@ import com.epitech.neerbyy.Place.PlaceInfo;
  */
 public class ViewMemory extends MainMenu {
 
-	private TextView sendButton;
-	private TextView info;
-	private EditText editPost;
+	//private TextView sendButton;
+	//private TextView info;
+	//private EditText editPost;
 	private ListView listView;
 	private TextView memoryContent;
 	
-	private ImageButton btnLike;
-	private ImageButton btnDislike;
-	private ImageButton btnFallow;
+	private ImageView btnLike;
+	private ImageView btnDislike;
+	//private ImageButton btnFallow;
+	private ImageView imgMemoryImg;
 	private TextView viewLike;
 	private TextView viewDislike;
 	
-	private Button report;
+	private Button btnSendComm;
 	
 	private Votes votes;
 	public Thread threadGetLike;
@@ -78,34 +81,38 @@ public class ViewMemory extends MainMenu {
 	
 	public Thread threadCancelLike;
 	
+	public Bitmap imgPlace;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_view_memory);
+		setContentView(R.layout.activity_view_memory2);
 	
-		btnLike = (ImageButton)findViewById(R.id.commBtnLike);
-		btnDislike = (ImageButton)findViewById(R.id.commBtnDislike);
-		btnFallow = (ImageButton)findViewById(R.id.btnCreateComm);
+		btnLike = (ImageView)findViewById(R.id.commBtnLike2);
+		btnDislike = (ImageView)findViewById(R.id.commBtnDislike2);
+		//btnFallow = (ImageButton)findViewById(R.id.btnCreateComm);
 		
-		btnFallow.setEnabled(false);
+		viewLike = (TextView)findViewById(R.id.commViewLike2);                   
+		viewDislike = (TextView)findViewById(R.id.commViewDislike2);
 		
-		viewLike = (TextView)findViewById(R.id.commViewLike);                   
-		viewDislike = (TextView)findViewById(R.id.commViewDislike);
+		imgMemoryImg = (ImageView)findViewById(R.id.imgMemoryImg);
+
 		
-		sendButton = (TextView)findViewById(R.id.postSendCommentary);
-		info = (TextView)findViewById(R.id.commTextInfo);
-		editPost = (EditText)findViewById(R.id.postEditCommentary);
-		listView = (ListView)findViewById(R.id.postViewListCommentary);
+	//	sendButton = (TextView)findViewById(R.id.postSendCommentary);
+		//info = (TextView)findViewById(R.id.commTextInfo2);
+	//	editPost = (EditText)findViewById(R.id.postEditCommentary);
+		listView = (ListView)findViewById(R.id.postViewListCommentary2);
 		
-		report = (Button)findViewById(R.id.btnCommReport);
+		btnSendComm = (Button)findViewById(R.id.btnMemorySendMessage);
 		
+		memoryContent = (TextView)findViewById(R.id.commContentMemory2);
 		//listView.removeAllViews();
 		listView.clearChoices();
 		
 		
 		Bundle b  = this.getIntent().getExtras();
 		memory = (Post.PostInfos)b.getSerializable("post");
-		memoryContent = (TextView)findViewById(R.id.commContentMemory);
+		
 		place_id = (String)b.getString("Place_id");  //  inut  deja dans mem.pla
 		
 		if (memory.vote == null)
@@ -119,89 +126,111 @@ public class ViewMemory extends MainMenu {
 			viewDislike.setText(Integer.toString(memory.downvotes));
 		//}
 			
-		/*report.setOnClickListener(new OnClickListener() {	
-			@Override
-			public void onClick(View v) {
-				
-				Intent intent = new Intent(ViewMemory.this, Report_pub.class);		
-				Bundle b = new Bundle();
-				b.putInt("pub_id", memory.id);	
-	    		intent.putExtras(b);
-				startActivity(intent);		
-			}
-		});*/
 			
-		btnFallow.setOnClickListener(new OnClickListener() {	
+			btnSendComm.setOnClickListener(new OnClickListener() {
+
 			@Override
-			public void onClick(View v) {
-				if (Network.USER == null) {
-					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
-					//Intent intent = new Intent(ViewPost.this, Login.class);
-					//startActivity(intent);
-					return;
-				}
-		
-				mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
-						"Long operation starts...", true);
+			public void onClick(View arg0) {
+				AlertDialog.Builder alert = new AlertDialog.Builder(ViewMemory.this);
+
+				alert.setTitle("Ajouter un message");
+				alert.setMessage("Ajouter votre message");
 				
-				Thread threadFallow = new Thread(){
-			        public void run(){	        	      
-					try {	
-		            	Gson gson = new Gson();
-		            	String url = Network.URL + Network.PORT + "/followed_places.json";
-		            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		            	    	
-		            	nameValuePairs.add(new BasicNameValuePair("followed_place[place_id]", place_id));
-		            	
-		            	Message myMessage, msgPb;
-		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
-		                myHandler.sendMessage(msgPb);
-				
-						Bundle messageBundle = new Bundle();
-						messageBundle.putInt("action", ACTION.FALLOW_PLACE.getValue());
-				        myMessage = myHandler.obtainMessage();	
-   		        
-				        InputStream input = Network.retrieveStream(url, METHOD.POST, nameValuePairs);
-						if (input == null)
-							messageBundle.putInt("error", 1);
-						else
-						{	
-							Reader readerResp = new InputStreamReader(input);
-							String ret = Network.checkInputStream(readerResp);
-							
-							if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
-							{
-								messageBundle.putInt("error", 3);
-								messageBundle.putString("msgError", ret);
-							}
+				// Set an EditText view to get user input 
+				final EditText input = new EditText(ViewMemory.this);
+				alert.setView(input);
+
+				alert.setPositiveButton("Envoyer", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					final String value = input.getText().toString();
+				  	Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
+				  		
+				  		
+					
+					if (Network.USER == null) {
+						Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+						//Intent intent = new Intent(ViewPost.this, Login.class);
+						//startActivity(intent);
+						return;
+					}
+					mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
+							"Long operation starts...", true);
+					
+					Thread thread1 = new Thread(){
+				        public void run(){	        	      
+						try {	
+			            	Gson gson = new Gson();
+			            	String url = Network.URL + Network.PORT + "/comments.json";
+			            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+			            	
+			            	nameValuePairs.add(new BasicNameValuePair("comment[user_id]", Integer.toString(Network.USER.id)));
+			            	nameValuePairs.add(new BasicNameValuePair("comment[publication_id]", Integer.toString(memory.id)));
+			            	//nameValuePairs.add(new BasicNameValuePair("comment[content]", editPost.getText().toString()));
+			            	nameValuePairs.add(new BasicNameValuePair("comment[content]", value));
+			            	
+			            	Message myMessage, msgPb;
+			            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
+			                myHandler.sendMessage(msgPb);
+					
+							Bundle messageBundle = new Bundle();
+							messageBundle.putInt("action", ACTION.CREATE_COMM.getValue());
+					        myMessage = myHandler.obtainMessage();	
+	   		        
+					        InputStream input = Network.retrieveStream(url, METHOD.POST, nameValuePairs);
+							if (input == null)
+								messageBundle.putInt("error", 1);
 							else
-							{
-								try {		    
-									rep = gson.fromJson(ret, ResponseWS.class);
-								}
-								catch(JsonParseException e)
-							    {
-							        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
-							    }
+							{	
+								Reader readerResp = new InputStreamReader(input);
+								String ret = Network.checkInputStream(readerResp);
 								
-								if (rep.responseCode == 1)
+								if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
 								{
-									messageBundle.putInt("error", 2);
-									messageBundle.putString("msgError", rep.responseMessage);
+									messageBundle.putInt("error", 3);
+									messageBundle.putString("msgError", ret);
 								}
-							}
-						}						
-						myMessage.setData(messageBundle);
-	                    myHandler.sendMessage(myMessage);
-	                    
-	                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
-		                myHandler.sendMessage(msgPb);
-	                }
-					catch (Exception e) {
-		                e.printStackTrace();}		
-				}};
-			threadFallow.start();
-			}
+								else
+								{
+									try {		    
+										rep = gson.fromJson(ret, ResponseWS.class);
+										//user = rep.getValue(Post.class, 1);
+									}
+									catch(JsonParseException e)
+								    {
+								        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
+								    }
+									
+									if (rep.responseCode == 1)
+									{
+										messageBundle.putInt("error", 2);
+										messageBundle.putString("msgError", rep.responseMessage);
+									}
+								}
+							}						
+							myMessage.setData(messageBundle);
+		                    myHandler.sendMessage(myMessage);
+		                    
+		                    //msgPb = myHandler.obtainMessage(1, (Object) "Success");
+			                //myHandler.sendMessage(msgPb);
+		                }
+						catch (Exception e) {
+			                e.printStackTrace();}
+						
+					}};
+					thread1.start();	
+				  				  		
+				  		
+					}
+				});
+
+				alert.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+				  public void onClick(DialogInterface dialog, int whichButton) {
+				    // Canceled.
+				  }
+				});
+				alert.show();
+			}	
+		
 		});
 		
 		btnLike.setOnClickListener(new OnClickListener() {	
@@ -511,83 +540,13 @@ public class ViewMemory extends MainMenu {
 		}};
 	//threadGetLike.start();
 		
-		sendButton.setOnClickListener(new OnClickListener() {
+		/*sendButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-		
-				if (Network.USER == null) {
-					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
-					//Intent intent = new Intent(ViewPost.this, Login.class);
-					//startActivity(intent);
-					return;
-				}
-				mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
-						"Long operation starts...", true);
-				
-				Thread thread1 = new Thread(){
-			        public void run(){	        	      
-					try {	
-		            	Gson gson = new Gson();
-		            	String url = Network.URL + Network.PORT + "/comments.json";
-		            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		            	
-		            	nameValuePairs.add(new BasicNameValuePair("comment[user_id]", Integer.toString(Network.USER.id)));
-		            	nameValuePairs.add(new BasicNameValuePair("comment[publication_id]", Integer.toString(memory.id)));
-		            	nameValuePairs.add(new BasicNameValuePair("comment[content]", editPost.getText().toString()));
-		            	
-		            	Message myMessage, msgPb;
-		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
-		                myHandler.sendMessage(msgPb);
-				
-						Bundle messageBundle = new Bundle();
-						messageBundle.putInt("action", ACTION.CREATE_COMM.getValue());
-				        myMessage = myHandler.obtainMessage();	
-   		        
-				        InputStream input = Network.retrieveStream(url, METHOD.POST, nameValuePairs);
-						if (input == null)
-							messageBundle.putInt("error", 1);
-						else
-						{	
-							Reader readerResp = new InputStreamReader(input);
-							String ret = Network.checkInputStream(readerResp);
-							
-							if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
-							{
-								messageBundle.putInt("error", 3);
-								messageBundle.putString("msgError", ret);
-							}
-							else
-							{
-								try {		    
-									rep = gson.fromJson(ret, ResponseWS.class);
-									//user = rep.getValue(Post.class, 1);
-								}
-								catch(JsonParseException e)
-							    {
-							        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
-							    }
-								
-								if (rep.responseCode == 1)
-								{
-									messageBundle.putInt("error", 2);
-									messageBundle.putString("msgError", rep.responseMessage);
-								}
-							}
-						}						
-						myMessage.setData(messageBundle);
-	                    myHandler.sendMessage(myMessage);
-	                    
-	                    //msgPb = myHandler.obtainMessage(1, (Object) "Success");
-		                //myHandler.sendMessage(msgPb);
-	                }
-					catch (Exception e) {
-		                e.printStackTrace();}
-					
-				}};
-			thread1.start();
+
 			}
-		});
+		});*/
 		
 		
 		
@@ -635,41 +594,46 @@ public class ViewMemory extends MainMenu {
 	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{
 		    	case CREATE_COMM:
-		    		info.setText("");
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Comm error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "comm error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	
 			    	else
 			    	{
-			    		editPost.setText("");
-			    		info.setText("Commentary send success" );
+			    		Toast.makeText(getApplicationContext(), "Commentary send success", Toast.LENGTH_SHORT).show(); 
+
 			    		//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
 			    			//	"Long operation starts...", true);
 			    		new ThreadUpdateComm(ViewMemory.this).start();
 			    	}
 			    	break;
 		    	case UPDATE_COMM:
-		    		info.setText("");		    	
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Update comm error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "Update comm error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	
 			    	else
 			    	{
-			    		//listPost = (Post)pack.getSerializable("post");   //  utile ?????? 
-			    		//Log.w("PATH", "LAAA");
-			    		//List listStrings = new ArrayList<String>() ;//= {"France","Allemagne","Russie"};
-			    		String[] listStrings = new String[listComm.list.length];
 			    		
+			    		//////////////////////////////////////////DETECT TYPE///////////////////////////
+			    		if (memory.type == 2) {
+				    		Toast.makeText(getApplicationContext(), "DETECT UNE IMAGE", Toast.LENGTH_SHORT).show();
+
+			    			new ThreadDownloadImage(ViewMemory.this).start();
+			    		
+			    		}
+			    		
+			    		String[] listStrings = new String[listComm.list.length];			    		
 			    		
 			    		//Création de la ArrayList qui nous permettra de remplir la listView
 			            ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
@@ -804,15 +768,13 @@ public class ViewMemory extends MainMenu {
 										                e.printStackTrace();}
 												    }};
 												thread1.start();			
-	
 								            	break;
 								               }
 								          	}
 								        });
 								AlertDialog alert = builder.create();
 								alert.show();
-								return false;
-									
+								return false;		
 							}
 						});			    		
 			    		
@@ -835,25 +797,21 @@ public class ViewMemory extends MainMenu {
 		    			    }
 		    			});
 		    		}*/
-			    		
-			    		
-			    		
-			    					    		
 			    		Toast.makeText(getApplicationContext(), "Update comm success", Toast.LENGTH_LONG).show();
 			    		//threadGetLike.start();
 			    	}
 			    	break;
 			    	
 		    	case GET_VOTES:
-		    		info.setText("");		    	
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Get votes error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "Get vote error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	
 			    	else
 			    	{
 			    		viewLike.setText(Integer.toString(memory.upvotes));
@@ -862,16 +820,15 @@ public class ViewMemory extends MainMenu {
 			    	break;
 			    	
 		    	case SEND_VOTE:
-		    		info.setText("");		    	
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Send vote error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "Send vote error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
-			    	else
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	
 			    	{    		
 			    		Toast.makeText(getApplicationContext(), "Send vote success", Toast.LENGTH_LONG).show();
 			    		if (actionVote == 1)
@@ -887,15 +844,15 @@ public class ViewMemory extends MainMenu {
 			    	break;
 			    	
 		    	case CANCEL_VOTE:
-		    		info.setText("");		    	
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Cancel vote error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "Cancel vote error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	
 			    	else
 			    	{   		
 			    		Toast.makeText(getApplicationContext(), "Cancel vote success " + actionVote, Toast.LENGTH_LONG).show();
@@ -906,19 +863,19 @@ public class ViewMemory extends MainMenu {
 			    	}
 			    	break;
 		    	case FALLOW_PLACE:
-		    		info.setText("");		    	
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Fallow Place error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "Fallow Place error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	
 			    	else
 			    	{		
 			    		Toast.makeText(getApplicationContext(), "Fallow Place success", Toast.LENGTH_LONG).show();
-			    		btnFallow.setImageResource(R.drawable.iconmortel_f);
+			    	//	btnFallow.setImageResource(R.drawable.iconmortel_f);
 			    	}
 			    	break;
 		    	case DELETE_COMM:
@@ -934,6 +891,22 @@ public class ViewMemory extends MainMenu {
 			    	{		
 			    		Toast.makeText(getApplicationContext(), "Delete Comm success", Toast.LENGTH_LONG).show();
 			    		new ThreadUpdateComm(ViewMemory.this).start();
+			    	}
+			    	break;
+			    	
+		    	case UPDATE_IMG_MEMORY:
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+			    	else if (Error == 2)
+			    	{
+		    			Toast.makeText(getApplicationContext(), "update img error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+			    	}
+			    	else if (Error == 3)
+			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	else
+			    	{		
+			    		Toast.makeText(getApplicationContext(), "Update img success", Toast.LENGTH_LONG).show();
+			    		imgMemoryImg.setImageBitmap(imgPlace);			    	
 			    	}
 			    	break;
 	    	} 	

@@ -18,10 +18,12 @@ import com.google.gson.JsonParseException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +36,7 @@ import android.widget.Toast;
  *@see User
  *@see MyRegex
  */
-public class Login extends MainMenu {
+public class Login extends Activity {
 
 	Button createAccount;
 	Button login;
@@ -279,4 +281,11 @@ public class Login extends MainMenu {
 	    	} 	
 	    }
 	};
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.login, menu);
+		//menu.getItem(2).getSubMenu().setHeaderIcon(R.drawable.ic_launcher);
+		return super.onCreateOptionsMenu(menu);
+	}
 }
