@@ -28,7 +28,7 @@ import com.google.gson.JsonParseException;
 
 public class ThreadDownloadImage extends Thread {
 	
-	int mode;                   // 0 = avatar listview  / 1 bitmap editInfoUser / 2 ViewFeed
+	int mode;                   // 0 = avatar listview  / 1 bitmap editInfoUser / 2 ViewFeed / 3 view memory
 	
 	EditInfoUser eiu;
 	int pos;
@@ -112,19 +112,19 @@ public class ThreadDownloadImage extends Thread {
 	private void downloadMode0() {
 		//for (int i = 0; i < listPost.list.length; i++) {
 	     		
-		//Log.w("MAP", listPost.list[pos].user.avatar_thumb);
+		Log.w("DATE", "jai " + listPost.list[pos].created_at);
 		if (listPost.list[pos].user == null) {
 			map.put("username", "Unknown user :");
 			map.put("content", listPost.list[pos].content);
 			map.put("avatar", String.valueOf(R.drawable.avatar));
-			map.put("date", listPost.list[pos].create_at);
-			return;
+			map.put("date", "\n" + formatDate(listPost.list[pos].created_at) + ", " + formatHour(listPost.list[pos].created_at));
 		}
-		
-	     		map.put("username", listPost.list[pos].user.username + " :");
-		        map.put("content", listPost.list[pos].content);
-		        map.put("date", listPost.list[pos].create_at);
-		 
+		else
+		{
+	     	map.put("username", listPost.list[pos].user.username + " :");
+	        map.put("content", listPost.list[pos].content);
+			map.put("date", "\n" + formatDate(listPost.list[pos].created_at) + ", " + formatHour(listPost.list[pos].created_at));
+		}
 		URL pictureURL = null;
      	try {
      			pictureURL = new URL(listPost.list[pos].user.avatar_thumb);
@@ -182,15 +182,15 @@ public class ThreadDownloadImage extends Thread {
 			map.put("username", "Unknown :");
 			map.put("content", listPost.list[pos].content);
 			map.put("avatar", String.valueOf(R.drawable.avatar));
-			map.put("date", listPost.list[pos].create_at);
-			return;
+			map.put("date", "\n" + listPost.list[pos].created_at);
 		}
-		
-	     		map.put("username", listPost.list[pos].user.username + " :");
-		        map.put("content", listPost.list[pos].content);
-		        map.put("date", listPost.list[pos].create_at);
-		        //map.put("avatar", String.valueOf(R.drawable.avatar));
-	     		
+		else
+		{
+	     	map.put("username", listPost.list[pos].user.username + " :");
+		    map.put("content", listPost.list[pos].content);
+		    map.put("date", "\n" + listPost.list[pos].created_at);
+		    //map.put("avatar", String.valueOf(R.drawable.avatar));
+		}		
 	     		
 			 	//URL urll = new URL(listPost.list[i].user.avatar_thumb);
 	     		//InputStream in2 = (InputStream) urll.openConnection().getInputStream();
@@ -252,6 +252,20 @@ public class ThreadDownloadImage extends Thread {
         myMessage = vm.myHandler.obtainMessage();
         myMessage.setData(messageBundle);
         vm.myHandler.sendMessage(myMessage);
+	}
+	
+	public String formatDate(String date) {
+		String newDate;
+		
+		newDate = date.substring(0, 10);
+		return newDate;
+	}
+	
+	public String formatHour(String date) {
+		String newHour;
+		
+		newHour = date.substring(12, 16);
+		return newHour;
 	}
 	
 }

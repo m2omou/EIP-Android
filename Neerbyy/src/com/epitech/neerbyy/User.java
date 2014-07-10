@@ -1,5 +1,7 @@
 package com.epitech.neerbyy;
 import java.io.Serializable;
+
+import com.epitech.neerbyy.Messages.Message.Settings;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -37,4 +39,17 @@ public class User implements Serializable{
 	public String created_at;
 	@SerializedName("updated_at")
 	public String updated_at;
+	@SerializedName("settings")
+	public Settings settings;
+	
+	/** This class describe the parameters of a user.
+	 * @author Seb
+	 */
+	public class Settings implements Serializable{
+		@SerializedName("allow_messages")
+		public boolean allow_messages;
+	}
 }
+
+
+

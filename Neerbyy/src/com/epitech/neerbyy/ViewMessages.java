@@ -60,6 +60,7 @@ public class ViewMessages extends MainMenu {
 	ProgressDialog mProgressDialog;
 	public Messages listMessages;
 	public int conv_id;
+	public int recipientId;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +81,7 @@ public class ViewMessages extends MainMenu {
 		Bundle b  = this.getIntent().getExtras();
 		conv = (Conversation)b.getSerializable("conv");
 		conv_id = b.getInt("convId");
+		recipientId = b.getInt("recipientId");
 		
 		btnSendMessage.setOnClickListener(new OnClickListener() {	
 			@Override
@@ -95,7 +97,10 @@ public class ViewMessages extends MainMenu {
 		            	String url = Network.URL + Network.PORT + "/messages.json";
 		            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		            	
-		            	nameValuePairs.add(new BasicNameValuePair("message[recipient_id]", Integer.toString(conv.recipient.id)));
+		            	if (conv_id != -1)
+		            		nameValuePairs.add(new BasicNameValuePair("message[recipient_id]", Integer.toString(conv.recipient.id)));
+		            	else
+		            		nameValuePairs.add(new BasicNameValuePair("message[recipient_id]", Integer.toString(recipientId)));
 		            	nameValuePairs.add(new BasicNameValuePair("message[content]", editMessage.getText().toString()));
 		            	
 		            	Message myMessage, msgPb;
@@ -123,7 +128,8 @@ public class ViewMessages extends MainMenu {
 							{
 								try {		    
 									rep = gson.fromJson(ret, ResponseWS.class);
-									//user = rep.getValue(Post.class, 1);
+									if (conv_id == -1)
+										conv = rep.getValue(Conversation.class);
 								}
 								catch(JsonParseException e)
 							    {
@@ -149,11 +155,12 @@ public class ViewMessages extends MainMenu {
 			thread1.start();
 			}
 		});
-		
-		mProgressDialog = ProgressDialog.show(ViewMessages.this, "Please wait",
-				"Long operation starts...", true);
-		new ThreadUpdateMessages(ViewMessages.this).start();
-}
+		if (conv_id != -1) {
+			mProgressDialog = ProgressDialog.show(ViewMessages.this, "Please wait",
+					"Long operation starts...", true);
+			new ThreadUpdateMessages(ViewMessages.this).start();
+		}
+	}
 	
 	/*Message message = new Message();
 	Callback callback = new Callback() {
@@ -278,6 +285,8 @@ public class ViewMessages extends MainMenu {
 			    	{
 			    		editMessage.setText("");
 			    		info.setText("Message send success" );
+			    		if (conv_id == -1)
+			    			conv_id = conv.id;
 			    		new ThreadUpdateMessages(ViewMessages.this).start();
 			    		//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
 			    			//	"Long operation starts...", true);

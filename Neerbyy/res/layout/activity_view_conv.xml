@@ -23,12 +23,12 @@
         android:background="@color/white"
         android:divider="@drawable/separator_line"
         android:dividerHeight="15dp"
-        tools:listitem="@android:layout/simple_expandable_list_item_1" >
+        tools:listitem="@layout/view_item_list" >
 
     </ListView>
 
     <Button
-        android:id="@+id/Button055"
+        android:id="@+id/titleViewConv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -42,7 +42,7 @@
         android:typeface="normal" />
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/convViewNewConv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

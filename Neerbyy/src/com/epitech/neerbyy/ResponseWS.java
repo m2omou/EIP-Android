@@ -1,8 +1,13 @@
 package com.epitech.neerbyy;
 
+import java.io.Serializable;
+
 import android.util.Log;
+import android.widget.Toast;
 
 import com.epitech.neerbyy.Conversations.Conversation;
+import com.epitech.neerbyy.Users;
+import com.epitech.neerbyy.User;
 import com.epitech.neerbyy.Messages.Message;
 import com.google.gson.annotations.SerializedName;
 //import com.google.gson.Gson;
@@ -14,7 +19,7 @@ import com.google.gson.JsonParseException;
  * @author Seb
  *
  */
-public class ResponseWS {
+public class ResponseWS{
 /**
  * responseCode is the error code number. 0 for no error, or 1.	 
  */
@@ -33,10 +38,13 @@ public class ResponseWS {
 	//public Object result;
 	public Result result;
 	
-	public class Result {
+	public class Result{
 		
 		@SerializedName("user")
 		public User user;
+		
+		@SerializedName("users")
+		public User[] users;
 		
 		@SerializedName("places")
 		public Place.PlaceInfo[] places;
@@ -53,6 +61,10 @@ public class ResponseWS {
 		@SerializedName("conversations")
 		//public Conversations conversations;
 		public Conversation[] conversations;
+		
+		@SerializedName("conversation")
+		//public Conversations conversations;
+		public Conversation conversation;
 		
 		@SerializedName("messages")
 		//public Conversations conversations;
@@ -74,12 +86,20 @@ public class ResponseWS {
 	public <T> T getValue(Class<T> obj)
 	{
 		try {
-			//Gson gson = new Gson();	
+			//Gson gson = new Gson();
+			Log.w("DETECT", "DEBUT DETECT");
+
 					if (responseCode != 1)
 							{
 								if (obj == User.class) {
 									Log.w("DETECT", "DETECT USER");
 									return (T) result.user;
+								}
+								else if (obj == Users.class) {
+									Log.w("DETECT", "DETECT USERS");
+									Users users = new Users();
+									users.list = result.users;
+									return (T) users;
 								}
 								else if (obj == Place.class) {
 									Log.w("DETECT", "DETECT PLACE");
@@ -113,6 +133,12 @@ public class ResponseWS {
 									conv.list = result.conversations;
 									return (T) conv;
 								}
+								else if (obj == Conversation.class) {
+									Log.w("DETECT", "DETECT GET_CONV");	
+									Conversations conv = new Conversations();
+									conv.conv = result.conversation;
+									return (T) conv.conv;
+								}
 								else if (obj == Messages.class) {
 									Log.w("DETECT", "DETECT GET_MESSAGES");	
 									Messages mess = new Messages();
@@ -129,7 +155,8 @@ public class ResponseWS {
 				}
 		catch(JsonParseException e)
 		{
-			System.out.println("Exception nb 2 in check_exitrestrepWSResponse::"+e.toString());
+			Log.w("DETECT", "Exception nb 2 in check_exitrestrepWSResponse");
+			//System.out.println("Exception nb 2 in check_exitrestrepWSResponse::"+e.toString());
 			return null;
 		}	
 		return null;

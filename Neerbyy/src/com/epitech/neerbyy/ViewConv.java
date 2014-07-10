@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -42,6 +43,8 @@ public class ViewConv extends MainMenu {
 	
 	private Thread threadGetConv;
 	
+	private ImageView newConv;
+	
 	ResponseWS rep;
 	ProgressDialog mProgressDialog;
 	public Conversations listConv;
@@ -54,7 +57,8 @@ public class ViewConv extends MainMenu {
 		info = (TextView)findViewById(R.id.convTextInfo);
 		listView = (ListView)findViewById(R.id.convViewList);
 		
-		//listView.removeAllViews();
+		newConv = (ImageView)findViewById(R.id.convViewNewConv);
+
 		listView.clearChoices();
 		
 		
@@ -66,8 +70,17 @@ public class ViewConv extends MainMenu {
 	//	placeName.setText(b.getString("placeName"));  
 	//	placeName.setText(place.name); 
 
-//		b.getSerializable(key)
+    //	b.getSerializable(key)
 	
+		newConv.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(ViewConv.this, SearchUser.class);
+				startActivity(intent);
+			}
+		});
+		
 		threadGetConv = new Thread(){
 	        public void run(){	        	      
 			try {	

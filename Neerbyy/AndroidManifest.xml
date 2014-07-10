@@ -123,7 +123,11 @@
             android:label="@string/title_activity_menu2" >
             
         </activity>
-        
+        <activity
+            android:name="com.epitech.neerbyy.SearchUser"
+            android:label="Search User" >
+            
+        </activity>
         <activity
 		    android:name="com.ipaulpro.afilechooser.FileChooserActivity"
 		    android:icon="@drawable/ic_chooser"

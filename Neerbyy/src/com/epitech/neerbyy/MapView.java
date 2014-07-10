@@ -165,13 +165,17 @@ public class MapView extends FragmentActivity implements LocationListener{
         Button btn_find = (Button) findViewById(R.id.btn_find);      
         OnClickListener findClickListener = new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                
+            public void onClick(View v) {       
                 Thread thread1 = new Thread(){
         	        public void run(){	        	      
         			try {	
                     	Gson gson = new Gson();
-                    	String url = Network.URL + Network.PORT + "/search/places.json?query=" + etLocation.getText().toString();
+                
+                    	String url;
+                    	if (locat != null)
+                    		url = Network.URL + Network.PORT + "/search/places.json?query=" + etLocation.getText() + "&user_latitude=" + locat.getLatitude() + "&user_longitude=" + locat.getLongitude();
+                    	else
+                    		url = Network.URL + Network.PORT + "/search/places.json?query=" + etLocation.getText();
                     	
                     	Message myMessage, msgPb;
                     	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");
@@ -181,12 +185,14 @@ public class MapView extends FragmentActivity implements LocationListener{
             			messageBundle.putInt("action", ACTION.GET_SEARCH_PLACE.getValue());
             	        myMessage = myHandler.obtainMessage();	
                    
+            	        searchPlaces = null;
+            	        
             	        InputStream input = Network.retrieveStream(url, METHOD.GET, null);
                     	
             	        if (input == null)
             				messageBundle.putInt("error", 1);
             			else
-            			{	
+            			{
             				Reader readerResp = new InputStreamReader(input);
             				String ret = Network.checkInputStream(readerResp);
             				
@@ -197,12 +203,17 @@ public class MapView extends FragmentActivity implements LocationListener{
             				}
             				else
             				{
-            					try {		    
-            						rep = gson.fromJson(ret, ResponseWS.class);            							
+            					try {
+            						Log.w("DETECT", "111");
+            						rep = gson.fromJson(ret, ResponseWS.class); 
+            						
+            						Log.w("DETECT", "222");
+            						
             						searchPlaces = rep.getValue(Place.class);         						
             					}
             					catch(JsonParseException e)
             				    {
+            						Log.w("DETECT", "MERDE");
             				        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
             				    }
             					if (searchPlaces == null)
@@ -408,7 +419,10 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    		Toast.makeText(getApplicationContext(), "Search Places find : " + searchPlaces.list.length, Toast.LENGTH_SHORT).show();
     			    		
     			    		if (searchPlaces.list.length == 0)
+    			    		{
+        			    		Toast.makeText(getApplicationContext(), "list vide !!!!", Toast.LENGTH_SHORT).show();
     			    			return;
+    			    		}
     			    		
     			    		List<CharSequence> charSequences = new ArrayList<CharSequence>();
     			    		for (int i = 0; i < searchPlaces.list.length; i++) {
@@ -422,13 +436,18 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    			
     			    			charSequences.add(tmp);
     			    		}
+    			    		
     			    		final CharSequence[] charSequenceArray = charSequences.toArray(new
     			    			    CharSequence[charSequences.size()]);
+    			    		
+    			    		Toast.makeText(getApplicationContext(),"Charsequence a " + charSequenceArray.length, Toast.LENGTH_SHORT).show();
+
     			    		
 							AlertDialog.Builder builder = new AlertDialog.Builder(MapView.this);
 							builder.setTitle("Que Cherchez vous ?");
 							builder.setItems(charSequenceArray, new DialogInterface.OnClickListener() {
 							          
+								@Override
 									public void onClick(DialogInterface dialog, int item) {
 							                Toast.makeText(getApplicationContext(), charSequenceArray[item], Toast.LENGTH_SHORT).show();
 							               

@@ -23,8 +23,8 @@ public class Post implements Serializable {
     	public int id;
     	@SerializedName("content")
     	public String content;
-    	@SerializedName("create_at")
-    	public String create_at;
+    	@SerializedName("created_at")
+    	public String created_at;
     	@SerializedName("updated_at")
     	public String updated_at;
     	@SerializedName("longitude")

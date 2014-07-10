@@ -105,7 +105,8 @@ public class Network {
 		DELETE_PUB(27),
 		UNFALLOW(28),
 		GET_SEARCH_PLACE(29),
-		UPDATE_IMG_MEMORY(30);
+		UPDATE_IMG_MEMORY(30),
+		SEARCH_USER(31);
 		
 		private final int value;
 		
@@ -249,14 +250,11 @@ public class Network {
 	    	        	getRequestDelete.setHeader("Authorization", "Token token=" + USER.token);
 	        		getResponse = client.execute(getRequestDelete);
 	        		break;
-	        	}
-	        	
+	        	}        	
 	        	case UPLOAD_POST: {
 	        		Log.w("Network ", "SENDING : " + getRequestPost.getMethod() + " -- " + getRequestPost.getRequestLine());
 	        		if (nameValuePairs != null) {
 	    	    		//getRequestPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-	        		
-//getRequestPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 	        			
 	        			MultipartEntityBuilder builder = MultipartEntityBuilder.create();        
 

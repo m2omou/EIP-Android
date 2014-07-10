@@ -105,7 +105,7 @@ public class Menu2 extends MainMenu {
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(Menu2.this, ViewMessages.class);
+				Intent intent = new Intent(Menu2.this, ViewConv.class);
 				startActivity(intent);
 			}
 		});
