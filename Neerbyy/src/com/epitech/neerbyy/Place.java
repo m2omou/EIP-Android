@@ -2,6 +2,8 @@ package com.epitech.neerbyy;
 
 import java.io.Serializable;
 
+import android.graphics.Bitmap;
+
 import com.google.android.gms.maps.model.Marker;
 import com.google.gson.annotations.SerializedName;
 
@@ -27,7 +29,7 @@ public class Place implements Serializable {
     	@SerializedName("name")
     	public String name;
     	@SerializedName("postcode")
-    	public int cp;
+    	public String cp;
     	@SerializedName("city")
     	public String city;
     	@SerializedName("address")
@@ -39,13 +41,15 @@ public class Place implements Serializable {
     	@SerializedName("followed_place_id")
     	public int followed_place_id;
     	@SerializedName("distance")
-    	public int distance;
+    	public double distance;
     	@SerializedName("distance_boundary")
-    	public int distance_boundary;
+    	public double distance_boundary;
     	@SerializedName("can_publish")
     	public boolean can_publish;
     	
+    	public Marker markerDef;
     	public Marker marker;
+    	public Bitmap bitmap;
     }
 }
 

@@ -86,29 +86,6 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/tableRow7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingTop="25dp" >
-
-            <Button
-                android:id="@+id/btnMenuFavoris"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/greenNeerbyy"
-                android:gravity="center_vertical"
-                android:padding="5dp"
-                android:text="Mes Lieux Favoris"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:typeface="normal" />
-
-        </TableRow>
-
-        <TableRow
             android:id="@+id/tableRow3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

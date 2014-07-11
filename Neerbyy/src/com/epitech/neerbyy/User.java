@@ -46,8 +46,14 @@ public class User implements Serializable{
 	 * @author Seb
 	 */
 	public class Settings implements Serializable{
+		@SerializedName("id")
+		public int id;
 		@SerializedName("allow_messages")
 		public boolean allow_messages;
+		@SerializedName("send_notification_for_comments")
+		public boolean send_notification_for_comments;
+		@SerializedName("send_notification_for_messages")
+		public boolean send_notification_for_messages;
 	}
 }
 

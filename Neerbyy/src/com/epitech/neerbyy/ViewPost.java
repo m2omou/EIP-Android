@@ -400,6 +400,7 @@ public class ViewPost extends MainMenu {
 	            break;
 	    	}
 	    	
+	    	
 	    	Bundle pack = msg.getData();
 	    	int Error = pack.getInt("error");
 	    	switch (Network.ACTION.values()[pack.getInt("action")])
@@ -618,8 +619,13 @@ public class ViewPost extends MainMenu {
 		    	        
 		    		mSchedule.setViewBinder(new MyViewBinder());
 		    		
+		    		//ImageView dd = (ImageView)findViewById(R.id.avatar);
+			    	//dd.setImageBitmap(CreateCircleBitmap.getRoundedCornerBitmap(dd.getDrawingCache(), 100));
+		    		
 		    		listView.requestLayout();
 		    	    listView.setAdapter(mSchedule);
+		    	    
+		    	    
 		    		break;
 		    		
 		    	case DELETE_PUB:

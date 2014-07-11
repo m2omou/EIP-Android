@@ -127,6 +127,7 @@ public class ViewMemory extends MainMenu {
 		//}
 			
 			
+			
 			btnSendComm.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -906,7 +907,19 @@ public class ViewMemory extends MainMenu {
 			    	else
 			    	{		
 			    		Toast.makeText(getApplicationContext(), "Update img success", Toast.LENGTH_LONG).show();
-			    		imgMemoryImg.setImageBitmap(imgPlace);			    	
+			    		
+			    		//imgMemoryImg.setAdjustViewBounds(true);
+			    		//imgMemoryImg.setMaxWidth(100);
+			    		
+			    		
+			    		
+			    		//imgMemoryImg.setMaxHeight(150);
+			    		
+			    		
+			    		imgMemoryImg.setImageBitmap(CreateCircleBitmap.getRoundedCornerBitmap(imgPlace, imgPlace.getWidth()));	    		
+			    		//imgMemoryImg.setImageBitmap(imgPlace);
+			    		
+			    		//imgMemoryImg.setImageBitmap(new CreateCircleBitmap(imgPlace, 50));
 			    	}
 			    	break;
 	    	} 	

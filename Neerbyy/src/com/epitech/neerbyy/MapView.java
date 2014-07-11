@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -173,9 +174,9 @@ public class MapView extends FragmentActivity implements LocationListener{
                 
                     	String url;
                     	if (locat != null)
-                    		url = Network.URL + Network.PORT + "/search/places.json?query=" + etLocation.getText() + "&user_latitude=" + locat.getLatitude() + "&user_longitude=" + locat.getLongitude();
+                    		url = Network.URL + Network.PORT + "/search/places.json?query=" + etLocation.getText().toString() + "&user_latitude=" + locat.getLatitude() + "&user_longitude=" + locat.getLongitude();
                     	else
-                    		url = Network.URL + Network.PORT + "/search/places.json?query=" + etLocation.getText();
+                    		url = Network.URL + Network.PORT + "/search/places.json?query=" + etLocation.getText().toString();
                     	
                     	Message myMessage, msgPb;
                     	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");
@@ -205,6 +206,7 @@ public class MapView extends FragmentActivity implements LocationListener{
             				{
             					try {
             						Log.w("DETECT", "111");
+            						
             						rep = gson.fromJson(ret, ResponseWS.class); 
             						
             						Log.w("DETECT", "222");
@@ -213,7 +215,7 @@ public class MapView extends FragmentActivity implements LocationListener{
             					}
             					catch(JsonParseException e)
             				    {
-            						Log.w("DETECT", "MERDE");
+            						Log.w("DETECT", "MERDE " + e.toString());
             				        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
             				    }
             					if (searchPlaces == null)
@@ -265,6 +267,7 @@ public class MapView extends FragmentActivity implements LocationListener{
         	Toast.makeText(this, "Error loading map", Toast.LENGTH_LONG).show();	
         	return;
         }
+    	
     	
         //Obtention de la référence du service
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
@@ -374,6 +377,7 @@ public class MapView extends FragmentActivity implements LocationListener{
             abonnementGPS();
         }*/
     }
+    
  
     @Override
     public void onStatusChanged(final String provider, final int status, final Bundle extras) {}
@@ -459,8 +463,32 @@ public class MapView extends FragmentActivity implements LocationListener{
 							        });
 							AlertDialog alert = builder.create();
 							alert.show();			
-    			    }	
-    	    	} 	
+    			    }
+    		    	break;
+    		    	
+    		    	case UPDATE_ICON_MARKER:    				    			    	
+    			    	if (Error == 1)
+    			    		Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_LONG).show();
+    			    	else if (Error == 2)
+    			    	{
+    			    		Toast.makeText(getApplicationContext(), "Update icon marker error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
+    			    	}
+    			    	else if (Error == 3)
+    			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
+    			    	else
+    			    	{
+    			    		//Toast.makeText(getApplicationContext(), "Icone marker updated", Toast.LENGTH_SHORT).show();
+    			    		int indice = pack.getInt("indicePost");
+    			    		
+    			    		if (places.list.length > indice) {
+    			    			places.list[indice].marker.setIcon(BitmapDescriptorFactory.fromBitmap(places.list[indice].bitmap));
+    			    			
+    			    		
+    			    		}
+    			    	}	
+    			    break;
+    	    	}
+    	    	
     	    }
     	};
     	
@@ -470,7 +498,19 @@ public class MapView extends FragmentActivity implements LocationListener{
     		{	
     			if (!isAlreadyHere(places.list[i]))
     			{
-    				places.list[i].marker = gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.myPin2)).snippet(places.list[i].address));	
+    				places.list[i].markerDef = gMap.addMarker(new MarkerOptions().position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.greenpin1)));
+
+    				places.list[i].marker = gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).snippet(places.list[i].address).icon(BitmapDescriptorFactory.fromResource(R.drawable.greenpin1)));	
+
+
+    				places.list[i].markerDef.hideInfoWindow();
+    				places.list[i].markerDef.setDraggable(false);
+    				//places.list[i].markerDef.setFlat(true);
+    				//places.list[i].markerDef.setInfoWindowAnchor(-1, -1);
+    				//places.list[i].markerDef.setAnchor(-1, -1);
+    				
+    				new ThreadDownloadImage(MapView.this, i).start();
+    				//places.list[i].marker.setIcon(BitmapDescriptorFactory.fromPath(places.list[i].icon));
     				listAllPlaceInfos.add(places.list[i]);
     				listAllMarker.add(places.list[i].marker);		
     			}		

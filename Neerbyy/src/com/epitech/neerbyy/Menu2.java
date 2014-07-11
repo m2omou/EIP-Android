@@ -19,7 +19,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
@@ -32,7 +34,7 @@ public class Menu2 extends MainMenu {
 
 	Button btnMap;
 	Button btnFlux;
-	Button btnFavorite; 
+	//Button btnFavorite; 
 	Button btnMessage; 
 	Button btnInfo;
 	Button btnCoDeco;
@@ -48,7 +50,7 @@ public class Menu2 extends MainMenu {
 
 		btnMap = (Button)findViewById(R.id.btnMenuViewMap);
 		btnFlux = (Button)findViewById(R.id.btnMenuFlux);
-		btnFavorite = (Button)findViewById(R.id.btnMenuFavoris);
+		//btnFavorite = (Button)findViewById(R.id.btnMenuFavoris);
 		btnMessage = (Button)findViewById(R.id.btnMenuMessage);
 		btnInfo = (Button)findViewById(R.id.btnMenuMyInfo);
 		btnCoDeco = (Button)findViewById(R.id.btnMenuCoDeco);
@@ -56,12 +58,12 @@ public class Menu2 extends MainMenu {
 		
 		if (Network.USER == null) {
 			btnFlux.setEnabled(false);
-			btnFavorite.setEnabled(false);
+			//btnFavorite.setEnabled(false);
 			btnMessage.setEnabled(false);
 			btnInfo.setEnabled(false);
 			
 			btnFlux.setVisibility(View.INVISIBLE);
-			btnFavorite.setVisibility(View.INVISIBLE);
+			//btnFavorite.setVisibility(View.INVISIBLE);
 			btnMessage.setVisibility(View.INVISIBLE);
 			btnInfo.setVisibility(View.INVISIBLE);
 		}
@@ -191,15 +193,47 @@ public class Menu2 extends MainMenu {
 			thread1.start();						
 			}
 		});
-		/*btnOptions.setOnClickListener(new View.OnClickListener() {
+		
+		btnOptions.setEnabled(false);
+		btnOptions.setVisibility(View.INVISIBLE);
+		btnOptions.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(Menu2.this, CreateAccount.class);
-				startActivity(intent);
+			
 			}
-		});*/
-	
+			/*if (Network.USER == null) {
+				Toast.makeText(getApplicationContext(), "Veuillez vous identifier d'abord", Toast.LENGTH_SHORT).show();
+				return;
+			}
+				
+				final CharSequence[] items = {"Messages prives"};//, "Autoriser commentaires sur mes publications", "Autoriser commentaires sur mes messages"};
+				final boolean[] check = {false};//, false, false};
+				
+				if (Network.USER.settings.allow_messages)
+					check[0] = true;
+				/*if (Network.USER.settings.send_notification_for_comments)
+					check[1] = true;
+				if (Network.USER.settings.send_notification_for_messages)
+					check[2] = true;*/ 
+			/*
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(Menu2.this);
+				builder.setTitle("Modifiez vos options :");
+				builder.setMultiChoiceItems(items, check, new DialogInterface.OnMultiChoiceClickListener() {
+				          
+				@Override
+				public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+					// TODO Auto-generated method stub	
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.setCancelable(true);
+				
+				alert.show();
+						
+			}*/
+		});
 	}
 	
 	

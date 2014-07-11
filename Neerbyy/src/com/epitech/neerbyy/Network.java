@@ -106,7 +106,8 @@ public class Network {
 		UNFALLOW(28),
 		GET_SEARCH_PLACE(29),
 		UPDATE_IMG_MEMORY(30),
-		SEARCH_USER(31);
+		SEARCH_USER(31),
+		UPDATE_ICON_MARKER(32);
 		
 		private final int value;
 		

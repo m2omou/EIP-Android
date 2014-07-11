@@ -42,6 +42,8 @@ public class ThreadDownloadImage extends Thread {
 	ViewPost vp;
 	ViewFeed vf;
 	ViewMemory vm;
+	MapView mv;
+	int indiceMarker;
 	Message myMessage, msgPb;
 	
 	public ThreadDownloadImage(ViewPost vp_, int pos_, ListView listView_, Post listPost_, ArrayList<HashMap<String, Object>> listItem_, HashMap<String, Object> map_) {
@@ -90,7 +92,14 @@ public class ThreadDownloadImage extends Thread {
 		
 		mode = 3;
 	}
+
+	public ThreadDownloadImage(MapView mv_, int i) {
+		mv = mv_;
+		indiceMarker = i;
 	
+		mode = 4;
+	}
+
 	public void run() {	 
 		
 		switch (mode){
@@ -105,6 +114,9 @@ public class ThreadDownloadImage extends Thread {
 			break;
 		case 3:
 			downloadMode3();
+			break;
+		case 4:
+			downloadMode4();
 			break;
 		}	
 	}
@@ -138,8 +150,9 @@ public class ThreadDownloadImage extends Thread {
      	catch (IOException e) {
      		e.printStackTrace();
      	}
-     	map.put("avatar",bitmap);
- 
+     	//map.put("avatar", bitmap);
+     	map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 100));
+     	
 	    Bundle messageBundle = new Bundle();
     	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
         myMessage = vp.myHandler.obtainMessage();
@@ -229,7 +242,6 @@ public class ThreadDownloadImage extends Thread {
 	}
 	
 	private void downloadMode3() {
-		Log.w("LALALAL", "ICI1 pour " + vm.memory.url);
 		URL pictureURL = null;
      	try {
      			pictureURL = new URL(vm.memory.url);
@@ -239,7 +251,6 @@ public class ThreadDownloadImage extends Thread {
      	}
      	try {
      		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
-     		Log.w("LALALAL", "ICI2 pour " + vm.memory.url);
      	} 
      	catch (IOException e) {
      		e.printStackTrace();
@@ -252,6 +263,31 @@ public class ThreadDownloadImage extends Thread {
         myMessage = vm.myHandler.obtainMessage();
         myMessage.setData(messageBundle);
         vm.myHandler.sendMessage(myMessage);
+	}
+	
+	private void downloadMode4() {
+		URL pictureURL = null;
+     	try {
+     			pictureURL = new URL(mv.places.list[indiceMarker].icon);
+     		}
+     	catch (MalformedURLException e){
+     		e.printStackTrace();
+     	}
+     	try {
+     		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
+     	} 
+     	catch (IOException e) {
+     		e.printStackTrace();
+     	}
+     	
+     	mv.places.list[indiceMarker].bitmap = bitmap;
+ 
+	    Bundle messageBundle = new Bundle();
+    	messageBundle.putInt("action", ACTION.UPDATE_ICON_MARKER.getValue());
+    	messageBundle.putInt("indicePost", indiceMarker);
+        myMessage = mv.myHandler.obtainMessage();
+        myMessage.setData(messageBundle);
+        mv.myHandler.sendMessage(myMessage);
 	}
 	
 	public String formatDate(String date) {
