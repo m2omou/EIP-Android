@@ -31,6 +31,7 @@ public class ThreadDownloadImage extends Thread {
 	int mode;                   // 0 = avatar listview  / 1 bitmap editInfoUser / 2 ViewFeed / 3 view memory
 	
 	EditInfoUser eiu;
+	ViewInfoUser viu;
 	int pos;
 	Post listPost;
 	Bitmap bitmap;
@@ -86,6 +87,13 @@ public class ThreadDownloadImage extends Thread {
 		mode = 1;
 	}
 	
+	public ThreadDownloadImage(ViewInfoUser viu_) {
+		super();
+		viu = viu_;
+		
+		mode = 5;
+	}
+	
 	public ThreadDownloadImage(ViewMemory vm_) {
 	
 		vm = vm_;
@@ -118,7 +126,11 @@ public class ThreadDownloadImage extends Thread {
 		case 4:
 			downloadMode4();
 			break;
-		}	
+		
+		case 5:
+			downloadMode5();
+			break;
+		}
 	}
 	
 	private void downloadMode0() {
@@ -288,6 +300,33 @@ public class ThreadDownloadImage extends Thread {
         myMessage = mv.myHandler.obtainMessage();
         myMessage.setData(messageBundle);
         mv.myHandler.sendMessage(myMessage);
+	}
+	
+	private void downloadMode5() {
+		
+		URL pictureURL = null;
+     	try {
+     			pictureURL = new URL(viu.user.avatar);
+     			//pictureURL = new URL("http://api.neerbyy.com/uploads/user/avatar/21/thumb_user_avatar_.png");
+     		}
+     	catch (MalformedURLException e){
+     		e.printStackTrace();
+     	}
+     	try {
+     		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
+     	} 
+     	catch (IOException e) {
+     		e.printStackTrace();
+     	}
+		viu.bitmap = bitmap;	
+	    Bundle messageBundle = new Bundle();
+    	messageBundle.putInt("action", ACTION.UPDATE_IMG_INFO_USER.getValue());
+        myMessage = viu.myHandler.obtainMessage();
+        myMessage.setData(messageBundle);
+        viu.myHandler.sendMessage(myMessage);
+        
+        msgPb = viu.myHandler.obtainMessage(1, (Object) "Success");
+        viu.myHandler.sendMessage(msgPb);
 	}
 	
 	public String formatDate(String date) {

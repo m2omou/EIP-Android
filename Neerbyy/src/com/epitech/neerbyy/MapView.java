@@ -481,9 +481,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    		int indice = pack.getInt("indicePost");
     			    		
     			    		if (places.list.length > indice) {
-    			    			places.list[indice].marker.setIcon(BitmapDescriptorFactory.fromBitmap(places.list[indice].bitmap));
-    			    			
-    			    		
+    			    			places.list[indice].marker.setIcon(BitmapDescriptorFactory.fromBitmap(places.list[indice].bitmap));	    		
     			    		}
     			    	}	
     			    break;

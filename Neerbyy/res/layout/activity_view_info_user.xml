@@ -1,0 +1,103 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".ViewInfoUser" >
+
+    <LinearLayout
+        
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/imgUserViewAvatar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/avatar" />
+
+        <LinearLayout
+            
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="10dp" >
+
+            <TextView
+                android:id="@+id/TxtViewUserUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/btnViewUserValid"
+                android:layout_alignRight="@+id/TxtViewUserLastname"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+           "
+
+            <LinearLayout
+                
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/btnViewUserMemory"
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:background="@color/greenNeerbyy"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:padding="5dp"
+                    android:text="Souvenirs"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:typeface="normal" />
+
+                <Button
+                    android:id="@+id/btnViewUserPlace"
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/greenNeerbyy"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:padding="5dp"
+                    android:text="Lieux"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:typeface="normal" />
+            </LinearLayout>
+        </LinearLayout>
+        
+    </LinearLayout>
+    
+    <ImageButton
+    	android:id="@+id/imgUserViewConv"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/green_chat"
+        android:background="@color/white"
+        android:scaleType="centerCrop"
+        android:layout_below="@+id/linearLayout1"/>
+
+    <ListView
+        android:id="@+id/listViewUserList"
+        tools:listitem="@layout/view_item_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgUserViewConv"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp" >
+
+    </ListView>
+
+</RelativeLayout>

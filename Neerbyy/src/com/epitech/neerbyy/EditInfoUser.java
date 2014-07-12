@@ -109,14 +109,16 @@ public class EditInfoUser extends MainMenu {
 			}
 		});
 		
+		avatar.setAdjustViewBounds(true);
+		avatar.setMaxWidth(100);
+		avatar.setMaxHeight(100);
 		avatar.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View arg0) {
-				 	Intent getContentIntent = FileUtils.createGetContentIntent();
-
-				    Intent intent = Intent.createChooser(getContentIntent, "Select a file");
-				    startActivityForResult(intent, 1234);  //private static final int REQUEST_CHOOSER = 1234;
+		@Override
+		public void onClick(View arg0) {
+		 	Intent getContentIntent = FileUtils.createGetContentIntent();
+		    Intent intent = Intent.createChooser(getContentIntent, "Select a file");
+		    startActivityForResult(intent, 1234);  //private static final int REQUEST_CHOOSER = 1234;
 			}	
 		});
 		
@@ -381,7 +383,7 @@ public class EditInfoUser extends MainMenu {
 			    break;
 		    	case UPDATE_IMG_INFO_USER:
 		    		
-		    		avatar.setImageBitmap(bitmap);
+		    		avatar.setImageBitmap(CreateCircleBitmap.getRoundedCornerBitmap(bitmap, avatar.getHeight()));
 		    		avatar.setAdjustViewBounds(true);
 		    		avatar.setMaxWidth(100);
 		    		avatar.setMaxHeight(100);

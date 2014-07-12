@@ -122,7 +122,6 @@ public class ViewPost extends MainMenu {
 			}	
 		});
 		
-		
 		View.OnClickListener fallowPlace =  new OnClickListener() {	
 			@Override
 			public void onClick(View v) {
@@ -489,17 +488,33 @@ public class ViewPost extends MainMenu {
 			    		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
 							@Override
 							public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-										
-								final CharSequence[] items = {"Signaler", "Supprimer"};
+								
+								
+								final CharSequence[] items = {"Voir le profil de l'utilisateur", "Signaler", "Supprimer"};
 
 								AlertDialog.Builder builder = new AlertDialog.Builder(ViewPost.this);
 								builder.setTitle("Que voulez vous faire ?");
 								builder.setItems(items, new DialogInterface.OnClickListener() {
 								          
+									
 										public void onClick(DialogInterface dialog, int item) {
 								                Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
 								               switch (item) {
 								               case 0:
+								               {
+								            	   Intent intent;
+								            	   if (Network.USER != null && listPost.list[position].user.id == Network.USER.id)
+								            		   intent = new Intent(ViewPost.this, EditInfoUser.class);
+								            	   else
+								            		   intent = new Intent(ViewPost.this, ViewInfoUser.class);
+								            	   Bundle b = new Bundle();
+								            	   b.putInt("userId", listPost.list[position].user.id);	
+								            	   intent.putExtras(b);
+								            	   startActivity(intent);	
+								            	   
+								            	   break;
+								               }
+								               case 1:
 								            	   if (Network.USER == null) {
 								   					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
 								   					//Intent intent = new Intent(ViewPost.this, Login.class);
@@ -513,7 +528,7 @@ public class ViewPost extends MainMenu {
 													startActivity(intent);	
 													break;
 								               
-								               case 1:
+								               case 2:
 								            	   if (Network.USER == null) {
 								   					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
 								   					//Intent intent = new Intent(ViewPost.this, Login.class);

@@ -107,7 +107,8 @@ public class Network {
 		GET_SEARCH_PLACE(29),
 		UPDATE_IMG_MEMORY(30),
 		SEARCH_USER(31),
-		UPDATE_ICON_MARKER(32);
+		UPDATE_ICON_MARKER(32),
+		GET_INFO_USER(33);
 		
 		private final int value;
 		
@@ -149,7 +150,7 @@ public class Network {
 	 /**
 	  * The URL of the Web Service
 	  */
-	static final public String URL = "http://api.neerbyy.com:";
+	static final public String URL = "http://dev.neerbyy.com:";
 	
 	/**
 	  * The default port of the Web Service 
