@@ -18,6 +18,7 @@ import com.google.gson.JsonParseException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -26,7 +27,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View.OnClickListener;
 import android.view.ViewDebug.IntToString;
 import android.widget.AdapterView;
@@ -50,7 +54,7 @@ import com.epitech.neerbyy.Place.PlaceInfo;
  * This class represent the view associate to a place, and allow to list all posts of this place.
  * @author Seb
  */
-public class ViewMemory extends MainMenu {
+public class ViewMemory extends Activity {
 
 	//private TextView sendButton;
 	//private TextView info;
@@ -65,7 +69,7 @@ public class ViewMemory extends MainMenu {
 	private TextView viewLike;
 	private TextView viewDislike;
 	
-	private Button btnSendComm;
+	//private Button btnSendComm;
 	
 	private Votes votes;
 	public Thread threadGetLike;
@@ -85,6 +89,10 @@ public class ViewMemory extends MainMenu {
 	
 	SimpleAdapter mSchedule = null;
 	ArrayList<HashMap<String, Object>> listItem;
+	
+	private MenuItem item_loading;
+	private MenuItem addComm;
+	OnMenuItemClickListener addCommThread;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,12 +114,14 @@ public class ViewMemory extends MainMenu {
 	//	editPost = (EditText)findViewById(R.id.postEditCommentary);
 		listView = (ListView)findViewById(R.id.postViewListCommentary2);
 		
-		btnSendComm = (Button)findViewById(R.id.btnMemorySendMessage);
+		//btnSendComm = (Button)findViewById(R.id.btnMemorySendMessage);
 		
 		memoryContent = (TextView)findViewById(R.id.commContentMemory2);
 		//listView.removeAllViews();
 		listView.clearChoices();
 		
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
+
 		
 		Bundle b  = this.getIntent().getExtras();
 		memory = (Post.PostInfos)b.getSerializable("post");
@@ -130,11 +140,12 @@ public class ViewMemory extends MainMenu {
 		//}
 			
 			
+	
 			
-			btnSendComm.setOnClickListener(new OnClickListener() {
+			addCommThread = new OnMenuItemClickListener() {
 
-			@Override
-			public void onClick(View arg0) {
+				@Override
+				public boolean onMenuItemClick(MenuItem arg0) {
 				AlertDialog.Builder alert = new AlertDialog.Builder(ViewMemory.this);
 
 				alert.setTitle("Ajouter un message");
@@ -152,13 +163,16 @@ public class ViewMemory extends MainMenu {
 				  		
 					
 					if (Network.USER == null) {
-						Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(), "Cette fonctionalité nécessite un compte Neerbyy", Toast.LENGTH_LONG).show();
 						//Intent intent = new Intent(ViewPost.this, Login.class);
 						//startActivity(intent);
 						return;
 					}
-					mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
-							"Long operation starts...", true);
+					//mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
+						//	"Long operation starts...", true);
+					
+					item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+					item_loading.setVisible(true);
 					
 					Thread thread1 = new Thread(){
 				        public void run(){	        	      
@@ -233,9 +247,11 @@ public class ViewMemory extends MainMenu {
 				  }
 				});
 				alert.show();
+				return false;
 			}	
-		
-		});
+			
+		};
+	
 		
 		btnLike.setOnClickListener(new OnClickListener() {	
 			@Override
@@ -247,8 +263,11 @@ public class ViewMemory extends MainMenu {
 					return;
 				}
 		
-				mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
-						"Long operation starts...", true);
+				//mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
+					//	"Long operation starts...", true);
+				
+				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				item_loading.setVisible(true);
 				
 				Thread threadSendLike = new Thread(){
 			        public void run(){	        	      
@@ -333,6 +352,9 @@ public class ViewMemory extends MainMenu {
 					//startActivity(intent);
 					return;
 				}
+	        	
+	        	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				item_loading.setVisible(true);
 			try {	
             	Gson gson = new Gson();
             	String url = Network.URL + Network.PORT + "/votes/" + memory.vote.id + ".json";
@@ -398,8 +420,11 @@ public class ViewMemory extends MainMenu {
 					return;
 				}
 		
-				mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
-						"Long operation starts...", true);
+				//mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
+					//	"Long operation starts...", true);
+				
+				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				item_loading.setVisible(true);
 				
 				Thread threadSendDislike = new Thread(){
 			        public void run(){	        	      
@@ -563,8 +588,8 @@ public class ViewMemory extends MainMenu {
 			}
 		};*/
 		
-		mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
-				"Long operation starts...", true);
+		//mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
+			//	"Long operation starts...", true);
 		
 	new ThreadUpdateComm(ViewMemory.this).start();
 	}
@@ -576,7 +601,7 @@ public class ViewMemory extends MainMenu {
 	    @Override 
 	    public void handleMessage(Message msg)
 	    {
-	    	switch (msg.what) {
+	    	/*switch (msg.what) {
 	        case 0:   //  begin
 	            if (mProgressDialog.isShowing()) {
 	                mProgressDialog.setMessage(((String) msg.obj));
@@ -591,7 +616,7 @@ public class ViewMemory extends MainMenu {
 	        	break;
 	        default: // should never happen
 	            break;
-	    	}
+	    	}*/
 	    	
 	    	Bundle pack = msg.getData();
 	    	int Error = pack.getInt("error");
@@ -616,6 +641,7 @@ public class ViewMemory extends MainMenu {
 			    		new ThreadUpdateComm(ViewMemory.this).start();
 			    	}
 			    	break;
+			    	
 		    	case UPDATE_COMM:
 		    		if (Error == 1)
 		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
@@ -696,9 +722,12 @@ public class ViewMemory extends MainMenu {
 								   					//startActivity(intent);
 								   					return;
 								   				}
-								            	   mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
-															"Long operation starts...", true);
-													Thread thread1 = new Thread(){
+								            	  // mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
+													//		"Long operation starts...", true);
+								            	   	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+								   					item_loading.setVisible(true);
+								            	   
+								   					Thread thread1 = new Thread(){
 												        public void run(){
 												        	
 														try {	
@@ -765,8 +794,10 @@ public class ViewMemory extends MainMenu {
 							}
 						});			    		
 			    		
-			    		Toast.makeText(getApplicationContext(), "Update comm success", Toast.LENGTH_LONG).show();
+			    		//Toast.makeText(getApplicationContext(), "Update comm success", Toast.LENGTH_LONG).show();
 			    		//threadGetLike.start();
+			    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+						item_loading.setVisible(false);
 			    	}
 			    }
 			    break;
@@ -786,6 +817,8 @@ public class ViewMemory extends MainMenu {
 			    		viewLike.setText(Integer.toString(memory.upvotes));
 			    		viewDislike.setText(Integer.toString(memory.downvotes));	    		
 			    	}
+		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+					item_loading.setVisible(false);
 			    	break;
 			    	
 		    	case SEND_VOTE:
@@ -831,22 +864,6 @@ public class ViewMemory extends MainMenu {
 			    			viewDislike.setText(Integer.toString(memory.downvotes - 1));
 			    	}
 			    	break;
-		    	case FALLOW_PLACE:
-		    		if (Error == 1)
-		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
-			    	else if (Error == 2)
-			    	{
-		    			Toast.makeText(getApplicationContext(), "Fallow Place error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
-			    	}
-			    	else if (Error == 3)
-			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
-			    	
-			    	else
-			    	{		
-			    		Toast.makeText(getApplicationContext(), "Fallow Place success", Toast.LENGTH_LONG).show();
-			    	//	btnFallow.setImageResource(R.drawable.iconmortel_f);
-			    	}
-			    	break;
 		    	case DELETE_COMM:
 		    		if (Error == 1)
 		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
@@ -884,11 +901,13 @@ public class ViewMemory extends MainMenu {
 			    		//imgMemoryImg.setMaxHeight(150);
 			    		
 			    		
-			    		imgMemoryImg.setImageBitmap(CreateCircleBitmap.getRoundedCornerBitmap(imgPlace, imgPlace.getWidth()));	    		
-			    		//imgMemoryImg.setImageBitmap(imgPlace);
+			    		//imgMemoryImg.setImageBitmap(CreateCircleBitmap.getRoundedCornerBitmap(imgPlace, imgPlace.getWidth()));	    		
+			    		imgMemoryImg.setImageBitmap(imgPlace);
 			    		
 			    		//imgMemoryImg.setImageBitmap(new CreateCircleBitmap(imgPlace, 50));
 			    	}
+		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+					item_loading.setVisible(false);
 			    	break;
 			    	
 		    		case UPDATE_AVATAR:		    		
@@ -905,4 +924,19 @@ public class ViewMemory extends MainMenu {
 	    	}
 	    }
 	};
+	
+	@Override
+	  public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.view_memory, menu);
+	    item_loading = menu.findItem(R.id.loading_zone);
+		item_loading.setVisible(false);
+		
+		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		item_loading.setVisible(true);
+		
+		addComm = menu.findItem(R.id.addComm);
+		addComm.setOnMenuItemClickListener(addCommThread);
+		return true;
+	}
 }

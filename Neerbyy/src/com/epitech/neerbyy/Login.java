@@ -221,7 +221,7 @@ public class Login extends Activity {
 		{
 			//info.setTextColor(Color.RED);
 	    	//info.setText("Entrez une valeur correcte");
-			Toast.makeText(getApplicationContext(), "Ces valeurs sont incorrecte", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), "Ces valeurs sont incorrectes", Toast.LENGTH_LONG).show();
 	    	return false;
 		}
 		else
@@ -266,20 +266,17 @@ public class Login extends Activity {
 			    	else
 			    	{
 			    		user = (User)pack.getSerializable("user");   //  utile ??????
-			    		//info.setText("Login success with : " + user.username);
 			    		login.setEnabled(false);   		
 			    		Network.USER = user;
-			    		
-			    		//item_loading.collapseActionView();
-			    		//item_loading.setActionView(null);
-			    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-			    		item_loading.setVisible(false);
-			    		
+			    				    		
 			    		Intent intent = new Intent(Login.this, Menu2.class);
 						startActivity(intent);
 						
 			    	}
+			    	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		    		item_loading.setVisible(false);
 			    	break;
+			    	
 		    	case RESET_PASSWORD:
 		    		if (Error == 1)
 			    		Toast.makeText(getApplicationContext(), "Erreur de connection avec le WebService", Toast.LENGTH_LONG).show();
@@ -291,7 +288,7 @@ public class Login extends Activity {
 			    		Toast.makeText(getApplicationContext(), "Erreur du WebService : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	else
 			    	{
-			    		Toast.makeText(getApplicationContext(), "Please check your email", Toast.LENGTH_LONG).show();
+			    		Toast.makeText(getApplicationContext(), "Vérifier vos emails", Toast.LENGTH_LONG).show();
 			    	}
 			    	break;
 	    	} 	

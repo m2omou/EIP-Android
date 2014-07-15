@@ -7,41 +7,51 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ViewMemory" >
-
-    <ListView
-        android:id="@+id/postViewListCommentary2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="250dp"
-        android:background="@color/greyNeerbyy"
-        android:divider="@color/white"
-        android:dividerHeight="25dp"
-        tools:listitem="@layout/view_item_list" >
-    </ListView>
-
-    <TextView
+    
+     <TextView
         android:id="@+id/commContentMemory2"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+       
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <TextView
+    <ImageView
+        android:id="@+id/imgMemoryImg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/commContentMemory2"
+        android:layout_centerHorizontal="true"
+        android:maxHeight="150dp" />
+    
+     <TextView
         android:id="@+id/commViewLike2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/commBtnLike2"
-        android:layout_marginRight="21dp"
-        android:layout_toLeftOf="@+id/commBtnLike2"
+        android:layout_alignLeft="@+id/postViewListCommentary2"
+     	android:layout_alignTop="@+id/postViewListCommentary2"
+        android:layout_marginRight="21dp"  
         android:text="0"
         android:textColor="@color/greenNeerbyy" />
+     
+     <ImageView
+        android:id="@+id/commBtnLike2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/postViewListCommentary2"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="25dp"
+        android:src="@drawable/like2" 
+        />
 
     <TextView
         android:id="@+id/commViewDislike2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/commBtnDislike2"
+        android:layout_alignRight="@+id/postViewListCommentary2"
+     	android:layout_alignTop="@+id/postViewListCommentary2"
         android:layout_marginLeft="21dp"
-        android:layout_toRightOf="@+id/commBtnDislike2"
         android:text="0"
         android:textColor="@color/redNeerbyy" />
 
@@ -49,40 +59,23 @@
         android:id="@+id/commBtnDislike2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/btnMemorySendMessage"
-        android:layout_alignRight="@+id/btnMemorySendMessage"
-        android:layout_marginBottom="50dp"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/dislike" />
+        android:layout_alignTop="@+id/postViewListCommentary2"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="25dp"
+        android:src="@drawable/dislike2" />
 
-    <ImageView
-        android:id="@+id/commBtnLike2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/commBtnDislike2"
-        android:layout_marginLeft="38dp"
-        android:src="@drawable/like" />
-
-    <Button
-        android:id="@+id/btnMemorySendMessage"
+    
+    
+    <ListView
+        android:id="@+id/postViewListCommentary2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/postViewListCommentary2"
-        android:layout_marginTop="200dp"
-        android:background="@color/greenNeerbyy"
-        android:padding="5dp"
-        android:text="Ajouter un commentaire"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:typeface="normal" />
+ 
+       	android:dividerHeight="1dp"
+        tools:listitem="@layout/view_item_list" 
+       />
+  
 
-    <ImageView
-        android:id="@+id/imgMemoryImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/commContentMemory2"
-        android:layout_centerHorizontal="true"
-        android:maxHeight="150dp" />
+    
 
 </RelativeLayout>

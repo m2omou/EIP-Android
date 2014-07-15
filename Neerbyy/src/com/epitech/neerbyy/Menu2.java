@@ -18,19 +18,23 @@ import com.google.gson.JsonParseException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Menu2 extends MainMenu {
+public class Menu2 extends Activity {
 
 	Button btnMap;
 	Button btnFlux;
@@ -42,6 +46,9 @@ public class Menu2 extends MainMenu {
 	
 	ProgressDialog mProgressDialog;
 	ResponseWS rep;
+	
+	private MenuItem item_loading;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +86,8 @@ public class Menu2 extends MainMenu {
 			btnInfo.setEnabled(true);*/	
 		}
 	
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
+		
 		btnMap.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -131,9 +140,12 @@ public class Menu2 extends MainMenu {
 				}
 				
 				
-				mProgressDialog = ProgressDialog.show(Menu2.this, "Please wait",
-						"Long operation starts...", true);
+			//	mProgressDialog = ProgressDialog.show(Menu2.this, "Please wait",
+				//		"Long operation starts...", true);
 				
+				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+	    		item_loading.setVisible(true);
+	    		
 				Thread thread1 = new Thread(){
 			        public void run(){	        	      
 					try {	
@@ -243,7 +255,7 @@ public class Menu2 extends MainMenu {
 	    @Override 
 	    public void handleMessage(Message msg)
 	    {
-	    	switch (msg.what) {
+	    	/*switch (msg.what) {
 	        case 0:   //  begin
 	            if (mProgressDialog.isShowing()) {
 	                mProgressDialog.setMessage(((String) msg.obj));
@@ -258,7 +270,7 @@ public class Menu2 extends MainMenu {
 	        	break;
 	        default: // should never happen
 	            break;
-	    	}
+	    	}*/
 	    	
 	    	Bundle pack = msg.getData();
 	    	int Error = pack.getInt("error");
@@ -276,7 +288,9 @@ public class Menu2 extends MainMenu {
 			    		Toast.makeText(getApplicationContext(), "Network error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	else
 			    	{
-			    		Toast.makeText(getApplicationContext(), "Logout success", Toast.LENGTH_LONG).show();
+			    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+			    		item_loading.setVisible(false);
+			    		Toast.makeText(getApplicationContext(), "Vous êtes maintenant déconnecté", Toast.LENGTH_LONG).show();
 			    		Network.USER = null;
 			    		Intent intent = new Intent(Menu2.this, Login.class);
 						startActivity(intent);						
@@ -285,6 +299,16 @@ public class Menu2 extends MainMenu {
 	    	} 	
 	    }
 	};
+	
+	@Override
+	  public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.menu2, menu);
+	    item_loading = menu.findItem(R.id.loading_zone);
+		item_loading.setVisible(false);
+
+	    return true;
+	  }
 	
 	
 }

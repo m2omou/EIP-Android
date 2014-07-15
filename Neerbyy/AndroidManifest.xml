@@ -112,7 +112,7 @@
         <activity
             android:name="com.epitech.neerbyy.ViewMemory"
             android:configChanges="keyboardHidden|orientation"
-            android:label="@string/title_activity_view_post"
+            android:label="Commentaires"
             android:windowSoftInputMode="stateHidden" 
             android:screenOrientation="portrait">
         </activity>
@@ -139,7 +139,7 @@
         </activity>
         <activity
             android:name="com.epitech.neerbyy.Menu2"
-            android:label="@string/title_activity_menu2" 
+            android:label="Menu" 
             android:screenOrientation="portrait">
             
         </activity>

@@ -1,5 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
+    
     <item
         android:id="@+id/loading_zone"
         android:orderInCategory="100"
@@ -8,11 +8,20 @@
         android:actionLayout="@layout/progressbar"
         />
 
+     <item
+        android:id="@+id/addComm"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Ajouter un commentaire"
+        android:icon="@drawable/addtextblack"
+        />
+     
     <item
         android:id="@+id/logo_menu"
         android:icon="@drawable/logo_menu"
         android:orderInCategory="200"
         android:showAsAction="always"
         android:title="Menu"/>
-  
-</menu> 
+    
+
+</menu>

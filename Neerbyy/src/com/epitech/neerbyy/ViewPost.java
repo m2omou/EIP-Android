@@ -446,6 +446,7 @@ public class ViewPost extends Activity {
 			    	else
 			    	{
 			    		editPost.setText("");
+			    		delFile.setVisibility(View.INVISIBLE);
 			    		//Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    		//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
 			    			//	"Long operation starts...", true);

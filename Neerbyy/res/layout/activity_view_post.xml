@@ -27,8 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/postEditPost"
-        android:layout_marginTop="45dp"
-       
+        android:layout_marginTop="55dp"  
         android:dividerHeight="1dp"
         tools:listitem="@layout/view_item_list" >
     </ListView>
