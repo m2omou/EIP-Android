@@ -8,11 +8,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ViewMemory" >
     
+    <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+    
      <TextView
         android:id="@+id/commContentMemory2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-       
+       	android:layout_marginBottom="15dp"
+       	android:layout_gravity="center_horizontal"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -23,35 +29,42 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/commContentMemory2"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
         android:maxHeight="150dp" />
+    
+    <RelativeLayout 
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
     
      <TextView
         android:id="@+id/commViewLike2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/postViewListCommentary2"
-     	android:layout_alignTop="@+id/postViewListCommentary2"
-        android:layout_marginRight="21dp"  
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dp"  
         android:text="0"
-        android:textColor="@color/greenNeerbyy" />
+        android:textColor="@color/greenNeerbyy"
+         />
      
      <ImageView
         android:id="@+id/commBtnLike2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/postViewListCommentary2"
-        android:layout_alignParentLeft="true"
         android:layout_marginLeft="25dp"
-        android:src="@drawable/like2" 
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/like2"
+       
         />
 
     <TextView
         android:id="@+id/commViewDislike2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/postViewListCommentary2"
-     	android:layout_alignTop="@+id/postViewListCommentary2"
-        android:layout_marginLeft="21dp"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentRight="true"
         android:text="0"
         android:textColor="@color/redNeerbyy" />
 
@@ -59,23 +72,21 @@
         android:id="@+id/commBtnDislike2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/postViewListCommentary2"
         android:layout_alignParentRight="true"
         android:layout_marginRight="25dp"
         android:src="@drawable/dislike2" />
 
-    
+    </RelativeLayout >
     
     <ListView
         android:id="@+id/postViewListCommentary2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
- 
+ 		android:layout_marginTop="15dp"
        	android:dividerHeight="1dp"
         tools:listitem="@layout/view_item_list" 
        />
   
-
-    
+    </LinearLayout>
 
 </RelativeLayout>

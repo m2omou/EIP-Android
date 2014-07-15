@@ -20,6 +20,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
 
 import com.epitech.neerbyy.Network.ACTION;
@@ -29,6 +31,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -39,6 +42,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -52,6 +56,7 @@ import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -69,7 +74,10 @@ public class MapView extends FragmentActivity implements LocationListener{
 	private LocationManager locationManager;
 	private GoogleMap gMap;
 	private Marker posMarker;
+	
 	private List<Marker> listAllMarker;
+	private List<Marker> listGreenMarker;
+	
 	private List<Place.PlaceInfo> listAllPlaceInfos;
 	public Location locat = null;
 	private Location centerScreen = null;
@@ -85,8 +93,11 @@ public class MapView extends FragmentActivity implements LocationListener{
 	MarkerOptions markerOptions;
 	LatLng latLng;
 	
-	EditText etLocation;
-	    
+	//EditText etLocation;
+	
+	private MenuItem item_loading;
+	SearchView mSearchView;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,16 +105,18 @@ public class MapView extends FragmentActivity implements LocationListener{
         
         if (!initCheckMap())
         {
-        	Toast.makeText(this, "Error loading map", Toast.LENGTH_LONG).show();	
+        	Toast.makeText(this, "Erreur lors du chargement de la carte", Toast.LENGTH_LONG).show();	
         	return;
         }
        
-        etLocation = (EditText) findViewById(R.id.et_location);
+      //  etLocation = (EditText) findViewById(R.id.et_location);
         
         gMap.setMyLocationEnabled(true);
         gMap.getUiSettings().setMyLocationButtonEnabled(true);
         gMap.getUiSettings().setZoomControlsEnabled(false);
         gMap.setOnCameraChangeListener(cc);
+        
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
         
         cc = new OnCameraChangeListener(){
         	@Override
@@ -113,14 +126,57 @@ public class MapView extends FragmentActivity implements LocationListener{
         			return;
         		double dist = getDistance(new LatLng(centerScreen.getLatitude(),  centerScreen.getLongitude()), newPos.target);
         		Log.w("DISTANCE", Double.toString(dist));
-        		if (dist > radius || listAllPlaceInfos.isEmpty())
-        		{	
-        			centerScreen.setLatitude(newPos.target.latitude);
-        			centerScreen.setLongitude(newPos.target.longitude);
+        		
+        		/////////////////////POUR DETECT CLIC ON MY LOCATION /////////////////////////////
+        		double latDelta = newPos.target.latitude;
+                double lonDelta = newPos.target.longitude;  	
+                Location l = gMap.getMyLocation();
+                if (l != null) {
+                    latDelta = Math.abs(latDelta - l.getLatitude());
+                    lonDelta = Math.abs(lonDelta - l.getLongitude());
+                }               
+        		if (latDelta <= .000001 && lonDelta <= .000001) {
+                    //Log.i("MAP", String.format("myLocation: %f,%f", latDelta, lonDelta));
+                	//Toast.makeText(getApplicationContext(), "My Location clicked", Toast.LENGTH_SHORT).show();
+                	abonnementWIFI();
+                	abonnementGPS();
+                	abonnement3G();
+                	
+                	//gMap.clear();  
+                	Log.w("LANCE", "t5");
+                	
         			
-        			//listAllPlace.clear();
-               	 	Log.w("LANCE", "t3");
-        			new ThreadPlaces(MapView.this, newPos.target).start();
+        			/*if (l != null)
+        			{
+        				//centerScreen.setLatitude(l.getLatitude());  ??
+            			//centerScreen.setLongitude(l.getLongitude()); ??
+        				new ThreadPlaces(MapView.this, new LatLng(l.getLatitude(), l.getLongitude())).start();
+        			
+        			}
+        			else*/
+        				new ThreadPlaces(MapView.this, newPos.target).start();
+        				
+        		}
+        		//////////////////////////////////////////////////////////////////////////////
+        		else
+        			{
+		        		//////////////////////////////////////////////////////////////
+        				desabonnementGPS();
+		        		desabonnement3G();
+		        		desabonnementWIFI();
+        				
+        				if (dist > radius || listAllPlaceInfos.isEmpty())
+		        		{	
+		        			centerScreen.setLatitude(newPos.target.latitude);
+		        			centerScreen.setLongitude(newPos.target.longitude);
+		        			
+		        			//listAllPlaceInfos.clear();
+		        			//listAllMarker.clear();
+		        			//listGreenMarker.clear();
+		        					        			
+		               	 	Log.w("LANCE", "t3.1");
+		        			new ThreadPlaces(MapView.this, newPos.target).start();
+		        		}   				
         		}
         	}	
         };
@@ -157,90 +213,13 @@ public class MapView extends FragmentActivity implements LocationListener{
         gMap.setOnCameraChangeListener(cc);    
         //posMarker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(45.75, -0.633333)));
         listAllMarker = new ArrayList<Marker>();
+        listGreenMarker = new ArrayList<Marker>();
         listAllPlaceInfos = new ArrayList<Place.PlaceInfo>();
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         
         limit = 20;
-        radius = 1000;
-        
-        Button btn_find = (Button) findViewById(R.id.btn_find);      
-        OnClickListener findClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {       
-                Thread thread1 = new Thread(){
-        	        public void run(){	        	      
-        			try {	
-                    	Gson gson = new Gson();
-                
-                    	String url;
-                    	if (locat != null)
-                    		url = Network.URL + Network.PORT + "/search/places.json?query=" + etLocation.getText().toString() + "&user_latitude=" + locat.getLatitude() + "&user_longitude=" + locat.getLongitude();
-                    	else
-                    		url = Network.URL + Network.PORT + "/search/places.json?query=" + etLocation.getText().toString();
-                    	
-                    	Message myMessage, msgPb;
-                    	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");
-                    	myHandler.sendMessage(msgPb);
-                    
-                    	Bundle messageBundle = new Bundle();
-            			messageBundle.putInt("action", ACTION.GET_SEARCH_PLACE.getValue());
-            	        myMessage = myHandler.obtainMessage();	
-                   
-            	        searchPlaces = null;
-            	        
-            	        InputStream input = Network.retrieveStream(url, METHOD.GET, null);
-                    	
-            	        if (input == null)
-            				messageBundle.putInt("error", 1);
-            			else
-            			{
-            				Reader readerResp = new InputStreamReader(input);
-            				String ret = Network.checkInputStream(readerResp);
-            				
-            				if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
-            				{
-            					messageBundle.putInt("error", 3);
-            					messageBundle.putString("msgError", ret);
-            				}
-            				else
-            				{
-            					try {
-            						Log.w("DETECT", "111");
-            						
-            						rep = gson.fromJson(ret, ResponseWS.class); 
-            						
-            						Log.w("DETECT", "222");
-            						
-            						searchPlaces = rep.getValue(Place.class);         						
-            					}
-            					catch(JsonParseException e)
-            				    {
-            						Log.w("DETECT", "MERDE " + e.toString());
-            				        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
-            				    }
-            					if (searchPlaces == null)
-            					{
-            						messageBundle.putInt("error", 2);
-            						messageBundle.putString("msgError", rep.responseMessage);
-            					}
-            					else
-            						Log.w("RECUP", "JAI RECUP DES PLACES SEARCH ");
-            				}
-            			}     
-            	        myMessage.setData(messageBundle);
-                        myHandler.sendMessage(myMessage);
-                        
-                        msgPb = myHandler.obtainMessage(1, (Object) "Success");
-                        myHandler.sendMessage(msgPb);                       
-                	}
-                	catch (Exception e) {
-                        e.printStackTrace();}
-                	Log.w("THREAD", "FIN THREAD SEARCH PLACES");      			
-        	    }};
-        	    thread1.start();
-            }
-        };     
-        btn_find.setOnClickListener(findClickListener);   
+        radius = 1000;     
+         
     }
     
     public double getDistance(LatLng oldPos, LatLng newPos) {
@@ -264,7 +243,7 @@ public class MapView extends FragmentActivity implements LocationListener{
         
     	if (!initCheckMap())
         {
-        	Toast.makeText(this, "Error loading map", Toast.LENGTH_LONG).show();	
+        	Toast.makeText(this, "Erreur lors du chargement de la carte", Toast.LENGTH_LONG).show();	
         	return;
         }
     	
@@ -280,9 +259,9 @@ public class MapView extends FragmentActivity implements LocationListener{
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             abonnementGPS();
         }
-        /*if(locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
+        if(locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
             abonnement3G();
-        }*/
+        }
     }
     
     @Override
@@ -290,7 +269,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     	super.onPause();
         desabonnementGPS();
         desabonnementWIFI();
-        //desabonnement3G();
+        desabonnement3G();
     }
     
     /**
@@ -304,12 +283,13 @@ public class MapView extends FragmentActivity implements LocationListener{
     
     public void abonnementWIFI() {
         //On s'abonne
-    	Log.w("MAP", "iciiiiiiiiiiiiwifi");
+    	Log.w("MAP", "iciiiiiiiiiiii wifi");
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, this);
     }
     
     public void abonnement3G() {
         //On s'abonne
+    	Log.w("MAP", "iciiiiiiiiiiii 3g");
         locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 5000, 10, this);
     }
  
@@ -334,6 +314,11 @@ public class MapView extends FragmentActivity implements LocationListener{
     @Override
     public void onLocationChanged(final Location location) {
     	Log.w("LOCATION_CHANGE", "iciiiiiiiiiiii");
+    	Toast.makeText(getApplicationContext(), "ON LOCATION_CHANGE", Toast.LENGTH_SHORT).show();
+    	
+    	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+  		item_loading.setVisible(true);
+    	
     	if (location != null)
     	{ 		
     		gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
@@ -349,34 +334,42 @@ public class MapView extends FragmentActivity implements LocationListener{
            	 	Log.w("LANCE", "t1");
             	new ThreadPlaces(this, null).start();
             }
-            else
+            /*else
             {
-           	 	//Log.w("LANCE", "t2");
-            	//new ThreadPlaces(this, new LatLng(locat.getLatitude(), locat.getLongitude())).start();
-            }
+           	 	Log.w("LANCE", "t2");
+            	new ThreadPlaces(this, new LatLng(locat.getLatitude(), locat.getLongitude())).start();
+            }*/
         }
     }
  
     @Override
     public void onProviderDisabled(final String provider) {
         //Si le GPS est désactivé on se désabonne
-    	 Log.w("Map", "iciiiiiiiiiiii8");
-        if("gps".equals(provider))
+    	// Log.w("Map", "iciiiiiiiiiiii8");
+        if("GPS_PROVIDER".equals(provider))
             desabonnementGPS();
         if("NETWORK_PROVIDER".equals(provider))
             desabonnementWIFI();
+        if("PASSIVE_PROVIDER".equals(provider))
+            desabonnement3G();
     }
  
     @Override
     public void onProviderEnabled(final String provider) {
-    	Log.d("Map", "iciiiiiiiiiiii9");
-    	if("NETWORK_PROVIDER".equals(provider)){
-        	abonnementWIFI();
-        }
-    	/*if("gps".equals(provider)) {
+    	Log.d("Map", "Provider = " + provider);
+    	if("GPS_PROVIDER".equals(provider))
             abonnementGPS();
-        }*/
+        if("NETWORK_PROVIDER".equals(provider))
+        	abonnementWIFI();
+        if("PASSIVE_PROVIDER".equals(provider))
+            abonnement3G();
     }
+    
+    //  onMyLocation not implemented yet in the api
+   /* public void OnMyLocationButtonClickListener() {
+    	Toast.makeText(getApplicationContext(), "ICIIII   la", Toast.LENGTH_SHORT).show();
+
+    }*/
     
  
     @Override
@@ -393,20 +386,24 @@ public class MapView extends FragmentActivity implements LocationListener{
     	    	switch (Network.ACTION.values()[pack.getInt("action")])
     	    	{
     		    	case GET_PLACES:    				    			    	
-    			    	if (Error == 1)
-    			    		Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_LONG).show();
+    		    		if (Error == 1)
+    		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
     			    	else if (Error == 2)
     			    	{
-    			    		Toast.makeText(getApplicationContext(), "Get places error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
+    		    			Toast.makeText(getApplicationContext(), "Erreur lors de la recuperation des lieux: " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
     			    	}
     			    	else if (Error == 3)
-    			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
+    			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
     			    	else
     			    	{
-    			    		Toast.makeText(getApplicationContext(), "Places updated", Toast.LENGTH_SHORT).show();
-    			    		msg.obj = places;
+    			    		//Toast.makeText(getApplicationContext(), "Places updated", Toast.LENGTH_SHORT).show();
+    			    		
+    			    		//gMap.clear();   do it ???????????
+    			    		
     			    		drawPlaces();
-    			    	}	
+    			    	}
+    		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+    		      		item_loading.setVisible(false);
     			    break;
     			    
     		    	case GET_SEARCH_PLACE:
@@ -456,14 +453,17 @@ public class MapView extends FragmentActivity implements LocationListener{
 							                Toast.makeText(getApplicationContext(), charSequenceArray[item], Toast.LENGTH_SHORT).show();
 							               
 							                CameraPosition cp = new CameraPosition(new LatLng(searchPlaces.list[item].lat, searchPlaces.list[item].lon), 15, 0, 0);
-							                etLocation.setText("");						                
-							                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cp.target, 15));						                
+							                //etLocation.setText("");						                
+							                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cp.target, 15));
+							                desabonnementGPS();
 							               // new ThreadPlaces(MapView.this, cp.target).start();
 							          	}
 							        });
 							AlertDialog alert = builder.create();
 							alert.show();			
     			    }
+    		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    		      		item_loading.setVisible(true);
     		    	break;
     		    	
     		    	case UPDATE_ICON_MARKER:    				    			    	
@@ -487,10 +487,11 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    				Log.w("MAP", "BIT");*/
     			    			places.list[indice].marker.setIcon(BitmapDescriptorFactory.fromBitmap(places.list[indice].bitmap));	    		
     			    		}
-    			    	}	
+    			    	}
+    			    	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+    		      		item_loading.setVisible(false);
     			    break;
-    	    	}
-    	    	
+    	    	}	    	
     	    }
     	};
     	
@@ -502,34 +503,54 @@ public class MapView extends FragmentActivity implements LocationListener{
     			{
     				places.list[i].markerDef = gMap.addMarker(new MarkerOptions().position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.greenpin1)));
     				places.list[i].marker = gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).snippet(places.list[i].address).icon(BitmapDescriptorFactory.fromResource(R.drawable.greenpin1)));
+    				
     				if (places.list[i].markerDef == null)
     					Log.w("MAP", "MARDEF null");
     				else 
     				{
-    					places.list[i].markerDef.hideInfoWindow();
-    					places.list[i].markerDef.setDraggable(false);
+    					//places.list[i].markerDef.hideInfoWindow();
+    					//places.list[i].markerDef.setDraggable(false);
+    					//places.list[i].markerDef.setFlat(true);
+        				//places.list[i].markerDef.setInfoWindowAnchor(-1, -1);
+        				//places.list[i].markerDef.setAnchor(-1, -1);
+    					listGreenMarker.add(places.list[i].markerDef);
     				}
-    				//places.list[i].markerDef.setFlat(true);
-    				//places.list[i].markerDef.setInfoWindowAnchor(-1, -1);
-    				//places.list[i].markerDef.setAnchor(-1, -1);
+    				if (places.list[i].marker == null)
+    					Log.w("MAP", "MARK null");
+    				else 
+    				{
+    					listAllMarker.add(places.list[i].marker);
+    				}
+    				
     				
     				new ThreadDownloadImage(MapView.this, i).start();
-    				//places.list[i].marker.setIcon(BitmapDescriptorFactory.fromPath(places.list[i].icon));
-    				listAllPlaceInfos.add(places.list[i]);
-    				listAllMarker.add(places.list[i].marker);		
-    			}		
+    				listAllPlaceInfos.add(places.list[i]);  				
+    			}
+    			
     		}		
+    	
+  ////////////////////////////////////////////////////////////////////////////EFFACE////////////////  		
     	Log.d("DELM", "DEB VEC " + listAllMarker.size() + "/" + bufferPlace);
 		if (listAllMarker.size() > bufferPlace) {
 			while (listAllMarker.size() > bufferPlace) {
 				//listAllMarker.get(listAllMarker.size() - 1).remove();
 				//listAllMarker.remove(listAllMarker.size() - 1);  // dernier ou first ?
-				listAllMarker.get(0).remove();
+				Marker m;
+				
+				m = listAllMarker.get(0);
+				m.remove();
 				listAllMarker.remove(0);
+				
+				m = listGreenMarker.get(0);
+				m.remove();		
+				listGreenMarker.remove(0);
 			}
 			Log.d("DELM", "FIN VEC " + listAllMarker.size() + "/" + bufferPlace);
     	}
+		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+  		item_loading.setVisible(true);
     }
+   ///////////////////////////////////////////////////////////////////////////////////////////////////
     	
     	private boolean isAlreadyHere(Place.PlaceInfo pi) {
     		//Marker mpi = pi.marker;
@@ -568,65 +589,55 @@ public class MapView extends FragmentActivity implements LocationListener{
     	}
     	
     	@Override
-    	public boolean onCreateOptionsMenu(Menu menu) {
-    		getMenuInflater().inflate(R.layout.menu, menu);
-    		menu.getItem(2).getSubMenu().setHeaderIcon(R.drawable.ic_launcher);
-    		return super.onCreateOptionsMenu(menu);
-    	}
-    	
-    	@Override
-    	
-    	public boolean onOptionsItemSelected(MenuItem item) {
-    		Intent intent;
-            switch (item.getItemId()) {
-               case R.id.LocateMe:
-                  //intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.fr"));
-                  intent = new Intent(this, Geoloc.class);
-                  startActivity(intent);
-                  return true;
-               case R.id.getUser:
-                   intent = new Intent(this, EditInfoUser.class);
-    			   startActivity(intent);
-                   return true;
-               case R.id.User:
-                   return true;
-               case R.id.Login:
-            	   intent = new Intent(this, Login.class);
-    			   startActivity(intent);
-            	   return true;
-               case R.id.CreateAccount:
-            	   intent = new Intent(this, CreateAccount.class);
-    			   startActivity(intent);
-            	   return true;
-               case R.id.Feed:
-            	   intent = new Intent(this, ViewFeed.class);
-    			   startActivity(intent);
-            	   return true;
-               case R.id.Conv:
-            	   intent = new Intent(this, ViewConv.class);
-    			   startActivity(intent);
-            	   return true;
-               case R.id.Menu:
-            	   if (Network.USER == null)
-            		   intent = new Intent(this, Login.class);
-            	   else
-            		   intent = new Intent(this, Menu2.class);
-    			   startActivity(intent);
-            	   return true;
-               case R.id.quit:
-                  finish();
-                  return true;
-               case R.id.testToken:
-            	   intent = new Intent(this, GetUserById.class);
-    			   startActivity(intent);
-    			   break;   //  ou return true ??
-               case R.id.mapView:
-            	   intent = new Intent(this, MapView.class);
-    			   startActivity(intent);
-    			   break;
-            }
-            return super.onOptionsItemSelected(item);
-        }
+  	  public boolean onCreateOptionsMenu(Menu menu) {
+  	    MenuInflater inflater = getMenuInflater();
+  	    inflater.inflate(R.menu.map_view, menu);
+  	    item_loading = menu.findItem(R.id.loading_zone);
+  		item_loading.setVisible(false);
+  		
+  		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+  		item_loading.setVisible(true);
+  		
+  	// SearchView
+  		MenuItem itemSearch = menu.findItem(R.id.search_add);
+  		mSearchView = (SearchView) itemSearch.getActionView();
+  		mSearchView.setQueryHint("Entrez une adresse");
+  		mSearchView.setIconifiedByDefault(true);
 
+  		mSearchView.setOnQueryTextListener(new OnQueryTextListener() {
+
+  			@Override
+  			public boolean onQueryTextSubmit(String query) {
+  				Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
+  				
+  				mSearchView.setIconified(true);
+  				new ThreadUpdateAdresse(MapView.this, query).start();
+  				return true;
+  			}
+
+  			@Override
+  			public boolean onQueryTextChange(String newText) {
+  				return false;
+  			}
+  		});	
+  	    return true;
+  	  }
+  		
+  	 @Override
+  	  public boolean onOptionsItemSelected(MenuItem item) {
+  		switch (item.getItemId()) {
+  	    case R.id.logo_menu:
+  	    	item_loading = item;
+  	    	Intent intent;
+	    	if (Network.USER == null)
+	    		intent = new Intent(MapView.this, Login.class);
+	    	else
+	    		intent = new Intent(MapView.this, Menu2.class);
+  			startActivity(intent);
+  			break;
+  	    default:
+  	    	break;
+  	    }
+  	    return true;
+  	 }
 }
-

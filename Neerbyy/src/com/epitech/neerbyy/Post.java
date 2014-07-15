@@ -2,6 +2,7 @@ package com.epitech.neerbyy;
 
 import java.io.Serializable;
 
+import com.epitech.neerbyy.Votes.VoteInfo;
 import com.google.gson.annotations.SerializedName;
 
 /** This class represent the list of post send by the WebService.
@@ -46,7 +47,7 @@ public class Post implements Serializable {
     	@SerializedName("user")
     	public User user;                 //  or  InfoUserPost
     	@SerializedName("vote")
-    	public Votes vote;                //  or  InfoVotePost
+    	public VoteInfo vote;                //  or  InfoVotePost
     	@SerializedName("place")
     	public InfoPlacePost place;               //  or  Place
     	

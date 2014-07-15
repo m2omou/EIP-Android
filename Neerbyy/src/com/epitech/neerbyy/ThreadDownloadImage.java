@@ -168,7 +168,7 @@ public class ThreadDownloadImage extends Thread {
 	     		
 		Log.w("DATE", "jai " + listPost.list[pos].created_at);
 		if (listPost.list[pos].user == null) {
-			map.put("username", "Unknown user");
+			map.put("username", "Utilisateur inconnu");
 			map.put("content", listPost.list[pos].content);
 			map.put("avatar", String.valueOf(R.drawable.avatar));
 			map.put("date", "\n" + formatDate(listPost.list[pos].created_at) + ", " + formatHour(listPost.list[pos].created_at));
@@ -234,14 +234,14 @@ public class ThreadDownloadImage extends Thread {
 	     		
 		//Log.w("MAP", listPost.list[pos].user.avatar_thumb);
 		if (listPost.list[pos].user == null) {
-			map.put("username", "Unknown :");
+			map.put("username", "Utilisateur inconnu");
 			map.put("content", listPost.list[pos].content);
 			map.put("avatar", String.valueOf(R.drawable.avatar));
 			map.put("date", "\n" + listPost.list[pos].created_at);
 		}
 		else
 		{
-	     	map.put("username", listPost.list[pos].user.username + " :");
+	     	map.put("username", listPost.list[pos].user.username);
 		    map.put("content", listPost.list[pos].content);
 		    map.put("date", "\n" + listPost.list[pos].created_at);
 		    //map.put("avatar", String.valueOf(R.drawable.avatar));
@@ -322,8 +322,11 @@ public class ThreadDownloadImage extends Thread {
      		e.printStackTrace();
      	}
      	
-     	mv.places.list[indiceMarker].bitmap = bitmap;
- 
+     	if (mv.places.list.length > indiceMarker)
+     		mv.places.list[indiceMarker].bitmap = bitmap;
+     	else
+     		Log.d("LOAD_MAP", "IL Y A UNE ERREUR D'indice");
+     		
 	    Bundle messageBundle = new Bundle();
     	messageBundle.putInt("action", ACTION.UPDATE_ICON_MARKER.getValue());
     	messageBundle.putInt("indicePost", indiceMarker);
@@ -364,14 +367,14 @@ public class ThreadDownloadImage extends Thread {
 	     		
 		//Log.w("MAP", listPost.list[pos].user.avatar_thumb);
 		if (listPost.list[pos].user == null) {
-			map.put("username", "Unknown :");
+			map.put("username", "Utilisateur inconnu");
 			map.put("content", listPost.list[pos].content);
 			map.put("avatar", String.valueOf(R.drawable.avatar));
 			map.put("date", "\n" + listPost.list[pos].created_at);
 		}
 		else
 		{
-	     	map.put("username", listPost.list[pos].user.username + " :");
+	     	map.put("username", listPost.list[pos].user.username);
 		    map.put("content", listPost.list[pos].content);
 		    map.put("date", "\n" + listPost.list[pos].created_at);
 		    //map.put("avatar", String.valueOf(R.drawable.avatar));
@@ -405,14 +408,14 @@ public class ThreadDownloadImage extends Thread {
 	     		
 		Log.w("DATE", "jai " + listComm.list[pos].created_at);
 		if (listComm.list[pos].user == null) {
-			map.put("username", "Unknown user :");
+			map.put("username", "Utilisateur inconnu");
 			map.put("content", listComm.list[pos].content);
 			map.put("avatar", String.valueOf(R.drawable.avatar));
 			map.put("date", "\n" + formatDate(listComm.list[pos].created_at) + ", " + formatHour(listComm.list[pos].created_at));
 		}
 		else
 		{
-	     	map.put("username", listComm.list[pos].user.username + " :");
+	     	map.put("username", listComm.list[pos].user.username);
 	        map.put("content", listComm.list[pos].content);
 			map.put("date", "\n" + formatDate(listComm.list[pos].created_at) + ", " + formatHour(listComm.list[pos].created_at));
 		}

@@ -519,6 +519,13 @@ public class ViewPost extends Activity {
 			    			    }
 			    			});
 			    		}
+			    		else
+			    		{
+			    			Toast.makeText(getApplicationContext(), "Il n'y a encore aucun souvenir, soyez le premier ;)", Toast.LENGTH_LONG).show();
+			    			item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+				    		item_loading.setVisible(false);
+			    		}
+				    	
 			    		
 			    		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
 							@Override
@@ -813,7 +820,12 @@ public class ViewPost extends Activity {
 	    	//item_loading.expandActionView();
 	    	//TestTask task = new TestTask();
 	    	//task.execute("test");
-	    	Intent intent = new Intent(ViewPost.this, Menu2.class);
+	    	
+	    	Intent intent;
+	    	if (Network.USER == null)
+	    		intent = new Intent(ViewPost.this, Login.class);
+	    	else
+	    		intent = new Intent(ViewPost.this, Menu2.class);
 			startActivity(intent);
 	      break;
 	    case R.id.favorite:

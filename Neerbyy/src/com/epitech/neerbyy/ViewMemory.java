@@ -71,8 +71,8 @@ public class ViewMemory extends Activity {
 	
 	//private Button btnSendComm;
 	
-	private Votes votes;
-	public Thread threadGetLike;
+	public Votes votes;
+	//public Thread threadGetLike;
 	
 	ResponseWS rep;
 	ProgressDialog mProgressDialog;
@@ -83,7 +83,7 @@ public class ViewMemory extends Activity {
 	
 	public int actionVote;
 	
-	public Thread threadCancelLike;
+	//public Thread threadCancelLike;
 	
 	public Bitmap imgPlace;
 	
@@ -125,9 +125,9 @@ public class ViewMemory extends Activity {
 		
 		Bundle b  = this.getIntent().getExtras();
 		memory = (Post.PostInfos)b.getSerializable("post");
+		memoryContent.setText(memory.content);
 		
-		place_id = (String)b.getString("Place_id");  //  inut  deja dans mem.pla
-		
+		place_id = (String)b.getString("Place_id");  //  inut  deja dans mem.pla	
 		if (memory.vote == null)
 			actionVote = -1;
 		else if(memory.vote.value) 
@@ -139,9 +139,7 @@ public class ViewMemory extends Activity {
 			viewDislike.setText(Integer.toString(memory.downvotes));
 		//}
 			
-			
-	
-			
+
 			addCommThread = new OnMenuItemClickListener() {
 
 				@Override
@@ -159,9 +157,7 @@ public class ViewMemory extends Activity {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					final String value = input.getText().toString();
 				  	Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
-				  		
-				  		
-					
+				
 					if (Network.USER == null) {
 						Toast.makeText(getApplicationContext(), "Cette fonctionalité nécessite un compte Neerbyy", Toast.LENGTH_LONG).show();
 						//Intent intent = new Intent(ViewPost.this, Login.class);
@@ -275,7 +271,7 @@ public class ViewMemory extends Activity {
 						
 						if (actionVote == 1) {
 							actionVote = -2;
-							threadCancelLike.start();
+							new ThreadCancelLike(ViewMemory.this).start();
 							return;
 						}
 						actionVote = 1;
@@ -337,77 +333,10 @@ public class ViewMemory extends Activity {
 					catch (Exception e) {
 		                e.printStackTrace();}
 					
-				
-					
 				}};
 			threadSendLike.start();
 			}
 		});
-			
-		threadCancelLike = new Thread(){
-	        public void run(){
-	        	if (Network.USER == null) {
-					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
-					//Intent intent = new Intent(ViewPost.this, Login.class);
-					//startActivity(intent);
-					return;
-				}
-	        	
-	        	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-				item_loading.setVisible(true);
-			try {	
-            	Gson gson = new Gson();
-            	String url = Network.URL + Network.PORT + "/votes/" + memory.vote.id + ".json";
-            	
-            	Message myMessage, msgPb;
-            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
-                myHandler.sendMessage(msgPb);
-		
-				Bundle messageBundle = new Bundle();
-				messageBundle.putInt("action", ACTION.CANCEL_VOTE.getValue());
-		        myMessage = myHandler.obtainMessage();	
-	        
-		        InputStream input = Network.retrieveStream(url, METHOD.DELETE, null);
-				if (input == null)
-					messageBundle.putInt("error", 1);
-				else
-				{	
-					Reader readerResp = new InputStreamReader(input);
-					String ret = Network.checkInputStream(readerResp);
-					
-					if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
-					{
-						messageBundle.putInt("error", 3);
-						messageBundle.putString("msgError", ret);
-					}
-					else
-					{
-						try {		    
-							rep = gson.fromJson(ret, ResponseWS.class);
-							//user = rep.getValue(Post.class, 1);
-						}
-						catch(JsonParseException e)
-					    {
-					        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
-					    }
-						
-						if (rep.responseCode == 1)
-						{
-							messageBundle.putInt("error", 2);
-							messageBundle.putString("msgError", rep.responseMessage);
-						}
-					}
-				}						
-				myMessage.setData(messageBundle);
-                myHandler.sendMessage(myMessage);
-                
-                msgPb = myHandler.obtainMessage(1, (Object) "Success");
-                myHandler.sendMessage(msgPb);
-            }
-			catch (Exception e) {
-                e.printStackTrace();}			
-		}};
-	
 		
 		btnDislike.setOnClickListener(new OnClickListener() {
 			
@@ -432,7 +361,7 @@ public class ViewMemory extends Activity {
 						
 						if (actionVote == 0) {
 							actionVote = -3;
-							threadCancelLike.start();
+							new ThreadCancelLike(ViewMemory.this).start();
 							
 							return;
 						}
@@ -500,100 +429,9 @@ public class ViewMemory extends Activity {
 			threadSendDislike.start();
 			}
 		});
-		
-		
-		
-	threadGetLike = new Thread(){
-	        public void run(){	        	      
-			try {	
-            	Gson gson = new Gson();
-            	String url = Network.URL + Network.PORT + "/votes.json&publication_id=" + memory.id;
-            	
-            	Message myMessage, msgPb;
-            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");
-            	myHandler.sendMessage(msgPb);
-            
-            	Bundle messageBundle = new Bundle();
-    			messageBundle.putInt("action", ACTION.GET_VOTES.getValue());
-    	        myMessage = myHandler.obtainMessage();	
-           
-    	        InputStream input = Network.retrieveStream(url, METHOD.GET, null);
-            	
-    	        if (input == null)
-    				messageBundle.putInt("error", 1);
-    			else
-    			{	
-    				Reader readerResp = new InputStreamReader(input);
-    				String ret = Network.checkInputStream(readerResp);
-    				
-    				if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
-    				{
-    					messageBundle.putInt("error", 3);
-    					messageBundle.putString("msgError", ret);
-    				}
-    				else
-    				{
-    					try {		    
-    						rep = gson.fromJson(ret, ResponseWS.class);
-    						votes = rep.getValue(Votes.class);
-    						
-    					}
-    					catch(JsonParseException e)
-    				    {
-    				        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
-    				    }
-    					if (votes == null)
-    					{
-    						messageBundle.putInt("error", 2);
-    						messageBundle.putString("msgError", rep.responseMessage);
-    					}
-    					else
-    						Log.w("RECUP", "JAI RECUP DES VOTES ");
-    					//else		  	                   
-    						//messageBundle.putSerializable("post", (Serializable) vp.listPost);
-    				}
-    			}
-    	        
-    	        
-    	        myMessage.setData(messageBundle);
-                myHandler.sendMessage(myMessage);
-                
-                msgPb = myHandler.obtainMessage(1, (Object) "Success");
-                myHandler.sendMessage(msgPb);
-                
-        	}
-        	catch (Exception e) {
-                e.printStackTrace();}
-        	Log.w("THREAD", "FIN THREAD UPDATE COMM");
-			
-		}};
-	//threadGetLike.start();
-		
-		/*sendButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-
-			}
-		});*/
-		
-		
-		
-		/*OnClickListener cc = new OnClickListener() {
-			//  IMPLEMENTER POUR LES DEUX 
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		};*/
-		
-		//mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
-			//	"Long operation starts...", true);
-		
-	new ThreadUpdateComm(ViewMemory.this).start();
-	}
 	
+		new ThreadUpdateComm(ViewMemory.this).start();
+	}
 	
 
 	Handler myHandler = new Handler()
@@ -624,17 +462,16 @@ public class ViewMemory extends Activity {
 	    	{
 		    	case CREATE_COMM:
 		    		if (Error == 1)
-		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-		    			Toast.makeText(getApplicationContext(), "comm error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur : votre commentaire n'a pas été pris en compte : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
-			    	
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{
-			    		Toast.makeText(getApplicationContext(), "Commentary send success", Toast.LENGTH_SHORT).show(); 
+			    		//Toast.makeText(getApplicationContext(), "Commentary send success", Toast.LENGTH_SHORT).show(); 
 
 			    		//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
 			    			//	"Long operation starts...", true);
@@ -644,24 +481,21 @@ public class ViewMemory extends Activity {
 			    	
 		    	case UPDATE_COMM:
 		    		if (Error == 1)
-		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-		    			Toast.makeText(getApplicationContext(), "Update comm error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur lors de la mise à jour des commentaires : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
-			    	
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
-			    	{
-			    		
+			    	{  		
 			    		//////////////////////////////////////////DETECT TYPE///////////////////////////
 			    		if (memory.type == 2) {
-				    		Toast.makeText(getApplicationContext(), "DETECT UNE IMAGE", Toast.LENGTH_SHORT).show();
+				    		//Toast.makeText(getApplicationContext(), "DETECT UNE IMAGE", Toast.LENGTH_SHORT).show();
 			    			new ThreadDownloadImage(ViewMemory.this).start();
-			    		}
-			    		
-///////////////////////////////////////////////////////////////
+			    		}			    		
+			    		///////////////////////////////////////////////////////////////
 			    		
 			    		listItem = new ArrayList<HashMap<String, Object>>();
 				        listView.removeAllViewsInLayout();
@@ -684,7 +518,7 @@ public class ViewMemory extends Activity {
 				    		listView.requestLayout();
 				    	    listView.setAdapter(mSchedule);
 				    	    
-				    	    memoryContent.setText(memory.content);
+				    	    
 
 /////////////////////////////////////////////////////////////////
 			    		
@@ -796,22 +630,27 @@ public class ViewMemory extends Activity {
 			    		
 			    		//Toast.makeText(getApplicationContext(), "Update comm success", Toast.LENGTH_LONG).show();
 			    		//threadGetLike.start();
+			    		
+			    	}
+			    	else
+		    			Toast.makeText(getApplicationContext(), "Il n'y a encore aucun commentaires, soyez le premier ;)", Toast.LENGTH_LONG).show();
+			    
+			    	if (memory.type == 0) {
 			    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-						item_loading.setVisible(false);
+			    		item_loading.setVisible(false);
 			    	}
 			    }
 			    break;
 			    	
 		    	case GET_VOTES:
 		    		if (Error == 1)
-		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-		    			Toast.makeText(getApplicationContext(), "Get vote error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur lors de la mise à jour des votes : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
-			    	
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{
 			    		viewLike.setText(Integer.toString(memory.upvotes));
@@ -823,16 +662,16 @@ public class ViewMemory extends Activity {
 			    	
 		    	case SEND_VOTE:
 		    		if (Error == 1)
-		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-		    			Toast.makeText(getApplicationContext(), "Send vote error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur : Votre vote n'a pas été pris en compte : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
-			    	
-			    	{    		
-			    		Toast.makeText(getApplicationContext(), "Send vote success", Toast.LENGTH_LONG).show();
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	else
+		    		{    		
+			    		Toast.makeText(getApplicationContext(), "Votre vote a bien été pris en compte", Toast.LENGTH_LONG).show();
 			    		if (actionVote == 1)
 			    			viewLike.setText(Integer.toString(memory.upvotes + 1));   //  verif si auth
 			    		else if(actionVote == 0)
@@ -841,57 +680,62 @@ public class ViewMemory extends Activity {
 			    			viewDislike.setText(Integer.toString(memory.upvotes - 1));
 			    		else if(actionVote == -3)
 			    			viewDislike.setText(Integer.toString(memory.downvotes - 1));*/
-			    		threadGetLike.start();
+			    		
+			    		new ThreadUpdateLike(ViewMemory.this).start();
 			    	}
 			    	break;
 			    	
 		    	case CANCEL_VOTE:
 		    		if (Error == 1)
-		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-		    			Toast.makeText(getApplicationContext(), "Cancel vote error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur : Votre annulation de vote n'a pas été pris en compte : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
-			    	
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{   		
-			    		Toast.makeText(getApplicationContext(), "Cancel vote success " + actionVote, Toast.LENGTH_LONG).show();
+			    		Toast.makeText(getApplicationContext(), "Votre annulation de vote a bien été pris en compte", Toast.LENGTH_LONG).show();
 			    		if(actionVote == -2)
 			    			viewLike.setText(Integer.toString(memory.upvotes - 1));
 			    		else if(actionVote == -3)
 			    			viewDislike.setText(Integer.toString(memory.downvotes - 1));
 			    	}
+		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+					item_loading.setVisible(false);
 			    	break;
+			    	
 		    	case DELETE_COMM:
 		    		if (Error == 1)
-		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-		    			Toast.makeText(getApplicationContext(), "Delete comm error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur : Votre vote na pas été annulé : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{		
-			    		Toast.makeText(getApplicationContext(), "Delete Comm success", Toast.LENGTH_LONG).show();
+			    		Toast.makeText(getApplicationContext(), "Votre vote a bien été annulé ", Toast.LENGTH_LONG).show();
 			    		new ThreadUpdateComm(ViewMemory.this).start();
 			    	}
+		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+					item_loading.setVisible(false);
 			    	break;
 			    	
 		    	case UPDATE_IMG_MEMORY:
 		    		if (Error == 1)
-		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-		    			Toast.makeText(getApplicationContext(), "update img error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur lors de la mise à jour des avatars : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{		
-			    		Toast.makeText(getApplicationContext(), "Update img success", Toast.LENGTH_LONG).show();
+			    		//Toast.makeText(getApplicationContext(), "Update img success", Toast.LENGTH_LONG).show();
 			    		
 			    		//imgMemoryImg.setAdjustViewBounds(true);
 			    		//imgMemoryImg.setMaxWidth(100);
@@ -901,8 +745,8 @@ public class ViewMemory extends Activity {
 			    		//imgMemoryImg.setMaxHeight(150);
 			    		
 			    		
-			    		//imgMemoryImg.setImageBitmap(CreateCircleBitmap.getRoundedCornerBitmap(imgPlace, imgPlace.getWidth()));	    		
-			    		imgMemoryImg.setImageBitmap(imgPlace);
+			    		imgMemoryImg.setImageBitmap(CreateCircleBitmap.getRoundedCornerBitmap(imgPlace, 30));	    		
+			    		//imgMemoryImg.setImageBitmap(imgPlace);
 			    		
 			    		//imgMemoryImg.setImageBitmap(new CreateCircleBitmap(imgPlace, 50));
 			    	}
@@ -938,5 +782,28 @@ public class ViewMemory extends Activity {
 		addComm = menu.findItem(R.id.addComm);
 		addComm.setOnMenuItemClickListener(addCommThread);
 		return true;
+	}
+	
+	 @Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	    case R.id.logo_menu:
+	    	item_loading = item;
+	    	//item_loading.setActionView(R.layout.progressbar);
+	    	//item_loading.expandActionView();
+	    	//TestTask task = new TestTask();
+	    	//task.execute("test");
+	    	
+	    	Intent intent;
+	    	if (Network.USER == null)
+	    		intent = new Intent(ViewMemory.this, Login.class);
+	    	else
+	    		intent = new Intent(ViewMemory.this, Menu2.class);
+	    	startActivity(intent);
+			break;
+	    default:
+	    	break;
+	    }
+	    return true;
 	}
 }

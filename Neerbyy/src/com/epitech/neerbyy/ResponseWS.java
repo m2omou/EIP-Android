@@ -9,6 +9,7 @@ import com.epitech.neerbyy.Conversations.Conversation;
 import com.epitech.neerbyy.Users;
 import com.epitech.neerbyy.User;
 import com.epitech.neerbyy.Messages.Message;
+import com.epitech.neerbyy.Votes.VoteInfo;
 import com.google.gson.annotations.SerializedName;
 //import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -59,7 +60,7 @@ public class ResponseWS{
 		public Commentary.CommInfos[] comms;
 		
 		@SerializedName("votes")
-		public Votes[] votes;
+		public VoteInfo[] votes;
 		
 		@SerializedName("conversations")
 		//public Conversations conversations;
@@ -130,9 +131,9 @@ public class ResponseWS{
 								}
 								else if (obj == Votes.class) {
 									Log.w("DETECT", "DETECT GET_VOTES");								
-									//Votes[] votes = new Votes[]();
-									//comm.list = result.comms;
-									return (T) result.votes;
+									Votes votes = new Votes();
+									votes.list = result.votes;
+									return (T) votes;
 								}
 								else if (obj == Conversations.class) {
 									Log.w("DETECT", "DETECT GET_CONV");	

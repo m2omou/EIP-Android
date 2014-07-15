@@ -94,7 +94,7 @@
 
         <activity
             android:name="com.epitech.neerbyy.MapView"
-            android:label="@string/title_activity_map_view"
+            android:label="Carte"
             android:screenOrientation="portrait" >
         </activity>
         <activity
