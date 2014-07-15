@@ -46,6 +46,9 @@ public class ResponseWS{
 		@SerializedName("users")
 		public User[] users;
 		
+		@SerializedName("place")
+		public Place.PlaceInfo place;
+		
 		@SerializedName("places")
 		public Place.PlaceInfo[] places;
 		
@@ -107,6 +110,10 @@ public class ResponseWS{
 									place.list = result.places;
 									//return (T) result.places;
 									return (T) place;
+								}
+								else if (obj == Place.PlaceInfo.class) {
+									Log.w("DETECT", "DETECT ONE PLACE");
+									return (T) result.place;
 								}
 								else if (obj == Post.class) {
 									Log.w("DETECT", "DETECT POST_UPDATE");

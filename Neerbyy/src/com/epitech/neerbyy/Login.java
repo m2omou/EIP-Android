@@ -15,15 +15,19 @@ import com.epitech.neerbyy.Network.METHOD;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,15 +47,17 @@ public class Login extends Activity {
 	Button map;
 	EditText loginMail; 
 	EditText password; 
-	TextView info;
+	//TextView info;
 	TextView lostPassword;
 	
-	Button btnLostPassword;
+	TextView btnLostPassword;
 	User user;
 	
 	List<EditText> list;
 	ProgressDialog mProgressDialog;
 	ResponseWS rep;
+	
+	private MenuItem item_loading;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +71,8 @@ public class Login extends Activity {
 		password = (EditText)findViewById(R.id.txtLoginPassword2);
 		
 
-		btnLostPassword = (Button)findViewById(R.id.btnLoginLostPasswordMail2);
-		info = (TextView)findViewById(R.id.txtLoginInfo2);
+		btnLostPassword = (TextView)findViewById(R.id.txtLoginLostPasswordMail2);
+		//info = (TextView)findViewById(R.id.txtLoginInfo2);
 		
 		list = new ArrayList<EditText>();
 		list.add(loginMail);
@@ -82,7 +88,9 @@ public class Login extends Activity {
 				btnLostPassword.setVisibility(View.VISIBLE);
 			}
 		});*/
-
+		
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
+		  
 		createAccount.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -108,8 +116,12 @@ public class Login extends Activity {
 				if (!checkFormu())
 			    	return;
 				
-				mProgressDialog = ProgressDialog.show(Login.this, "Please wait",
-						"Long operation starts...", true);
+			//	mProgressDialog = ProgressDialog.show(Login.this, "Please wait",
+				//		"Long operation starts...", true);
+				
+	    		
+				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				item_loading.setVisible(true);
 				
 				Thread thread1 = new Thread(){
 			        public void run(){	        	      
@@ -207,8 +219,9 @@ public class Login extends Activity {
 		}
 		if (error)
 		{
-			info.setTextColor(Color.RED);
-	    	info.setText("Please enter valid values");
+			//info.setTextColor(Color.RED);
+	    	//info.setText("Entrez une valeur correcte");
+			Toast.makeText(getApplicationContext(), "Ces valeurs sont incorrecte", Toast.LENGTH_LONG).show();
 	    	return false;
 		}
 		else
@@ -220,7 +233,7 @@ public class Login extends Activity {
 	    @Override 
 	    public void handleMessage(Message msg)
 	    {
-	    	switch (msg.what) {
+	    	/*switch (msg.what) {
 	        case 0:   //  begin
 	            if (mProgressDialog.isShowing()) {
 	                mProgressDialog.setMessage(((String) msg.obj));
@@ -235,28 +248,32 @@ public class Login extends Activity {
 	        	break;
 	        default: // should never happen
 	            break;
-	    	}
+	    	}*/
 	    	
 	    	Bundle pack = msg.getData();
 	    	int Error = pack.getInt("error");
 	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{
 		    	case LOGIN:
-		    		info.setText("");
 			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+			    		Toast.makeText(getApplicationContext(), "Erreur de connection avec le WebService", Toast.LENGTH_LONG).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Login error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	else
 			    	{
 			    		user = (User)pack.getSerializable("user");   //  utile ??????
-			    		info.setText("Login success with : " + user.username);
+			    		//info.setText("Login success with : " + user.username);
 			    		login.setEnabled(false);   		
 			    		Network.USER = user;
+			    		
+			    		//item_loading.collapseActionView();
+			    		//item_loading.setActionView(null);
+			    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+			    		item_loading.setVisible(false);
 			    		
 			    		Intent intent = new Intent(Login.this, Menu2.class);
 						startActivity(intent);
@@ -264,15 +281,14 @@ public class Login extends Activity {
 			    	}
 			    	break;
 		    	case RESET_PASSWORD:
-		    		info.setText("");		    	
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+			    		Toast.makeText(getApplicationContext(), "Erreur de connection avec le WebService", Toast.LENGTH_LONG).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Reset password error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	else
 			    	{
 			    		Toast.makeText(getApplicationContext(), "Please check your email", Toast.LENGTH_LONG).show();
@@ -283,9 +299,48 @@ public class Login extends Activity {
 	};
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.login, menu);
-		//menu.getItem(2).getSubMenu().setHeaderIcon(R.drawable.ic_launcher);
-		return super.onCreateOptionsMenu(menu);
-	}
+	  public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.login, menu);
+	    item_loading = menu.findItem(R.id.loading_zone);
+		item_loading.setVisible(false);
+
+	    return true;
+	  }
+	
+	 @Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+	   /* switch (item.getItemId()) {
+	    case R.id.logo_menu:
+	      logo_menu = item;
+	      logo_menu.setActionView(R.layout.progressbar);
+	      logo_menu.expandActionView();
+	      TestTask task = new TestTask();
+	      task.execute("test");
+	      break;
+	    default:
+	      break;
+	    }*/
+	    return true;
+	  }
+	 
+	 private class TestTask extends AsyncTask<String, Void, String> {
+
+		    @Override
+		    protected String doInBackground(String... params) {
+		      // Simulate something long running
+		      try {
+		        Thread.sleep(2000);
+		      } catch (InterruptedException e) {
+		        e.printStackTrace();
+		      }
+		      return null;
+		    }
+
+		    @Override
+		    protected void onPostExecute(String result) {
+		    	item_loading.collapseActionView();
+		    	item_loading.setActionView(null);
+		    }
+		  };
 }

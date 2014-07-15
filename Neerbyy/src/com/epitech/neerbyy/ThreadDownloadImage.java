@@ -34,6 +34,7 @@ public class ThreadDownloadImage extends Thread {
 	ViewInfoUser viu;
 	int pos;
 	Post listPost;
+	Commentary listComm;
 	Bitmap bitmap;
 	HashMap<String, Object> map;
 	ArrayList<HashMap<String, Object>> listItem;
@@ -59,6 +60,18 @@ public class ThreadDownloadImage extends Thread {
         mode = 0;
     }
 	
+	public ThreadDownloadImage(ViewMemory vm_, int pos_, ListView listView_, Commentary listComm_, ArrayList<HashMap<String, Object>> listItem_, HashMap<String, Object> map_) {
+		super();
+        pos = pos_;
+        listView = listView_;
+        listComm = listComm_;
+        listItem = listItem_;
+        map = map_;
+        vm = vm_;
+        
+        mode = 7;
+	}
+	
 	public ThreadDownloadImage(ViewFeed vf_, int pos_, ListView listView_, Post listPost_, ArrayList<HashMap<String, Object>> listItem_, HashMap<String, Object> map_) {
         super();
         pos = pos_;
@@ -69,6 +82,18 @@ public class ThreadDownloadImage extends Thread {
         vf = vf_;
         
         mode = 2;
+    }
+	
+	public ThreadDownloadImage(ViewInfoUser viu_, int pos_, ListView listView_, Post listPost_, ArrayList<HashMap<String, Object>> listItem_, HashMap<String, Object> map_) {
+        super();
+        pos = pos_;
+        listView = listView_;
+        listPost = listPost_;
+        listItem = listItem_;
+        map = map_;
+        viu = viu_;
+        
+        mode = 6;
     }
 	
 	public ThreadDownloadImage(ListView listView_, Post listPost_, ViewPost vp_) {
@@ -126,9 +151,14 @@ public class ThreadDownloadImage extends Thread {
 		case 4:
 			downloadMode4();
 			break;
-		
 		case 5:
 			downloadMode5();
+			break;
+		case 6:
+			downloadMode6();
+			break;
+		case 7:
+			downloadMode7();
 			break;
 		}
 	}
@@ -138,14 +168,14 @@ public class ThreadDownloadImage extends Thread {
 	     		
 		Log.w("DATE", "jai " + listPost.list[pos].created_at);
 		if (listPost.list[pos].user == null) {
-			map.put("username", "Unknown user :");
+			map.put("username", "Unknown user");
 			map.put("content", listPost.list[pos].content);
 			map.put("avatar", String.valueOf(R.drawable.avatar));
 			map.put("date", "\n" + formatDate(listPost.list[pos].created_at) + ", " + formatHour(listPost.list[pos].created_at));
 		}
 		else
 		{
-	     	map.put("username", listPost.list[pos].user.username + " :");
+	     	map.put("username", listPost.list[pos].user.username);
 	        map.put("content", listPost.list[pos].content);
 			map.put("date", "\n" + formatDate(listPost.list[pos].created_at) + ", " + formatHour(listPost.list[pos].created_at));
 		}
@@ -327,6 +357,86 @@ public class ThreadDownloadImage extends Thread {
         
         msgPb = viu.myHandler.obtainMessage(1, (Object) "Success");
         viu.myHandler.sendMessage(msgPb);
+	}
+	
+	private void downloadMode6() {
+		//for (int i = 0; i < listPost.list.length; i++) {
+	     		
+		//Log.w("MAP", listPost.list[pos].user.avatar_thumb);
+		if (listPost.list[pos].user == null) {
+			map.put("username", "Unknown :");
+			map.put("content", listPost.list[pos].content);
+			map.put("avatar", String.valueOf(R.drawable.avatar));
+			map.put("date", "\n" + listPost.list[pos].created_at);
+		}
+		else
+		{
+	     	map.put("username", listPost.list[pos].user.username + " :");
+		    map.put("content", listPost.list[pos].content);
+		    map.put("date", "\n" + listPost.list[pos].created_at);
+		    //map.put("avatar", String.valueOf(R.drawable.avatar));
+		}
+		 
+		URL pictureURL = null;
+     	try {
+     			pictureURL = new URL(listPost.list[pos].user.avatar_thumb);
+     		}
+     	catch (MalformedURLException e){
+     		e.printStackTrace();
+     	}
+     	try {
+     		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
+     	} 
+     	catch (IOException e) {
+     		e.printStackTrace();
+     	}
+     	map.put("avatar",bitmap);
+	    
+	    Bundle messageBundle = new Bundle();
+    	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
+		//messageBundle.putInt("pos", i);
+        myMessage = viu.myHandler.obtainMessage();
+        myMessage.setData(messageBundle);
+        viu.myHandler.sendMessage(myMessage);
+	}
+	
+	private void downloadMode7() {
+		//for (int i = 0; i < listPost.list.length; i++) {
+	     		
+		Log.w("DATE", "jai " + listComm.list[pos].created_at);
+		if (listComm.list[pos].user == null) {
+			map.put("username", "Unknown user :");
+			map.put("content", listComm.list[pos].content);
+			map.put("avatar", String.valueOf(R.drawable.avatar));
+			map.put("date", "\n" + formatDate(listComm.list[pos].created_at) + ", " + formatHour(listComm.list[pos].created_at));
+		}
+		else
+		{
+	     	map.put("username", listComm.list[pos].user.username + " :");
+	        map.put("content", listComm.list[pos].content);
+			map.put("date", "\n" + formatDate(listComm.list[pos].created_at) + ", " + formatHour(listComm.list[pos].created_at));
+		}
+		URL pictureURL = null;
+     	try {
+     			pictureURL = new URL(listComm.list[pos].user.avatar_thumb);
+     		}
+     	catch (MalformedURLException e){
+     		e.printStackTrace();
+     	}
+     	try {
+     		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
+     	} 
+     	catch (IOException e) {
+     		e.printStackTrace();
+     	}
+     	//map.put("avatar", bitmap);
+     	map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 100));
+     	
+	    Bundle messageBundle = new Bundle();
+    	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
+        myMessage = vm.myHandler.obtainMessage();
+        myMessage.setData(messageBundle);
+        vm.myHandler.sendMessage(myMessage);
 	}
 	
 	public String formatDate(String date) {

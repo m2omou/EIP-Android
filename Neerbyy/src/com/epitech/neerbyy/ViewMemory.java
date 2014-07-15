@@ -83,6 +83,9 @@ public class ViewMemory extends MainMenu {
 	
 	public Bitmap imgPlace;
 	
+	SimpleAdapter mSchedule = null;
+	ArrayList<HashMap<String, Object>> listItem;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -629,52 +632,35 @@ public class ViewMemory extends MainMenu {
 			    		//////////////////////////////////////////DETECT TYPE///////////////////////////
 			    		if (memory.type == 2) {
 				    		Toast.makeText(getApplicationContext(), "DETECT UNE IMAGE", Toast.LENGTH_SHORT).show();
-
 			    			new ThreadDownloadImage(ViewMemory.this).start();
-			    		
 			    		}
 			    		
-			    		String[] listStrings = new String[listComm.list.length];			    		
+///////////////////////////////////////////////////////////////
 			    		
-			    		//Création de la ArrayList qui nous permettra de remplir la listView
-			            ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			     
-			            //On déclare la HashMap qui contiendra les informations pour un item
-			            HashMap<String, String> map;
+			    		listItem = new ArrayList<HashMap<String, Object>>();
+				        listView.removeAllViewsInLayout();
 			    		
-			            
-			    		//listStrings[0] = memory.content;
-			    		memoryContent.setText(memory.content);
-			    		
+			    		String[] listStrings = new String[listComm.list.length];
 			    		if (listComm.list.length > 0)
 			    		{
-			    			Log.d("COMM", "YA DEJA DES COMM !!, vec first comment = " + memory.content);
 			    			for (int i = 0; i < listComm.list.length; i++) {
-			    				listStrings[i] = listComm.list[i].content; 	
-			    				
-			    				 //Création d'une HashMap pour insérer les informations du premier item de notre listView
-					            map = new HashMap<String, String>();
-					            //on insère un élément titre que l'on récupérera dans le textView titre créé dans le fichier affichageitem.xml
-					            //map.put("username", listComm.list[i].user.username + " :");
-					            map.put("username", "bugbugbug :");
-					            //on insère un élément description que l'on récupérera dans le textView description créé dans le fichier affichageitem.xml
-					            map.put("content", listComm.list[i].content);
-					            //on insère la référence à l'image (converti en String car normalement c'est un int) que l'on récupérera dans l'imageView créé dans le fichier affichageitem.xml
-					            map.put("avatar", String.valueOf(R.drawable.avatar));
-					            //enfin on ajoute cette hashMap dans la arrayList
-					            listItem.add(map);
-			    				
+			    				listStrings[i] = listComm.list[i].content;
+			    				HashMap<String, Object> map = new HashMap<String, Object>();			    				
+			    				listItem.add(map);
+			    				new ThreadDownloadImage(ViewMemory.this, i, listView, listComm, listItem, map).start();
 			    			}
-			    			
-			    			//Création d'un SimpleAdapter qui se chargera de mettre les items présents dans notre list (listItem) dans la vue affichageitem
-			    	        SimpleAdapter mSchedule = new SimpleAdapter (ViewMemory.this, listItem, R.layout.view_item_list,
-			    	               new String[] {"avatar", "username", "content"}, new int[] {R.id.avatar, R.id.username, R.id.content});
-			    	 
-			    	        //On attribue à notre listView l'adapter que l'on vient de créer
-			    	        listView.setAdapter(mSchedule);
-			    	        
-			    			//listView.setAdapter(new ArrayAdapter<String>(ViewMemory.this, android.R.layout.simple_list_item_1, listStrings));
-			    		}
+			    		 	    			
+			    			mSchedule = new SimpleAdapter (ViewMemory.this, listItem, R.layout.view_item_list,
+				    				new String[] {"avatar", "username", "content", "date"}, new int[] {R.id.avatar, R.id.username, R.id.content, R.id.date});
+				    	        
+				    		mSchedule.setViewBinder(new MyViewBinder());
+				    		
+				    		listView.requestLayout();
+				    	    listView.setAdapter(mSchedule);
+				    	    
+				    	    memoryContent.setText(memory.content);
+
+/////////////////////////////////////////////////////////////////
 			    		
 			    		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
 							@Override
@@ -779,29 +765,11 @@ public class ViewMemory extends MainMenu {
 							}
 						});			    		
 			    		
-			           // listView.getAdapter().getView(0, null, listView).setBackgroundColor(getResources().getColor(R.color.greenNeerbyy));	
-			    		
-			    		/*listView.setOnItemClickListener(new OnItemClickListener() {
-		    			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		    			    	 //Toast.makeText(this, "Id: " + lv.getAdapter().get(position), Toast.LENGTH_LONG).show();
-		    				     //Toast.makeText(ViewPost.this, "Id: " + listPost.list[position].id, Toast.LENGTH_LONG).show();
-		    				     
-		    				     Intent intent = new Intent(ViewPost.this, ViewMemory.class);
-		    						Bundle b = new Bundle();				
-		    						b.putSerializable("post", (Serializable)listPost.list[position]);
-		    						b.putString("Place_id", placeId);
-		    			    		Log.w("LIKE", "dislike = " + listPost.list[position].downvotes);
-		    						
-		    						intent.putExtras(b);					
-		    						startActivity(intent);
-		    						return;  
-		    			    }
-		    			});
-		    		}*/
 			    		Toast.makeText(getApplicationContext(), "Update comm success", Toast.LENGTH_LONG).show();
 			    		//threadGetLike.start();
 			    	}
-			    	break;
+			    }
+			    break;
 			    	
 		    	case GET_VOTES:
 		    		if (Error == 1)
@@ -922,8 +890,19 @@ public class ViewMemory extends MainMenu {
 			    		//imgMemoryImg.setImageBitmap(new CreateCircleBitmap(imgPlace, 50));
 			    	}
 			    	break;
-	    	} 	
+			    	
+		    		case UPDATE_AVATAR:		    		
+			    		mSchedule = new SimpleAdapter (ViewMemory.this, listItem, R.layout.view_item_list,
+			    				new String[] {"avatar", "username", "content", "date"}, new int[] {R.id.avatar, R.id.username, R.id.content, R.id.date});
+			    	        
+			    		mSchedule.setViewBinder(new MyViewBinder());
+			    		
+			    		//ImageView dd = (ImageView)findViewById(R.id.avatar);
+				    	//dd.setImageBitmap(CreateCircleBitmap.getRoundedCornerBitmap(dd.getDrawingCache(), 100));		    		
+			    		listView.requestLayout();
+			    	    listView.setAdapter(mSchedule);
+			    		break;
+	    	}
 	    }
 	};
 }
-

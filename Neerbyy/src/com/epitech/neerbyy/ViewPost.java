@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -33,6 +34,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -56,11 +60,11 @@ import com.epitech.neerbyy.Place.PlaceInfo;
  * This class represent the view associate to a place, and allow to list all posts of this place.
  * @author Seb
  */
-public class ViewPost extends MainMenu {
+public class ViewPost extends Activity {
 
-	private Button btnFallow;
-	private TextView sendButton;
-	private TextView info;
+	//private Button btnFallow;
+	private ImageView sendButton;
+	//private TextView info;
 	private TextView placeName;
 	private EditText editPost;
 	private ListView listView;
@@ -73,8 +77,10 @@ public class ViewPost extends MainMenu {
 	public double lat;
 	public double lon;
 	
-	public ImageButton mar;
+	public ImageView addFile;
+	public ImageView delFile;
 	public String passImg;
+	public int typeFile;
 	
 	public Bitmap img;
 	public int idFallowed;
@@ -82,23 +88,31 @@ public class ViewPost extends MainMenu {
 	SimpleAdapter mSchedule = null;
 	ArrayList<HashMap<String, Object>> listItem;
 	
+	private MenuItem item_loading;
+	private MenuItem favorite;
+	OnMenuItemClickListener f;
+	OnMenuItemClickListener uf;
+	View.OnClickListener fallowPlace;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_post);
 	
-		btnFallow = (Button)findViewById(R.id.btnFallowPost2);
-		mar = (ImageButton)findViewById(R.id.btnFallowPost);
+		//btnFallow = (Button)findViewById(R.id.btnFallowPost2);
+		addFile = (ImageView)findViewById(R.id.imgPostAddFile);
+		delFile = (ImageView)findViewById(R.id.imgPostDelFile);
+		delFile.setVisibility(View.INVISIBLE);
 		
-		
-		sendButton = (TextView)findViewById(R.id.postSendPost);
-		info = (TextView)findViewById(R.id.postTextInfo);
+		sendButton = (ImageView)findViewById(R.id.imgPostSendPost);
+		//info = (TextView)findViewById(R.id.postTextInfo);
 		placeName = (TextView)findViewById(R.id.postNamePlace);
 		editPost = (EditText)findViewById(R.id.postEditPost);
 		listView = (ListView)findViewById(R.id.postViewListPost);
 		
 		//listView.removeAllViews();
 		listView.clearChoices();
+		typeFile = 0;
 		
 		
 		Bundle b  = this.getIntent().getExtras();
@@ -108,32 +122,45 @@ public class ViewPost extends MainMenu {
 		lat = b.getDouble("latitude");
 		lon =  b.getDouble("longitude");
 		idFallowed = b.getInt("isFallowed");
+		
+		
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
+		//getActionBar().setTitle("Souvenirs: " + b.getString("placeName"));	
 		placeName.setText(b.getString("placeName"));
 		
-		
-		mar.setOnClickListener(new View.OnClickListener() {
-
+		addFile.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				 	Intent getContentIntent = FileUtils.createGetContentIntent();
 
-				    Intent intent = Intent.createChooser(getContentIntent, "Select a file");
+				    Intent intent = Intent.createChooser(getContentIntent, "Choisissez un fichier :");
 				    startActivityForResult(intent, 1234);  //private static final int REQUEST_CHOOSER = 1234;
 			}	
 		});
-		
-		View.OnClickListener fallowPlace =  new OnClickListener() {	
+		delFile.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(View arg0) {
+				 delFile.setVisibility(View.INVISIBLE);
+	             passImg = null;
+			}	
+		});
+		
+		f = new OnMenuItemClickListener() {
+
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {				
 				if (Network.USER == null) {
-					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Cette fonctionnalité nécessite un compte Neerbyy", Toast.LENGTH_LONG).show();
 					//Intent intent = new Intent(ViewPost.this, Login.class);
 					//startActivity(intent);
-					return;
+					return false;
 				}
 		
-				mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
-						"Long operation starts...", true);
+				//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
+					//	"Long operation starts...", true);
+				
+				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				item_loading.setVisible(true);
 				
 				Thread threadFallow = new Thread(){
 			        public void run(){	        	      
@@ -169,6 +196,7 @@ public class ViewPost extends MainMenu {
 							{
 								try {		    
 									rep = gson.fromJson(ret, ResponseWS.class);
+									place = rep.getValue(Place.PlaceInfo.class);
 								}
 								catch(JsonParseException e)
 							    {
@@ -192,27 +220,32 @@ public class ViewPost extends MainMenu {
 		                e.printStackTrace();}		
 				}};
 			threadFallow.start();
-			}
+			return true;
+			}	
 		};
 		
-		View.OnClickListener unFallowPlace =  new OnClickListener() {	
-			@Override
-			public void onClick(View v) {
 		
+		
+		uf = new OnMenuItemClickListener() {
+
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				
 				if (Network.USER == null) {
-					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Cette fonctionnalité nécessite un compte Neerbyy", Toast.LENGTH_LONG).show();
 					//Intent intent = new Intent(ViewPost.this, Login.class);
 					//startActivity(intent);
-					return;
+					return false;
 				}
-				mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
-						"Long operation starts...", true);
+
+				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				item_loading.setVisible(true);
+				
 				Thread thread1 = new Thread(){
 			        public void run(){
-			        	
 					try {	
 		            	Gson gson = new Gson();
-		            	String url = Network.URL + Network.PORT + "/fallowed_places/" + idFallowed + ".json";
+		            	String url = Network.URL + Network.PORT + "/followed_places/" + idFallowed + ".json";
      	
 		            	Message myMessage, msgPb;
 		            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
@@ -263,19 +296,11 @@ public class ViewPost extends MainMenu {
 				catch (Exception e) {
 	                e.printStackTrace();}
 			    }};
-			thread1.start();			
-
+			thread1.start();
+			return true;
 			}
 		};
 		
-		if (idFallowed == 0)
-			btnFallow.setOnClickListener(fallowPlace);
-		else
-		{
-			btnFallow.setOnClickListener(unFallowPlace);
-			btnFallow.setText("Ne plus suivre ce lieu");
-    		btnFallow.setBackgroundResource(R.color.orangeNeerbyy);
-    	}
 		
 		
 			sendButton.setOnClickListener(new OnClickListener() {
@@ -283,13 +308,16 @@ public class ViewPost extends MainMenu {
 			public void onClick(View v) {
 				
 				if (Network.USER == null) {
-					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Cette fonctionalité nécessite un compte Neerbyy", Toast.LENGTH_LONG).show();
 					//Intent intent = new Intent(ViewPost.this, Login.class);
 					//startActivity(intent);
 					return;
 				}
-				mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
-						"Long operation starts...", true);
+				//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
+					//	"Long operation starts...", true);
+				
+				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				item_loading.setVisible(true);
 				
 				Thread thread1 = new Thread(){
 			        public void run(){	        	      
@@ -305,8 +333,8 @@ public class ViewPost extends MainMenu {
 		            	nameValuePairs.add(new BasicNameValuePair("publication[title]", ""));
 		            	nameValuePairs.add(new BasicNameValuePair("publication[content]", editPost.getText().toString()));
 		            	
+		            	nameValuePairs.add(new BasicNameValuePair("publication[link]", Integer.toString(typeFile)));
 		            	if (passImg != null){
-		            		nameValuePairs.add(new BasicNameValuePair("publication[link]", "2"));
 		            		nameValuePairs.add(new BasicNameValuePair("publication[file]", passImg));
 		            	}
 		            	Message myMessage, msgPb;
@@ -371,18 +399,20 @@ public class ViewPost extends MainMenu {
 			}
 		});
 		
-		mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
-				"Long operation starts...", true);
-		
+		//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
+			//	"Long operation starts...", true);
+
 		new ThreadUpdatePost(ViewPost.this).start();
 	}
+
+	
 
 	Handler myHandler = new Handler()
 	{
 	    @Override 
 	    public void handleMessage(Message msg)
 	    {
-	    	switch (msg.what) {
+	    	/*switch (msg.what) {
 	        case 0:   //  begin
 	            if (mProgressDialog.isShowing()) {
 	                mProgressDialog.setMessage(((String) msg.obj));
@@ -397,7 +427,7 @@ public class ViewPost extends MainMenu {
 	        	break;
 	        default: // should never happen
 	            break;
-	    	}
+	    	}*/
 	    	
 	    	
 	    	Bundle pack = msg.getData();
@@ -405,34 +435,38 @@ public class ViewPost extends MainMenu {
 	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{
 		    	case CREATE_POST:
-		    		info.setText("");
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Post error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "Erreur lors de l'envoi du souvenir : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{
 			    		editPost.setText("");
-			    		info.setText("Post send success" );
+			    		//Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    		//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
 			    			//	"Long operation starts...", true);
+			    		
 			    		new ThreadUpdatePost(ViewPost.this).start();
 			    	}
+		    		if (Error != 0) {
+		    			item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+			    		item_loading.setVisible(false);
+		    		}
+			    	
 			    	break;
 		    	case UPDATE_POST:
-		    		info.setText("");		    	
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Update post error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "Erreur lors de la mise à jour des souvenirs : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{
 			    		//Création de la ArrayList qui nous permettra de remplir la listView
@@ -535,9 +569,13 @@ public class ViewPost extends MainMenu {
 								   					//startActivity(intent);
 								   					return;
 								   				}
-								            	   mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
-															"Long operation starts...", true);
-													Thread thread1 = new Thread(){
+								            	  // mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
+													//		"Long operation starts...", true);
+								            	
+								            	   	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+								           			item_loading.setVisible(true);
+								            	   
+								            	   Thread thread1 = new Thread(){
 												        public void run(){
 												        	
 														try {	
@@ -604,29 +642,39 @@ public class ViewPost extends MainMenu {
 						});   		
 	    				
 			    		//new ThreadDownloadImage(listView, listPost, ViewPost.this).start();			    		
-			    		Toast.makeText(getApplicationContext(), "Update post success", Toast.LENGTH_LONG).show();
+			    		//Toast.makeText(getApplicationContext(), "Update post success", Toast.LENGTH_LONG).show();		    		
 			    	}
-			    	break;
+		    		break;
 			    	
 		    	case FALLOW_PLACE:
-		    		info.setText("");	
-		    		
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Fallow Place error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout du favorie :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
-			    	{		
-			    		Toast.makeText(getApplicationContext(), "Fallow Place success", Toast.LENGTH_LONG).show();
-			    		btnFallow.setText("Ne plus suivre ce lieu");
-			    		btnFallow.setBackgroundResource(R.color.orangeNeerbyy);
+			    	{
+			    		Toast.makeText(getApplicationContext(), "Ajout au favorie reussi", Toast.LENGTH_SHORT).show();
+			    		//btnFallow.setText("Ne plus suivre ce lieu");
+			    		//btnFallow.setBackgroundResource(R.color.orangeNeerbyy);
+			    		
+			        	idFallowed = place.followed_place_id;
+
+			        	
+			    		favorite.setTitle("Ne plus suivre ce lieu");
+						favorite.setIcon(R.drawable.favorite_less);
+						favorite.setOnMenuItemClickListener(uf);
+			    		
 			    		//place.followed_place_id = 1;   //  mettre la vrai avec ret requ
 			    	}
+		    		
+			    	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		    		item_loading.setVisible(false);
 			    	break;
+			    	
 		    	case UPDATE_AVATAR:
 		    		
 		    		mSchedule = new SimpleAdapter (ViewPost.this, listItem, R.layout.view_item_list,
@@ -640,6 +688,8 @@ public class ViewPost extends MainMenu {
 		    		listView.requestLayout();
 		    	    listView.setAdapter(mSchedule);
 		    	    
+		    	    item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		    		item_loading.setVisible(false);
 		    	    
 		    		break;
 		    		
@@ -657,6 +707,8 @@ public class ViewPost extends MainMenu {
 			    		Toast.makeText(getApplicationContext(), "Delete Comm success", Toast.LENGTH_LONG).show();
 			    		new ThreadUpdatePost(ViewPost.this).start();
 			    	}
+		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		    		item_loading.setVisible(false);
 			    	break;
 			    	
 		    	case UNFALLOW:
@@ -671,10 +723,19 @@ public class ViewPost extends MainMenu {
 			    	else
 			    	{
 			    		Toast.makeText(getApplicationContext(), "Unfallow place success", Toast.LENGTH_SHORT).show();
-			    		btnFallow.setText("Suivre ce lieu");
-			    		btnFallow.setBackgroundResource(R.color.greenNeerbyy);
+			    		//btnFallow.setText("Suivre ce lieu");
+			    		//btnFallow.setBackgroundResource(R.color.greenNeerbyy);
+			    		
+			    		favorite.setTitle("Suivre ce lieu");
+						favorite.setIcon(R.drawable.favorite_add);
+						
+						favorite.setOnMenuItemClickListener(f);
+						
+						//btnFallow.setOnClickListener(unFallowPlace);
 			    		//place.followed_place_id = 0;
 			    	}
+		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		    		item_loading.setVisible(false);
 		    	break;
 	    	} 	
 	    }
@@ -690,15 +751,77 @@ public class ViewPost extends MainMenu {
 
 	                // Get the File path from the Uri
 	                String path = FileUtils.getPath(this, uri);
-	                passImg = path;
+	                
 	                // Alternatively, use FileUtils.getFile(Context, Uri)
 	                if (path != null && FileUtils.isLocal(path)) {
 	                    File file = new File(path);
+	                    Toast.makeText(getApplicationContext(), "MIME : " + FileUtils.getMimeType(file), Toast.LENGTH_LONG).show();
+	               
+	                    String mime = FileUtils.getMimeType(file);
+	                    if (mime.contains("image"))
+	                    {
+	                    	Toast.makeText(getApplicationContext(), "Detect une image", Toast.LENGTH_LONG).show();
+	                    	typeFile = 2;
+	                    }
+	                    else if (mime.contains("video"))
+	                    {
+	                    	Toast.makeText(getApplicationContext(), "Detect une video", Toast.LENGTH_LONG).show();
+	                    	typeFile = 3;  // type youtube ?
+	                    }
 	                }
+	                delFile.setVisibility(View.VISIBLE);
+	                passImg = path;
+	                
+	               
 	            }
 	            break;
 	    }
 	}   
+
+	@Override
+	  public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.view_post, menu);
+	    item_loading = menu.findItem(R.id.loading_zone);
+		item_loading.setVisible(false);
+		
+		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		item_loading.setVisible(true);
+		
+		favorite = menu.findItem(R.id.favorite);	
+		if (idFallowed == 0)
+		{
+			favorite.setOnMenuItemClickListener(f);
+		}
+		else
+		{
+			favorite.setOnMenuItemClickListener(uf);  
+			favorite.setTitle("Ne plus suivre ce lieu");
+			favorite.setIcon(R.drawable.favorite_less);
+    	}
+	    return true;
+	  }
 	
+	
+	 @Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	    case R.id.logo_menu:
+	    	item_loading = item;
+	    	//item_loading.setActionView(R.layout.progressbar);
+	    	//item_loading.expandActionView();
+	    	//TestTask task = new TestTask();
+	    	//task.execute("test");
+	    	Intent intent = new Intent(ViewPost.this, Menu2.class);
+			startActivity(intent);
+	      break;
+	    case R.id.favorite:
+	    	//Toast.makeText(getApplicationContext(), "cool", Toast.LENGTH_SHORT).show();    	
+	    	break;
+	    default:
+	      break;
+	    }
+	    return true;
+	  }
 }
 

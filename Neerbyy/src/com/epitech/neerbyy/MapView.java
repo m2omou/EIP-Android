@@ -480,7 +480,11 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    		//Toast.makeText(getApplicationContext(), "Icone marker updated", Toast.LENGTH_SHORT).show();
     			    		int indice = pack.getInt("indicePost");
     			    		
-    			    		if (places.list.length > indice) {
+    			    		if (places.list.length > indice && places.list[indice].marker != null) {             //  Truc null parfois a decouvrir
+    			    			/*if (places.list[indice].marker == null)
+    			    				Log.w("MAP", "MAR");
+    			    			if (places.list[indice].bitmap == null)
+    			    				Log.w("MAP", "BIT");*/
     			    			places.list[indice].marker.setIcon(BitmapDescriptorFactory.fromBitmap(places.list[indice].bitmap));	    		
     			    		}
     			    	}	
@@ -497,12 +501,14 @@ public class MapView extends FragmentActivity implements LocationListener{
     			if (!isAlreadyHere(places.list[i]))
     			{
     				places.list[i].markerDef = gMap.addMarker(new MarkerOptions().position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.greenpin1)));
-
-    				places.list[i].marker = gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).snippet(places.list[i].address).icon(BitmapDescriptorFactory.fromResource(R.drawable.greenpin1)));	
-
-
-    				places.list[i].markerDef.hideInfoWindow();
-    				places.list[i].markerDef.setDraggable(false);
+    				places.list[i].marker = gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).snippet(places.list[i].address).icon(BitmapDescriptorFactory.fromResource(R.drawable.greenpin1)));
+    				if (places.list[i].markerDef == null)
+    					Log.w("MAP", "MARDEF null");
+    				else 
+    				{
+    					places.list[i].markerDef.hideInfoWindow();
+    					places.list[i].markerDef.setDraggable(false);
+    				}
     				//places.list[i].markerDef.setFlat(true);
     				//places.list[i].markerDef.setInfoWindowAnchor(-1, -1);
     				//places.list[i].markerDef.setAnchor(-1, -1);

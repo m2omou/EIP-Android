@@ -48,12 +48,12 @@ public class Post implements Serializable {
     	@SerializedName("vote")
     	public Votes vote;                //  or  InfoVotePost
     	@SerializedName("place")
-    	public Place place;               //  or  InfoPlacePost
+    	public InfoPlacePost place;               //  or  Place
     	
     	/** This class represent the data of the author of this post 
     	 * @author Seb
     	 */
-    	private class InfoUserPost {
+    	public class InfoUserPost implements Serializable{
     		@SerializedName("id")
         	public int id;
         	@SerializedName("username")
@@ -66,7 +66,7 @@ public class Post implements Serializable {
     	/** This class represent the data of the place associate to the publication 
     	 * @author Seb
     	 */
-    	private class InfoPlacePost {
+    	public class InfoPlacePost implements Serializable {
     		@SerializedName("id")
         	public String id;
         	@SerializedName("name")
@@ -77,7 +77,7 @@ public class Post implements Serializable {
     	 * @author Seb
     	 * @see Post
     	 */
-    	private class InfoVotePost {
+    	public class InfoVotePost implements Serializable{
     		@SerializedName("id")
         	public String id;
         	@SerializedName("value")

@@ -25,8 +25,8 @@ public class Commentary implements Serializable {
     	public String content;
     	@SerializedName("publication_id")
     	public int publicationId; 
-    	@SerializedName("create_at")
-    	public String create_at;
+    	@SerializedName("created_at")
+    	public String created_at;
     	@SerializedName("updated_at")
     	public String updated_at;
     	@SerializedName("user")

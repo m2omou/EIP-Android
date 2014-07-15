@@ -3,18 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" xmlns:app="http://schemas.android.com/tools">
 
-    <Button
-        android:id="@+id/TitleViewPublication"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/greenNeerbyy"
-        android:gravity="left|center_horizontal"
-        android:text="NEERBYY SOUVENIR"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:typeface="normal" />
-
     <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
@@ -43,7 +31,7 @@
 
             <Button
                 android:id="@+id/btnFallowPost2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/greenNeerbyy"
                 android:padding="5dp"
