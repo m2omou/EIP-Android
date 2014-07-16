@@ -8,41 +8,24 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ViewFeed" >
 
-    <ImageButton
-        android:id="@+id/btnCreatePost"
-        android:layout_width="wrap_content"
+     <TextView
+        android:id="@+id/feedNamePlace"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/iconmortel" />
-
+        android:layout_toLeftOf="@+id/feedEditFeed"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+     
     <ListView
         android:id="@+id/feedViewListFeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/btnCreatePost"
-        android:layout_marginTop="75dp"
-        android:background="@color/white"
-        android:divider="@drawable/separator_line"
-        android:dividerHeight="15dp"
-        tools:listitem="@android:layout/simple_expandable_list_item_1" >
+        android:layout_marginTop="10dp"
+        android:dividerHeight="1dp"
+        android:layout_below="@+id/feedNamePlace"
+        tools:listitem="@layout/view_item_list" /> 
 
-    </ListView>
-
-    <TextView
-        android:id="@+id/feedNamePlace"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/btnCreatePost"
-        android:layout_alignLeft="@+id/feedTextInfo"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/feedTextInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btnCreatePost"
-        android:layout_toLeftOf="@+id/feedEditFeed"
-        android:textAppearance="?android:attr/textAppearanceMedium" /> 
 
 </RelativeLayout>

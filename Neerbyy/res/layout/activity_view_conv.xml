@@ -7,39 +7,16 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ViewConv" >
-
-    <TextView
-        android:id="@+id/convTextInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-    
+ 
+        
     <ListView
         android:id="@+id/convViewList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
-        android:layout_marginTop="60dp"
-        android:background="@color/white"
-        android:divider="@drawable/separator_line"
-        android:dividerHeight="15dp"
-        tools:listitem="@layout/view_item_list" >
-
-    </ListView>
-
-    <Button
-        android:id="@+id/titleViewConv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/greenNeerbyy"
-        
-        android:text="NEERBYY \n MES CONVERSATIONS"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:typeface="normal" />
+       	android:dividerHeight="1dp"
+       	android:layout_marginBottom="70dp"
+        tools:listitem="@layout/view_item_list" 
+        />
 
     <ImageView
         android:id="@+id/convViewNewConv"
@@ -47,6 +24,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/more_conv" />
+        android:src="@drawable/find_user" />
     
 </RelativeLayout>

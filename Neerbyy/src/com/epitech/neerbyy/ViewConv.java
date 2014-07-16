@@ -6,6 +6,10 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import com.epitech.neerbyy.Network.ACTION;
 import com.epitech.neerbyy.Network.METHOD;
@@ -16,13 +20,19 @@ import com.google.gson.JsonParseException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -36,14 +46,21 @@ import android.widget.AdapterView.OnItemClickListener;
  * @author Seb
  * 
  */
-public class ViewConv extends MainMenu {
+public class ViewConv extends Activity {
 
-	private TextView info;
+	//private TextView info;
 	private ListView listView;
 	
 	private Thread threadGetConv;
 	
 	private ImageView newConv;
+	
+	private MenuItem item_loading;
+	
+	Users users;
+	
+	SimpleAdapter mSchedule = null;
+	ArrayList<HashMap<String, Object>> listItem;
 	
 	ResponseWS rep;
 	ProgressDialog mProgressDialog;
@@ -54,7 +71,7 @@ public class ViewConv extends MainMenu {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_conv);
 	
-		info = (TextView)findViewById(R.id.convTextInfo);
+		//info = (TextView)findViewById(R.id.convTextInfo);
 		listView = (ListView)findViewById(R.id.convViewList);
 		
 		newConv = (ImageView)findViewById(R.id.convViewNewConv);
@@ -71,15 +88,109 @@ public class ViewConv extends MainMenu {
 	//	placeName.setText(place.name); 
 
     //	b.getSerializable(key)
+		
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
 	
-		newConv.setOnClickListener(new View.OnClickListener() {
-			
+		newConv.setOnClickListener(new View.OnClickListener() {		
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(ViewConv.this, SearchUser.class);
-				startActivity(intent);
-			}
+				
+				AlertDialog.Builder alert = new AlertDialog.Builder(ViewConv.this);
+
+				alert.setTitle("Rechercher un utilisateur");
+				alert.setMessage("Entrer le nom d'un utilisateur");
+				
+				// Set an EditText view to get user input 
+				final EditText input = new EditText(ViewConv.this);
+				alert.setView(input);
+
+				alert.setPositiveButton("Envoyer", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					final String value = input.getText().toString();
+				  	Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
+				
+					if (Network.USER == null) {
+						Toast.makeText(getApplicationContext(), "Cette fonctionalité nécessite un compte Neerbyy", Toast.LENGTH_LONG).show();
+						//Intent intent = new Intent(ViewPost.this, Login.class);
+						//startActivity(intent);
+						return;
+					}
+					
+					item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+					item_loading.setVisible(true);
+					
+					Thread thread1 = new Thread(){
+				        public void run(){
+				        	
+						try {	
+			            	Gson gson = new Gson();
+			            	String url = Network.URL + Network.PORT + "/search/users.json?query=" + value;	       
+
+			            	Message myMessage, msgPb;
+			            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
+			                myHandler.sendMessage(msgPb);
+			                
+							Bundle messageBundle = new Bundle();
+							messageBundle.putInt("action", ACTION.SEARCH_USER.getValue());
+					        myMessage = myHandler.obtainMessage();	
+	   		        
+					        InputStream input = Network.retrieveStream(url, METHOD.GET, null);
+					        
+							if (input == null)
+							{
+								messageBundle.putInt("error", 1);
+							}
+							Reader readerResp = new InputStreamReader(input);
+							String ret = Network.checkInputStream(readerResp);
+							
+							if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+							{
+								messageBundle.putInt("error", 3);
+								messageBundle.putString("msgError", ret);
+							}
+							else
+							{
+								try {
+									rep = gson.fromJson(ret, ResponseWS.class);
+									users = rep.getValue(Users.class);
+								}
+								catch(JsonParseException e)
+							    {
+							        System.out.println("Exception n3 in check_exitrestrepWSResponse::"+e.toString());
+							    }
+								
+								if (rep.responseCode == 1)
+								{
+									messageBundle.putInt("error", 2);
+									messageBundle.putString("msgError", rep.responseMessage);
+								}	
+							}						
+						myMessage.setData(messageBundle);
+	                    myHandler.sendMessage(myMessage);
+	                    
+	                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
+		                myHandler.sendMessage(msgPb);
+	                }
+					catch (Exception e) {
+		                e.printStackTrace();}
+				    }};
+				thread1.start();			
+				}
+				});
+
+				alert.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+				  public void onClick(DialogInterface dialog, int whichButton) {
+				    // Canceled.
+				  }
+				});
+				alert.show();
+			
+			}	
+				
+				//Intent intent = new Intent(ViewConv.this, SearchUser.class);
+				//startActivity(intent);
 		});
+		
 		
 		threadGetConv = new Thread(){
 	        public void run(){	        	      
@@ -143,8 +254,8 @@ public class ViewConv extends MainMenu {
         	Log.w("THREAD", "FIN THREAD UPDATE CONV");
 			
 		}};
-		mProgressDialog = ProgressDialog.show(ViewConv.this, "Please wait",
-				"Long operation starts...", true);
+		//mProgressDialog = ProgressDialog.show(ViewConv.this, "Please wait",
+			//	"Long operation starts...", true);
 	threadGetConv.start();	
 }
 	
@@ -154,7 +265,7 @@ public class ViewConv extends MainMenu {
 	    @Override 
 	    public void handleMessage(Message msg)
 	    {
-	    	switch (msg.what) {
+	    	/*switch (msg.what) {
 	        case 0:   //  begin
 	            if (mProgressDialog.isShowing()) {
 	                mProgressDialog.setMessage(((String) msg.obj));
@@ -169,67 +280,47 @@ public class ViewConv extends MainMenu {
 	        	break;
 	        default: // should never happen
 	            break;
-	    	}
+	    	}*/
 	    	
 	    	Bundle pack = msg.getData();
 	    	int Error = pack.getInt("error");
 	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{    	
 		    	case GET_CONV:
-		    		info.setText("");		    	
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Update conv error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "Erreur lors de la mise à jour des conversations:\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{
-			    		//listPost = (Post)pack.getSerializable("post");   //  utile ?????? 
-			    		//Log.w("PATH", "LAAA");
-			    		//List listStrings = new ArrayList<String>() ;//= {"France","Allemagne","Russie"};
-			    		String[] listStrings = new String[listConv.list.length] ;//= {"France","Allemagne","Russie"};
+			    		listItem = new ArrayList<HashMap<String, Object>>();
+				        listView.removeAllViewsInLayout();
 			    		
-			    		
-			    		//Création de la ArrayList qui nous permettra de remplir la listView
-			            ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			     
-			            //On déclare la HashMap qui contiendra les informations pour un item
-			            HashMap<String, String> map;
-			    		
-			    		
+			    		String[] listStrings = new String[listConv.list.length];
 			    		if (listConv.list.length > 0)
 			    		{
-			    			Log.d("CONV", "YA DEJA DES CONV !!");
 			    			for (int i = 0; i < listConv.list.length; i++) {
 			    				listStrings[i] = listConv.list[i].messages[0].content;
+			    				HashMap<String, Object> map = new HashMap<String, Object>();			    				
+			    				listItem.add(map);
 			    				int lastMessageIndice = listConv.list[i].messages.length - 1;
 			    				if (lastMessageIndice < 0)
 			    					lastMessageIndice = 0;
-			    				 //Création d'une HashMap pour insérer les informations du premier item de notre listView
-					            map = new HashMap<String, String>();
-					            //on insère un élément titre que l'on récupérera dans le textView titre créé dans le fichier affichageitem.xml
-					            map.put("username", listConv.list[i].messages[lastMessageIndice].sender.username + " :");
-					            //on insère un élément description que l'on récupérera dans le textView description créé dans le fichier affichageitem.xml
-					            map.put("content", listConv.list[i].messages[lastMessageIndice].content);
-					            //on insère la référence à l'image (converti en String car normalement c'est un int) que l'on récupérera dans l'imageView créé dans le fichier affichageitem.xml
-					            map.put("avatar", String.valueOf(R.drawable.avatar));
-					            //enfin on ajoute cette hashMap dans la arrayList
-					            listItem.add(map);
-			    				
+			    				new ThreadDownloadImage(ViewConv.this, i, listView, listConv, listItem, map, lastMessageIndice).start();
 			    			}
-			    			
-			    			//Création d'un SimpleAdapter qui se chargera de mettre les items présents dans notre list (listItem) dans la vue affichageitem
-			    	        SimpleAdapter mSchedule = new SimpleAdapter (ViewConv.this, listItem, R.layout.view_item_list,
-			    	               new String[] {"avatar", "username", "content"}, new int[] {R.id.avatar, R.id.username, R.id.content});
-			    	 
-			    	        //On attribue à notre listView l'adapter que l'on vient de créer
-			    	        listView.setAdapter(mSchedule);
-			    	        
-			    		 
-			    			//listView.setAdapter(new ArrayAdapter<String>(ViewFeed.this, android.R.layout.simple_list_item_1, listStrings));	
+			    		 	    			
+			    			mSchedule = new SimpleAdapter (ViewConv.this, listItem, R.layout.view_item_list,
+				    				new String[] {"avatar", "username", "content", "date"}, new int[] {R.id.avatar, R.id.username, R.id.content, R.id.date});
+				    	        
+				    		mSchedule.setViewBinder(new MyViewBinder());
+				    		
+				    		listView.requestLayout();
+				    	    listView.setAdapter(mSchedule);
+				    	    	
 			    			listView.setOnItemClickListener(new OnItemClickListener() {
 			    			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			    			    	 //Toast.makeText(this, "Id: " + lv.getAdapter().get(position), Toast.LENGTH_LONG).show();
@@ -245,11 +336,120 @@ public class ViewConv extends MainMenu {
 			    			    }
 			    			});
 			    		}
-			            Toast.makeText(getApplicationContext(), "Update conv success", Toast.LENGTH_LONG).show();
+			            //Toast.makeText(getApplicationContext(), "Update conv success", Toast.LENGTH_LONG).show();
+			            item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+			    		item_loading.setVisible(false);
 			    	}
 			    	break;
+			    	
+		    	case UPDATE_AVATAR:		    		
+		    		mSchedule = new SimpleAdapter (ViewConv.this, listItem, R.layout.view_item_list,
+		    				new String[] {"avatar", "username", "content", "date"}, new int[] {R.id.avatar, R.id.username, R.id.content, R.id.date});
+		    	        
+		    		mSchedule.setViewBinder(new MyViewBinder());
+		    		
+		    		//ImageView dd = (ImageView)findViewById(R.id.avatar);
+			    	//dd.setImageBitmap(CreateCircleBitmap.getRoundedCornerBitmap(dd.getDrawingCache(), 100));		    		
+		    		listView.requestLayout();
+		    	    listView.setAdapter(mSchedule);
+		    	break;
+		    	
+		    	case SEARCH_USER:    		
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
+			    	else if (Error == 2)
+			    	{
+		    			Toast.makeText(getApplicationContext(), "Erreur lors de la recherche utilisateur : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+			    	}
+			    	else if (Error == 3)
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    	else
+			    	{
+			    		//Toast.makeText(getApplicationContext(), "Search user success", Toast.LENGTH_SHORT).show();
+			    					    		
+			    		if (users.list.length == 0)
+			    		{
+    			    		Toast.makeText(getApplicationContext(), "list vide !!!!", Toast.LENGTH_SHORT).show();
+			    			return;
+			    		}
+			    		
+			    		List<CharSequence> charSequences = new ArrayList<CharSequence>();
+			    		for (int i = 0; i < users.list.length; i++) {
+			    			String tmp = new String(users.list[i].username + ":\n");
+			    			if (users.list[i].firstname != null)
+			    				tmp += users.list[i].firstname;
+			    			if (users.list[i].lastname != null)
+			    				tmp += users.list[i].lastname;
+			    			
+			    			charSequences.add(tmp);
+			    		}
+			    		
+			    		final CharSequence[] charSequenceArray = charSequences.toArray(new
+			    			    CharSequence[charSequences.size()]);
+			    		
+			    		Toast.makeText(getApplicationContext(),"Charsequence a " + charSequenceArray.length, Toast.LENGTH_SHORT).show();
+
+			    		
+						AlertDialog.Builder builder = new AlertDialog.Builder(ViewConv.this);
+						builder.setTitle("Qui Cherchez vous ?");
+						builder.setItems(charSequenceArray, new DialogInterface.OnClickListener() {
+						          
+							@Override
+								public void onClick(DialogInterface dialog, int item) {
+						                Toast.makeText(getApplicationContext(), charSequenceArray[item], Toast.LENGTH_SHORT).show();
+						                Intent intent = new Intent(ViewConv.this, ViewMessages.class);
+			    						Bundle b = new Bundle();		    					
+			    						//b.putSerializable("conv", (Serializable)listConv.list[position]);
+			    						b.putInt("convId", -1);
+			    						b.putInt("recipientId", users.list[item].id);
+			    						intent.putExtras(b);					
+			    						startActivity(intent);
+			    						return;
+						          	}
+						        });
+						AlertDialog alert = builder.create();
+						alert.show();			
+			    }
+		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		    		item_loading.setVisible(false);
+			    break;
 	    	} 	
 	    }
 	};
 
+	@Override
+	  public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.view_conv, menu);
+	    item_loading = menu.findItem(R.id.loading_zone);
+		item_loading.setVisible(false);
+		
+		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		item_loading.setVisible(true);
+		
+	    return true;
+	  }
+	
+	 @Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	    case R.id.logo_menu:
+	    	item_loading = item;
+	    	//item_loading.setActionView(R.layout.progressbar);
+	    	//item_loading.expandActionView();
+	    	//TestTask task = new TestTask();
+	    	//task.execute("test");
+	    	
+	    	Intent intent;
+	    	if (Network.USER == null)
+	    		intent = new Intent(ViewConv.this, Login.class);
+	    	else
+	    		intent = new Intent(ViewConv.this, Menu2.class);
+			startActivity(intent);
+	      break;
+	    default:
+	      break;
+	    }
+	    return true;
+	  }
 }

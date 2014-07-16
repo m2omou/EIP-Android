@@ -20,6 +20,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.ListView;
 
+import com.epitech.neerbyy.Conversations.Conversation;
 import com.epitech.neerbyy.Network.ACTION;
 import com.epitech.neerbyy.Network.METHOD;
 import com.google.android.gms.maps.model.LatLng;
@@ -35,6 +36,9 @@ public class ThreadDownloadImage extends Thread {
 	int pos;
 	Post listPost;
 	Commentary listComm;
+	Conversations listConv;
+	Messages listMessage;
+	 
 	Bitmap bitmap;
 	HashMap<String, Object> map;
 	ArrayList<HashMap<String, Object>> listItem;
@@ -44,6 +48,9 @@ public class ThreadDownloadImage extends Thread {
 	ViewPost vp;
 	ViewFeed vf;
 	ViewMemory vm;
+	ViewConv vc;
+	ViewMessages vmess;
+	int lastMessageIndice;
 	MapView mv;
 	int indiceMarker;
 	Message myMessage, msgPb;
@@ -58,6 +65,18 @@ public class ThreadDownloadImage extends Thread {
         vp = vp_;
         
         mode = 0;
+    }
+	
+	public ThreadDownloadImage(ViewMessages vmess_, int pos_, ListView listView_, Messages listMessage_, ArrayList<HashMap<String, Object>> listItem_, HashMap<String, Object> map_) {
+        super();
+        pos = pos_;
+        listView = listView_;
+        listMessage = listMessage_;
+        listItem = listItem_;
+        map = map_;
+        vmess = vmess_;
+        
+        mode = 9;
     }
 	
 	public ThreadDownloadImage(ViewMemory vm_, int pos_, ListView listView_, Commentary listComm_, ArrayList<HashMap<String, Object>> listItem_, HashMap<String, Object> map_) {
@@ -95,6 +114,19 @@ public class ThreadDownloadImage extends Thread {
         
         mode = 6;
     }
+	
+	public ThreadDownloadImage(ViewConv vc_, int pos_, ListView listView_, Conversations listConv_, ArrayList<HashMap<String, Object>> listItem_, HashMap<String, Object> map_, int lastMessageIndice_) {
+		super();
+        pos = pos_;
+        listView = listView_;
+        listConv = listConv_;
+        listItem = listItem_;
+        map = map_;
+        vc = vc_;
+        lastMessageIndice = lastMessageIndice_;
+        
+		mode = 8;
+	}
 	
 	public ThreadDownloadImage(ListView listView_, Post listPost_, ViewPost vp_) {
         super();
@@ -160,6 +192,12 @@ public class ThreadDownloadImage extends Thread {
 		case 7:
 			downloadMode7();
 			break;
+		case 8:
+			downloadMode8();
+			break;
+		case 9:
+			downloadMode9();
+			break;
 		}
 	}
 	
@@ -193,7 +231,7 @@ public class ThreadDownloadImage extends Thread {
      		e.printStackTrace();
      	}
      	//map.put("avatar", bitmap);
-     	map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 100));
+     	map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 90));
      	
 	    Bundle messageBundle = new Bundle();
     	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
@@ -271,7 +309,9 @@ public class ThreadDownloadImage extends Thread {
      	catch (IOException e) {
      		e.printStackTrace();
      	}
-     	map.put("avatar",bitmap);
+     	
+     	map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 90));
+     	//map.put("avatar",bitmap);
      	
 	    //listItem.add(pos, map);
 	    
@@ -393,7 +433,9 @@ public class ThreadDownloadImage extends Thread {
      	catch (IOException e) {
      		e.printStackTrace();
      	}
-     	map.put("avatar",bitmap);
+     	
+     	map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 90));
+     	//map.put("avatar",bitmap);
 	    
 	    Bundle messageBundle = new Bundle();
     	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
@@ -433,13 +475,97 @@ public class ThreadDownloadImage extends Thread {
      		e.printStackTrace();
      	}
      	//map.put("avatar", bitmap);
-     	map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 100));
+     	map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 90));
      	
 	    Bundle messageBundle = new Bundle();
     	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
         myMessage = vm.myHandler.obtainMessage();
         myMessage.setData(messageBundle);
         vm.myHandler.sendMessage(myMessage);
+	}
+	
+	private void downloadMode8() {
+		//for (int i = 0; i < listPost.list.length; i++) {
+	     		
+		Log.w("DATE", "jai " + listConv.list[pos].messages[lastMessageIndice].created_at);
+		if (listConv.list[pos].messages[lastMessageIndice].sender == null) {
+			map.put("username", "Utilisateur inconnu");
+			map.put("content", listConv.list[pos].messages[lastMessageIndice].content);
+			map.put("avatar", String.valueOf(R.drawable.avatar));
+			map.put("date", "\n" + formatDate(listConv.list[pos].messages[lastMessageIndice].created_at) + ", " + formatHour(listConv.list[pos].messages[lastMessageIndice].created_at));
+		}
+		else
+		{
+	     	map.put("username", listConv.list[pos].messages[lastMessageIndice].sender.username);
+	        map.put("content", listConv.list[pos].messages[lastMessageIndice].content);
+			map.put("date", "\n" + formatDate(listConv.list[pos].messages[lastMessageIndice].created_at) + ", " + formatHour(listConv.list[pos].messages[lastMessageIndice].created_at));
+		}
+		URL pictureURL = null;
+     	try {
+ 				//pictureURL = new URL(listConv.list[pos].messages[lastMessageIndice].sender.avatar_thumb);
+     			//TEMP BUG WS
+     			pictureURL = new URL("http://dev.neerbyy.com/" + listConv.list[pos].messages[lastMessageIndice].sender.avatar_thumb);
+     		}
+     	catch (MalformedURLException e){
+     		e.printStackTrace();
+     	}
+     	try {
+     		if (pictureURL != null)
+     			bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
+     	} 
+     	catch (IOException e) {
+     		e.printStackTrace();
+     	}
+     	//map.put("avatar", bitmap);
+     	map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 90));
+     	
+	    Bundle messageBundle = new Bundle();
+    	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
+        myMessage = vc.myHandler.obtainMessage();
+        myMessage.setData(messageBundle);
+        vc.myHandler.sendMessage(myMessage);
+	}
+	
+	private void downloadMode9() {
+		//for (int i = 0; i < listPost.list.length; i++) {
+	     		
+		Log.w("DATE", "jai " + listMessage.list[pos].created_at);
+		if (listMessage.list[pos].sender == null) {
+			map.put("username", "Utilisateur inconnu");
+			map.put("content", listMessage.list[pos].content);
+			map.put("avatar", String.valueOf(R.drawable.avatar));
+			map.put("date", "\n" + formatDate(listMessage.list[pos].created_at) + ", " + formatHour(listMessage.list[pos].created_at));
+		}
+		else
+		{
+	     	map.put("username", listMessage.list[pos].sender.username);
+	        map.put("content", listMessage.list[pos].content);
+			map.put("date", "\n" + formatDate(listMessage.list[pos].created_at) + ", " + formatHour(listMessage.list[pos].created_at));
+		}
+		URL pictureURL = null;
+     	try {
+ 				pictureURL = new URL(listMessage.list[pos].sender.avatar_thumb);
+     			//TEMP BUG WS
+     			//pictureURL = new URL("http://dev.neerbyy.com/" + listConv.list[pos].messages[lastMessageIndice].sender.avatar_thumb);
+     		}
+     	catch (MalformedURLException e){
+     		e.printStackTrace();
+     	}
+     	try {
+     		if (pictureURL != null)
+     			bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
+     	} 
+     	catch (IOException e) {
+     		e.printStackTrace();
+     	}
+     	//map.put("avatar", bitmap);
+     	map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 90));
+     	
+	    Bundle messageBundle = new Bundle();
+    	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
+        myMessage = vmess.myHandler.obtainMessage();
+        myMessage.setData(messageBundle);
+        vmess.myHandler.sendMessage(myMessage);
 	}
 	
 	public String formatDate(String date) {

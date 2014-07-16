@@ -206,20 +206,19 @@ public class Menu2 extends Activity {
 			}
 		});
 		
-		btnOptions.setEnabled(false);
-		btnOptions.setVisibility(View.INVISIBLE);
+		//btnOptions.setEnabled(false);
+		//btnOptions.setVisibility(View.INVISIBLE);
 		btnOptions.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 			
-			}
-			/*if (Network.USER == null) {
-				Toast.makeText(getApplicationContext(), "Veuillez vous identifier d'abord", Toast.LENGTH_SHORT).show();
+			if (Network.USER == null) {
+				Toast.makeText(getApplicationContext(), "Cette fonctionalité nécessite un compte Neerbyy", Toast.LENGTH_SHORT).show();
 				return;
 			}
 				
-				final CharSequence[] items = {"Messages prives"};//, "Autoriser commentaires sur mes publications", "Autoriser commentaires sur mes messages"};
+				final CharSequence[] items = {"Autoriser les autres utilisateurs à me contacter"};//, "Autoriser commentaires sur mes publications", "Autoriser commentaires sur mes messages"};
 				final boolean[] check = {false};//, false, false};
 				
 				if (Network.USER.settings.allow_messages)
@@ -228,7 +227,7 @@ public class Menu2 extends Activity {
 					check[1] = true;
 				if (Network.USER.settings.send_notification_for_messages)
 					check[2] = true;*/ 
-			/*
+				
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(Menu2.this);
 				builder.setTitle("Modifiez vos options :");
@@ -244,11 +243,9 @@ public class Menu2 extends Activity {
 				
 				alert.show();
 						
-			}*/
+			}
 		});
 	}
-	
-	
 	
 	Handler myHandler = new Handler()
 	{

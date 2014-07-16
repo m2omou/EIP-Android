@@ -22,17 +22,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -45,11 +49,11 @@ import android.widget.AdapterView.OnItemClickListener;
  * @see Messages
  * @see Conversations
  */
-public class ViewMessages extends MainMenu {
+public class ViewMessages extends Activity {
 
-	private TextView info;
+	//private TextView info;
 	private EditText editMessage;
-	private Button btnSendMessage;
+	private ImageView imgSendMessage;
 	private ListView listView;
 	
 	private Conversation conv;
@@ -62,14 +66,20 @@ public class ViewMessages extends MainMenu {
 	public int conv_id;
 	public int recipientId;
 	
+	private MenuItem item_loading;
+
+	SimpleAdapter mSchedule = null;
+	ArrayList<HashMap<String, Object>> listItem;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_messages);
 	
-		info = (TextView)findViewById(R.id.messagesTextInfo);
+		//info = (TextView)findViewById(R.id.messagesTextInfo);
 		editMessage = (EditText)findViewById(R.id.textViewMessagesEditMessage);
-		btnSendMessage = (Button)findViewById(R.id.btnMessagesSendMess);
+		imgSendMessage = (ImageView)findViewById(R.id.imgMessagesSendMess);
 		
 		listView = (ListView)findViewById(R.id.messagesViewList);
 		
@@ -77,18 +87,22 @@ public class ViewMessages extends MainMenu {
 		//listView.removeAllViews();
 		listView.clearChoices();
 		
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
 		
 		Bundle b  = this.getIntent().getExtras();
 		conv = (Conversation)b.getSerializable("conv");
 		conv_id = b.getInt("convId");
 		recipientId = b.getInt("recipientId");
 		
-		btnSendMessage.setOnClickListener(new OnClickListener() {	
+		imgSendMessage.setOnClickListener(new OnClickListener() {	
 			@Override
 			public void onClick(View v) {
 		
-				mProgressDialog = ProgressDialog.show(ViewMessages.this, "Please wait",
-						"Long operation starts...", true);
+				//mProgressDialog = ProgressDialog.show(ViewMessages.this, "Please wait",
+					//	"Long operation starts...", true);
+				
+				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				item_loading.setVisible(true);
 				
 				Thread thread1 = new Thread(){
 			        public void run(){	        	      
@@ -156,8 +170,8 @@ public class ViewMessages extends MainMenu {
 			}
 		});
 		if (conv_id != -1) {
-			mProgressDialog = ProgressDialog.show(ViewMessages.this, "Please wait",
-					"Long operation starts...", true);
+			//mProgressDialog = ProgressDialog.show(ViewMessages.this, "Please wait",
+				//	"Long operation starts...", true);
 			new ThreadUpdateMessages(ViewMessages.this).start();
 		}
 	}
@@ -177,7 +191,7 @@ public class ViewMessages extends MainMenu {
 	    @Override 
 	    public void handleMessage(Message msg)
 	    {
-	    	switch (msg.what) {
+	    	/*switch (msg.what) {
 	        case 0:   //  begin
 	            if (mProgressDialog.isShowing()) {
 	                mProgressDialog.setMessage(((String) msg.obj));
@@ -192,65 +206,48 @@ public class ViewMessages extends MainMenu {
 	        	break;
 	        default: // should never happen
 	            break;
-	    	}
+	    	}*/
 	    	
 	    	Bundle pack = msg.getData();
 	    	int Error = pack.getInt("error");
 	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{    	
 		    	case GET_MESSAGES:
-		    		info.setText("");		    	
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Update messages error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "Erreur lors de la mise à jour des messages : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{
-			    		//listPost = (Post)pack.getSerializable("post");   //  utile ?????? 
-			    		//Log.w("PATH", "LAAA");
-			    		//List listStrings = new ArrayList<String>() ;//= {"France","Allemagne","Russie"};
-			    		String[] listStrings = new String[listMessages.list.length] ;//= {"France","Allemagne","Russie"};
+			    		listItem = new ArrayList<HashMap<String, Object>>();
+				        listView.removeAllViewsInLayout();
 			    		
-			    		
-			    		//Création de la ArrayList qui nous permettra de remplir la listView
-			            ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>();
-			     
-			            //On déclare la HashMap qui contiendra les informations pour un item
-			            HashMap<String, String> map;
-			    		
-			    		
+			    		String[] listStrings = new String[listMessages.list.length];
 			    		if (listMessages.list.length > 0)
 			    		{
-			    			Log.d("MESSAGES", "YA DEJA DES MESSAGES !!");
 			    			for (int i = 0; i < listMessages.list.length; i++) {
 			    				listStrings[i] = listMessages.list[i].content;
+			    				HashMap<String, Object> map = new HashMap<String, Object>();			    				
+			    				listItem.add(map);
 			    				
-			    				 //Création d'une HashMap pour insérer les informations du premier item de notre listView
-					            map = new HashMap<String, String>();
-					            //on insère un élément titre que l'on récupérera dans le textView titre créé dans le fichier affichageitem.xml
-					            map.put("username", listMessages.list[i].sender.username + " :");
-					            //on insère un élément description que l'on récupérera dans le textView description créé dans le fichier affichageitem.xml
-					            map.put("content", listMessages.list[i].content);
-					            //on insère la référence à l'image (converti en String car normalement c'est un int) que l'on récupérera dans l'imageView créé dans le fichier affichageitem.xml
-					            map.put("avatar", String.valueOf(R.drawable.avatar));
-					            //enfin on ajoute cette hashMap dans la arrayList
-					            listItem.add(map);
-			    				
+			    				new ThreadDownloadImage(ViewMessages.this, i, listView, listMessages, listItem, map).start();
 			    			}
-			    			
-			    			//Création d'un SimpleAdapter qui se chargera de mettre les items présents dans notre list (listItem) dans la vue affichageitem
-			    	        SimpleAdapter mSchedule = new SimpleAdapter (ViewMessages.this, listItem, R.layout.view_item_list,
-			    	               new String[] {"avatar", "username", "content"}, new int[] {R.id.avatar, R.id.username, R.id.content});
-			    	 
-			    	        //On attribue à notre listView l'adapter que l'on vient de créer
-			    	        listView.setAdapter(mSchedule);
-			    	        
-			    		 
-			    			//listView.setAdapter(new ArrayAdapter<String>(ViewFeed.this, android.R.layout.simple_list_item_1, listStrings));	
+			    		 	    			
+			    			mSchedule = new SimpleAdapter (ViewMessages.this, listItem, R.layout.view_item_list,
+				    				new String[] {"avatar", "username", "content", "date"}, new int[] {R.id.avatar, R.id.username, R.id.content, R.id.date});
+				    	        
+				    		mSchedule.setViewBinder(new MyViewBinder());
+				    		
+				    		listView.requestLayout();
+				    	    listView.setAdapter(mSchedule);			    	    
+				    	    ////////////////////////////////////////////   	
+					            /*map.put("username", listMessages.list[i].sender.username + " :");
+					            map.put("content", listMessages.list[i].content);*/
+					         
 			    			listView.setOnItemClickListener(new OnItemClickListener() {
 			    			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			    			    	 //Toast.makeText(this, "Id: " + lv.getAdapter().get(position), Toast.LENGTH_LONG).show();
@@ -269,30 +266,81 @@ public class ViewMessages extends MainMenu {
 			    			});
 			    		}
 			            Toast.makeText(getApplicationContext(), "Update messages success", Toast.LENGTH_LONG).show();
+			            item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+			    		item_loading.setVisible(false);
 			    	}
 			    	break;
+			    	
+		    	case UPDATE_AVATAR:		    		
+		    		mSchedule = new SimpleAdapter (ViewMessages.this, listItem, R.layout.view_item_list,
+		    				new String[] {"avatar", "username", "content", "date"}, new int[] {R.id.avatar, R.id.username, R.id.content, R.id.date});
+		    	        
+		    		mSchedule.setViewBinder(new MyViewBinder());
+		    		
+		    		//ImageView dd = (ImageView)findViewById(R.id.avatar);
+			    	//dd.setImageBitmap(CreateCircleBitmap.getRoundedCornerBitmap(dd.getDrawingCache(), 100));		    		
+		    		listView.requestLayout();
+		    	    listView.setAdapter(mSchedule);
+		    	break;
+			    	
 		    	case POST_MESSAGE:
-		    		info.setText("");
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Message error :\n" + pack.getString("msgError"));
+		    			Toast.makeText(getApplicationContext(), "Erreur lors de l'envoie du message : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{
 			    		editMessage.setText("");
-			    		info.setText("Message send success" );
 			    		if (conv_id == -1)
 			    			conv_id = conv.id;
+			    		
+			    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+			    		item_loading.setVisible(true);
+			    		
 			    		new ThreadUpdateMessages(ViewMessages.this).start();
-			    		//mProgressDialog = ProgressDialog.show(ViewPost.this, "Please wait",
-			    			//	"Long operation starts...", true);
 			    	}
 			    	break;
 	    	} 	
 	    }
 	};
+	
+	@Override
+	  public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.view_message, menu);
+	    item_loading = menu.findItem(R.id.loading_zone);
+		item_loading.setVisible(false);
+		
+		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		item_loading.setVisible(true);
+		
+	    return true;
+	  }
+	
+	 @Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	    case R.id.logo_menu:
+	    	item_loading = item;
+	    	//item_loading.setActionView(R.layout.progressbar);
+	    	//item_loading.expandActionView();
+	    	//TestTask task = new TestTask();
+	    	//task.execute("test");
+	    	
+	    	Intent intent;
+	    	if (Network.USER == null)
+	    		intent = new Intent(ViewMessages.this, Login.class);
+	    	else
+	    		intent = new Intent(ViewMessages.this, Menu2.class);
+			startActivity(intent);
+	      break;
+	    default:
+	      break;
+	    }
+	    return true;
+	  }
 }

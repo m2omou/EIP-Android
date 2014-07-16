@@ -253,7 +253,7 @@ public class ViewMemory extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (Network.USER == null) {
-					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Cette fonctionalité nécessite un compte Neerbyy", Toast.LENGTH_LONG).show();
 					//Intent intent = new Intent(ViewPost.this, Login.class);
 					//startActivity(intent);
 					return;
@@ -343,7 +343,7 @@ public class ViewMemory extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (Network.USER == null) {
-					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Cette fonctionalité nécessite un compte Neerbyy", Toast.LENGTH_LONG).show();
 					//Intent intent = new Intent(ViewPost.this, Login.class);
 					//startActivity(intent);
 					return;
@@ -537,7 +537,7 @@ public class ViewMemory extends Activity {
 								               switch (item) {
 								               case 0:
 								            	   if (Network.USER == null) {
-								   					Toast.makeText(getApplicationContext(), "Veuillez d'abord vous identifier", Toast.LENGTH_LONG).show();
+								   					Toast.makeText(getApplicationContext(), "Cette fonctionalité nécessite un compte Neerbyy", Toast.LENGTH_LONG).show();
 								   					//Intent intent = new Intent(ViewPost.this, Login.class);
 								   					//startActivity(intent);
 								   					return;
@@ -764,6 +764,9 @@ public class ViewMemory extends Activity {
 				    	//dd.setImageBitmap(CreateCircleBitmap.getRoundedCornerBitmap(dd.getDrawingCache(), 100));		    		
 			    		listView.requestLayout();
 			    	    listView.setAdapter(mSchedule);
+			    	    
+			    	    item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+						item_loading.setVisible(false);
 			    		break;
 	    	}
 	    }

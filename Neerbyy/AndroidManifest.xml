@@ -106,7 +106,7 @@
         </activity>
         <activity
             android:name="com.epitech.neerbyy.ViewFeed"
-            android:label="@string/title_activity_view_post"
+            android:label="Flux de vos publications"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -127,13 +127,13 @@
         </activity>
         <activity
             android:name="com.epitech.neerbyy.ViewConv"
-            android:label="@string/title_activity_view_conv"
+            android:label="Mes conversations"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.epitech.neerbyy.ViewMessages"
             android:configChanges="keyboardHidden|orientation"
-            android:label="@string/title_activity_view_conv"
+            android:label="Mes messages"
             android:windowSoftInputMode="stateHidden" 
             android:screenOrientation="portrait">
         </activity>

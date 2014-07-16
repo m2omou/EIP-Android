@@ -314,7 +314,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     @Override
     public void onLocationChanged(final Location location) {
     	Log.w("LOCATION_CHANGE", "iciiiiiiiiiiii");
-    	Toast.makeText(getApplicationContext(), "ON LOCATION_CHANGE", Toast.LENGTH_SHORT).show();
+    	//Toast.makeText(getApplicationContext(), "ON LOCATION_CHANGE", Toast.LENGTH_SHORT).show();
     	
     	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
   		item_loading.setVisible(true);
