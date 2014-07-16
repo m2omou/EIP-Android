@@ -8,6 +8,27 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".EditInfoUser" >
 
+    
+     
+      <TextView
+        android:id="@+id/txtUserInfoViewUsername"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+       	android:gravity="center_horizontal"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="marcel"/>
+      
+    <ImageView
+        android:id="@+id/imgUserInfoAvatar"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/avatar" />
+    
     <TextView
         android:id="@+id/TxtEditUserMail"
         android:layout_width="wrap_content"
@@ -56,15 +77,7 @@
         android:ems="10"
         android:inputType="textPersonName" />
 
-    <ImageButton
-        android:id="@+id/imgUserInfoAvatar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignLeft="@+id/TxtInfoUserUsername"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="19dp"
-        android:layout_marginTop="14dp"
-        android:src="@drawable/avatar" />
+    
 
     <EditText
         android:id="@+id/EditTextInfoUserMail"
@@ -73,7 +86,8 @@
         android:layout_below="@+id/EditTextInfoUserLastname"
         android:layout_toRightOf="@+id/TxtInfoUserFirstname"
         android:ems="10"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress" 
+        android:layout_marginBottom="20dp"/>
 
     <EditText
         android:id="@+id/EditTextInfoUserLastname"
@@ -91,53 +105,51 @@
         android:layout_above="@+id/EditTextInfoUserFirsname"
         android:layout_toRightOf="@+id/TxtInfoUserFirstname"
         android:ems="10"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName" 
+        />
 
     <Button
         android:id="@+id/btnInfoUserValid"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-    
-        android:layout_below="@+id/EditTextInfoUserMail"
-        android:background="@color/greenNeerbyy"
-        android:gravity="left|center_horizontal"
-        android:padding="7dp"
+        android:layout_height="wrap_content"   
+        android:layout_below="@+id/EditTextInfoUserMail"     
+        android:background="@drawable/my_button"
+        android:padding="5dp"
         android:text="Valider"
-        android:textColor="@color/white"
-        android:textSize="17sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:typeface="normal" />
+        android:typeface="normal"
+        android:textColor="@color/white"
+        android:layout_alignParentRight="true"
+        android:gravity="center_horizontal|center_vertical"/>
 
     <Button
         android:id="@+id/btnInfoUserChangePass"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/btnInfoUserValid"
-        android:layout_alignBottom="@+id/btnInfoUserValid"
-        android:layout_alignRight="@+id/EditTextInfoUserMail"
-        android:background="@color/orangeNeerbyy"
-        android:gravity="left|center_horizontal"
-        android:padding="7dp"
+        android:layout_height="wrap_content"    
+     	android:layout_below="@+id/EditTextInfoUserMail"
+        android:background="@drawable/my_orange_button"
+        android:padding="5dp"
         android:text="Changer le mot de passe"
-        android:textColor="@color/white"
-        android:textSize="17sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:typeface="normal" />
+        android:typeface="normal"
+        android:textColor="@color/white"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_horizontal|center_vertical"/>
 
-    <Button
+    <TextView
         android:id="@+id/btnInfoUserDelete"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btnInfoUserChangePass"
+        android:layout_height="wrap_content"   
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/btnInfoUserChangePass"
-        android:background="@color/orangeNeerbyy"
-        android:gravity="left|center_horizontal"
-        android:padding="7dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:padding="5dp"
+        android:textColor="@color/blue"
         android:text="Supprimer mon compte"
-        android:textColor="@color/white"
-        android:textSize="17sp"
-        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textStyle="italic"
         android:typeface="normal" />
-   
+
 </RelativeLayout>

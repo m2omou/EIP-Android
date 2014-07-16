@@ -17,10 +17,14 @@ import com.google.gson.JsonParseException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,10 +51,12 @@ public class CreateAccount extends MainMenu {
 	EditText confirmMail;
 	EditText password;
 	EditText confirmPassword;
-	TextView info;
+	//TextView info;
 	List<EditText> list;
 	
 	ProgressDialog mProgressDialog;
+	
+	private MenuItem item_loading;
 	
 	ResponseWS rep;
 	
@@ -72,7 +78,7 @@ public class CreateAccount extends MainMenu {
 		confirmMail = (EditText)findViewById(R.id.txtCreateConfirmMail2);
 		password = (EditText)findViewById(R.id.txtCreatePassword2);
 		confirmPassword = (EditText)findViewById(R.id.txtCreateConfirmPassword2);
-		info = (TextView)findViewById(R.id.txtCreateAccountInfo2);
+		//info = (TextView)findViewById(R.id.txtCreateAccountInfo2);
 		
 		list = new ArrayList<EditText>();
 		list.add(username);
@@ -80,6 +86,8 @@ public class CreateAccount extends MainMenu {
 		list.add(confirmMail);
 		list.add(password);
 		list.add(confirmPassword);
+		
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
 		
 		btnOk.setOnClickListener(new View.OnClickListener() {
 			
@@ -89,8 +97,11 @@ public class CreateAccount extends MainMenu {
 			    if (!checkFormu())
 			    	return;
 				
-			    mProgressDialog = ProgressDialog.show(CreateAccount.this, "Please wait", "Long operation starts...", true);
+			    //mProgressDialog = ProgressDialog.show(CreateAccount.this, "Please wait", "Long operation starts...", true);
 				
+				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				item_loading.setVisible(true);
+			    
 				Thread thread1 = new Thread(){
 			        public void run(){	        	      
 					try {		
@@ -200,23 +211,28 @@ public class CreateAccount extends MainMenu {
 		{
 	    	mail.setHintTextColor(Color.RED);
 	    	confirmMail.setHintTextColor(Color.RED);
-	    	info.setTextColor(Color.RED);
-	    	info.setText("The mail/confirm mail doesn't match");
+	    	//info.setTextColor(Color.RED);
+	    	//info.setText("Les adresses emails ne correspondent pas");
+    		Toast.makeText(getApplicationContext(), "Les adresses mails ne correspondent pas", Toast.LENGTH_SHORT).show();
+
 	    	return false;
 		}
 		if (!MyRegex.checkIfIdent(password, confirmPassword))
 		{
 			password.setHintTextColor(Color.RED);
 	    	confirmPassword.setHintTextColor(Color.RED);
-	    	info.setTextColor(Color.RED);
-	    	info.setText("The password/confirm password doesn't match");
+	    	//info.setTextColor(Color.RED);
+	    	//info.setText("Les mot de passe ne correspondent pas");
+    		Toast.makeText(getApplicationContext(), "Les mots de passe ne correspondent pas", Toast.LENGTH_SHORT).show();
+
 	    	return false;
 		}
 		if (error)
 		{
-			info.setTextColor(Color.RED);
-	    	info.setText("Please enter valid values");
-	    	return false;
+			//info.setTextColor(Color.RED);
+	    	//info.setText("Please enter valid values");
+    		Toast.makeText(getApplicationContext(), "Svp entrez des valeurs corrects", Toast.LENGTH_SHORT).show();
+			return false;
 		}
 		else
 			return true;
@@ -227,7 +243,7 @@ public class CreateAccount extends MainMenu {
 	    @Override 
 	    public void handleMessage(Message msg)
 	    {
-	    	switch (msg.what) {
+	    	/*switch (msg.what) {
 	        case 0:   //  begin
 	            if (mProgressDialog.isShowing()) {
 	                mProgressDialog.setMessage(((String) msg.obj));
@@ -241,25 +257,27 @@ public class CreateAccount extends MainMenu {
 	        	}
 	        default: // should never happen
 	            break;
-	    	}
+	    	}*/
 	    	
 	    	Bundle pack = msg.getData();
+	    	int Error = pack.getInt("error");
 	    	
 	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{
 		    	case CREATE_ACCOUNT:    		
-		    		info.setText("");	    		  	
-			    	int Error = pack.getInt("error");
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
-			    	else if (Error == 3 || Error == 2)
-			    		info.setText("Login error :\n" + pack.getString("msgError"));
+		    		if (Error == 1)
+			    		Toast.makeText(getApplicationContext(), "Erreur de connection avec le WebService", Toast.LENGTH_LONG).show();
+			    	else if (Error == 2)
+			    	{
+			    		Toast.makeText(getApplicationContext(), "Erreur lors de la création du compte :" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
+			    	}
+			    	else if (Error == 3)
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	else
 			    	{
 			    		//info.setText("Creating account success");
 			    		User user = (User)pack.getSerializable("user"); 
-			    		msg.obj = user;
-			    		Toast.makeText(getApplicationContext(), "Creating account success", Toast.LENGTH_SHORT).show();
+			    		//Toast.makeText(getApplicationContext(), "Creating account success", Toast.LENGTH_SHORT).show();
 			    		Network.USER = user;
 			    		Intent intent = new Intent(CreateAccount.this, Login.class);
 						startActivity(intent);
@@ -267,4 +285,40 @@ public class CreateAccount extends MainMenu {
 	    	} 	
 	    }
 	};
+	
+	@Override
+	  public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.view_conv, menu);
+	    item_loading = menu.findItem(R.id.loading_zone);
+		item_loading.setVisible(false);
+		
+		//item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		//item_loading.setVisible(true);
+			
+		return true;
+	}
+	
+	 @Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	    case R.id.logo_menu:
+	    	item_loading = item;
+	    	//item_loading.setActionView(R.layout.progressbar);
+	    	//item_loading.expandActionView();
+	    	//TestTask task = new TestTask();
+	    	//task.execute("test");
+	    	
+	    	Intent intent;
+	    	if (Network.USER == null)
+	    		intent = new Intent(CreateAccount.this, Login.class);
+	    	else
+	    		intent = new Intent(CreateAccount.this, Menu2.class);
+	    	startActivity(intent);
+			break;
+	    default:
+	    	break;
+	    }
+	    return true;
+	}
 }

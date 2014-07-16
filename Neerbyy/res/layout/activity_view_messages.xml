@@ -14,9 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:ems="10"
-        android:hint="Ajoutez un commentaire"
+        android:hint="Ajoutez un message"
         android:inputType="textMultiLine"
-        android:minHeight="90dp" >
+        android:minHeight="80dp" >
 
         <requestFocus />
     </EditText>
@@ -25,7 +25,7 @@
         android:id="@+id/imgMessagesSendMess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/textViewMessagesEditMessage"
+       	android:layout_alignParentRight="true"
         android:layout_below="@+id/textViewMessagesEditMessage"
         android:src="@drawable/send2"
   	 />
@@ -34,8 +34,7 @@
         android:id="@+id/messagesViewList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="150dp"
         android:dividerHeight="1dp"
         tools:listitem="@layout/view_item_list" />
 

@@ -18,10 +18,13 @@ import com.google.gson.JsonParseException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -33,7 +36,7 @@ import android.widget.Toast;
  * @see Commentary
  * @author Seb
  */
-public class Report_com extends MainMenu {
+public class Report_com extends Activity {
 	
 	public enum REASON {
 		CUSTOM(0),
@@ -52,11 +55,13 @@ public class Report_com extends MainMenu {
 	CheckBox[] checkb = new CheckBox[4];
 	EditText content;
 	Button valid;
-	TextView info;
+	//TextView info;
 	ProgressDialog mProgressDialog;
 	ResponseWS rep;
 	int comId;
 	int reasonId;
+	
+	private MenuItem item_loading;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +74,12 @@ public class Report_com extends MainMenu {
 		checkb[3] = (CheckBox)findViewById(R.id.reportComCheckBox4);
 		content = (EditText)findViewById(R.id.editTextReportCom);
 		valid = (Button)findViewById(R.id.btnReportComValid);
-		info = (TextView)findViewById(R.id.txtReportComInfo);
+		//info = (TextView)findViewById(R.id.txtReportComInfo);
 		
 		Bundle b  = this.getIntent().getExtras();
 		comId = b.getInt("com_id");
+		
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
 			
 		valid.setOnClickListener(new View.OnClickListener() {
 			
@@ -83,8 +90,11 @@ public class Report_com extends MainMenu {
 				if (reasonId == -1)
 					return;
 				
-				mProgressDialog = ProgressDialog.show(Report_com.this, "Please wait",
-						"Long operation starts...", true);
+				//mProgressDialog = ProgressDialog.show(Report_com.this, "Please wait",
+					//	"Long operation starts...", true);
+				
+				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				item_loading.setVisible(true);
 				
 				Thread thread1 = new Thread(){
 			        public void run(){	        	      
@@ -158,12 +168,12 @@ public class Report_com extends MainMenu {
 		}
 		if (count == 0)
 		{
-			Toast.makeText(getApplicationContext(), "At least one reaon must be selected", Toast.LENGTH_SHORT).show();	
+			Toast.makeText(getApplicationContext(), "Au moins une raison doit être selectionné", Toast.LENGTH_SHORT).show();	
 			return -1;
 		}
 		else if (count > 1)
 		{
-			Toast.makeText(getApplicationContext(), "Only one reaon must be selected", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "Seulement une raison peut être selectionné", Toast.LENGTH_SHORT).show();
 			return -1;
 		}
 		for (int i = 0; i < 4; i++) {
@@ -179,7 +189,7 @@ public class Report_com extends MainMenu {
 	    @Override 
 	    public void handleMessage(Message msg)
 	    {
-	    	switch (msg.what) {
+	    	/*switch (msg.what) {
 	        case 0:   //  begin
 	            if (mProgressDialog.isShowing()) {
 	                mProgressDialog.setMessage(((String) msg.obj));
@@ -194,31 +204,66 @@ public class Report_com extends MainMenu {
 	        	break;
 	        default: // should never happen
 	            break;
-	    	}
+	    	}*/
 	    	
 	    	Bundle pack = msg.getData();
 	    	int Error = pack.getInt("error");
 	    	switch (Network.ACTION.values()[pack.getInt("action")])
 	    	{
 		    	case REPORT_COM:
-		    		info.setText("");
-			    	if (Error == 1)
-			    		info.setText("Error: connection with WS fail");
+		    		if (Error == 1)
+			    		Toast.makeText(getApplicationContext(), "Erreur de connection avec le WebService", Toast.LENGTH_LONG).show();
 			    	else if (Error == 2)
 			    	{
-			    		info.setText("Report commentary error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur lors du report de ce commentaire: " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	}
 			    	else if (Error == 3)
-			    		info.setText("Ws error :\n" + pack.getString("msgError"));
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	else
 			    	{
-			    		info.setText("Report commentary success");    		
-						Toast.makeText(getApplicationContext(), "Report commentary success", Toast.LENGTH_SHORT).show();
+			    		//info.setText("Report commentary success");    		
+						//Toast.makeText(getApplicationContext(), "Report commentary success", Toast.LENGTH_SHORT).show();
 						Report_com.this.finish();
 			    	}
 			    	break;
 	    	} 	
 	    }
 	};
+	
+	@Override
+	  public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.report_com, menu);
+	    item_loading = menu.findItem(R.id.loading_zone);
+		item_loading.setVisible(false);
+		
+		//item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		//item_loading.setVisible(true);
+		
+		return true;
+	}
+	
+	 @Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	    case R.id.logo_menu:
+	    	item_loading = item;
+	    	//item_loading.setActionView(R.layout.progressbar);
+	    	//item_loading.expandActionView();
+	    	//TestTask task = new TestTask();
+	    	//task.execute("test");
+	    	
+	    	Intent intent;
+	    	if (Network.USER == null)
+	    		intent = new Intent(Report_com.this, Login.class);
+	    	else
+	    		intent = new Intent(Report_com.this, Menu2.class);
+	    	startActivity(intent);
+			break;
+	    default:
+	    	break;
+	    }
+	    return true;
+	}
 }
 

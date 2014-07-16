@@ -235,14 +235,93 @@ public class Menu2 extends Activity {
 				          
 				@Override
 				public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-					// TODO Auto-generated method stub	
+						if(isChecked)
+							check[which] = true;
+						else
+							check[which] = false;
+				}
+				}).setNegativeButton("Annuler",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
 					}
+				}).setPositiveButton("Valider", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						
+						item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+						item_loading.setVisible(true);
+						
+						
+						Thread thread1 = new Thread(){
+					        public void run(){
+					        	
+							try {	
+				            	Gson gson = new Gson();
+				            	String url = Network.URL + Network.PORT + "/settings/" + Network.USER.settings.id + ".json";
+		     	
+				            	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+				              	
+				            	nameValuePairs.add(new BasicNameValuePair("setting[allow_messages]", Boolean.toString(check[0])));
+				            	//nameValuePairs.add(new BasicNameValuePair("setting[send_notification_for_comments]", Boolean.toString(check[0])));
+				            	//nameValuePairs.add(new BasicNameValuePair("setting[send_notifiaction_for_messages]", Boolean.toString(check[0])));
+				            					            	
+				            	Message myMessage, msgPb;
+				            	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");	 
+				                myHandler.sendMessage(msgPb);
+				                
+								Bundle messageBundle = new Bundle();
+								messageBundle.putInt("action", ACTION.PUT_SETTINGS.getValue());
+						        myMessage = myHandler.obtainMessage();	
+		   		        
+						        InputStream input = Network.retrieveStream(url, METHOD.PUT, nameValuePairs);
+						        
+								if (input == null)
+								{
+									messageBundle.putInt("error", 1);
+								}
+								Reader readerResp = new InputStreamReader(input);
+								String ret = Network.checkInputStream(readerResp);
+								
+								if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+								{
+									messageBundle.putInt("error", 3);
+									messageBundle.putString("msgError", ret);
+								}
+								else
+								{
+									try {
+										rep = gson.fromJson(ret, ResponseWS.class);
+										Network.USER.settings = rep.getValue(User.Settings.class);
+									}
+									catch(JsonParseException e)
+								    {
+								        System.out.println("Exception n3 in check_exitrestrepWSResponse::"+e.toString());
+								    }
+									
+									if (rep.responseCode == 1)
+									{
+										messageBundle.putInt("error", 2);
+										messageBundle.putString("msgError", rep.responseMessage);
+									}
+									//else		  	                   
+										//Network.USER = user;	
+							}						
+							myMessage.setData(messageBundle);
+		                    myHandler.sendMessage(myMessage);
+		                    
+		                    msgPb = myHandler.obtainMessage(1, (Object) "Success");
+			                myHandler.sendMessage(msgPb);
+		                }
+						catch (Exception e) {
+			                e.printStackTrace();}
+					    }};
+					thread1.start();					
+					}					
 				});
+				
 				AlertDialog alert = builder.create();
 				alert.setCancelable(true);
 				
-				alert.show();
-						
+				alert.show();					
 			}
 		});
 	}
@@ -275,14 +354,14 @@ public class Menu2 extends Activity {
 	    	{
 		    	case DECO:
 		    		
-			    	if (Error == 1)
-			    		Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_LONG);
+		    		if (Error == 1)
+		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
 			    	{
-			    		Toast.makeText(getApplicationContext(), "Login error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
+		    			Toast.makeText(getApplicationContext(), "Erreur, vous n'avez pas pu être déconnecté : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
 			    	}
 			    	else if (Error == 3)
-			    		Toast.makeText(getApplicationContext(), "Network error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
 			    	else
 			    	{
 			    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
@@ -293,6 +372,23 @@ public class Menu2 extends Activity {
 						startActivity(intent);						
 			    	}
 			    	break;
+			    	
+		    		case PUT_SETTINGS:  		
+		    		if (Error == 1)
+			    		Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
+				    else if (Error == 2)
+				    {
+			    		Toast.makeText(getApplicationContext(), "Erreur lors de la mise à jour de vos paramêtres : " + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+				    }
+				    else if (Error == 3)
+				    	Toast.makeText(getApplicationContext(), "Erreur du WebService :" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+				    else
+			    	{
+			    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+			    		item_loading.setVisible(false);
+			    		//Toast.makeText(getApplicationContext(), "Vous êtes maintenant déconnecté", Toast.LENGTH_LONG).show();				
+			    	}
+			    	break;
 	    	} 	
 	    }
 	};
@@ -300,12 +396,28 @@ public class Menu2 extends Activity {
 	@Override
 	  public boolean onCreateOptionsMenu(Menu menu) {
 	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.menu2, menu);
+	    inflater.inflate(R.menu.create_account, menu);
 	    item_loading = menu.findItem(R.id.loading_zone);
 		item_loading.setVisible(false);
-
+		
+		//item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		//item_loading.setVisible(true);
+			
+		return true;
+	}
+	
+	 @Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	    case R.id.logo_menu:
+	    	item_loading = item;
+	    	//item_loading.setActionView(R.layout.progressbar);
+	    	//item_loading.expandActionView();
+	    	//TestTask task = new TestTask();
+	    	//task.execute("test");
+	    	
+	    	Toast.makeText(getApplicationContext(), "Vous êtes déjà sur le menu ;)", Toast.LENGTH_SHORT).show();
+	    }
 	    return true;
-	  }
-	
-	
+	}
 }

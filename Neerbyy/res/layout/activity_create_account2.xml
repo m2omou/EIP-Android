@@ -3,18 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <Button
-        android:id="@+id/Button01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/greenNeerbyy"
-        android:gravity="left|center_horizontal"
-        android:text="NEERBYY INSCRIPTION"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:typeface="normal" />
-
     <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
@@ -159,8 +147,8 @@
                 android:id="@+id/btnGoCreateAccount2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/greenNeerbyy"
-                android:gravity="left|center_horizontal"
+                android:background="@drawable/my_button"
+                android:gravity="center_horizontal"
                 android:padding="10dp"
                 android:text="@string/btnRejoin"
                 android:textColor="@color/white"

@@ -504,7 +504,7 @@ public class ThreadDownloadImage extends Thread {
      	try {
  				//pictureURL = new URL(listConv.list[pos].messages[lastMessageIndice].sender.avatar_thumb);
      			//TEMP BUG WS
-     			pictureURL = new URL("http://dev.neerbyy.com/" + listConv.list[pos].messages[lastMessageIndice].sender.avatar_thumb);
+     			pictureURL = new URL(Network.URL + Network.PORT + listConv.list[pos].messages[lastMessageIndice].sender.avatar_thumb);
      		}
      	catch (MalformedURLException e){
      		e.printStackTrace();
@@ -517,7 +517,8 @@ public class ThreadDownloadImage extends Thread {
      		e.printStackTrace();
      	}
      	//map.put("avatar", bitmap);
-     	map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 90));
+     	if (bitmap != null)
+     		map.put("avatar", CreateCircleBitmap.getRoundedCornerBitmap(bitmap, 90));
      	
 	    Bundle messageBundle = new Bundle();
     	messageBundle.putInt("action", ACTION.UPDATE_AVATAR.getValue());
@@ -546,7 +547,7 @@ public class ThreadDownloadImage extends Thread {
      	try {
  				pictureURL = new URL(listMessage.list[pos].sender.avatar_thumb);
      			//TEMP BUG WS
-     			//pictureURL = new URL("http://dev.neerbyy.com/" + listConv.list[pos].messages[lastMessageIndice].sender.avatar_thumb);
+     			//pictureURL = new URL(Network.URL + Network.PORT + listConv.list[pos].messages[lastMessageIndice].sender.avatar_thumb);
      		}
      	catch (MalformedURLException e){
      		e.printStackTrace();

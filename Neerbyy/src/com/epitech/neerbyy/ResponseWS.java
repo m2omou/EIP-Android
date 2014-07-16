@@ -74,6 +74,9 @@ public class ResponseWS{
 		//public Conversations conversations;
 		public Message[] messages;
 		
+		@SerializedName("settings")
+		public User.Settings settings;
+		
 		//@SerializedName("error")
 		//public User user;
 	}
@@ -151,7 +154,11 @@ public class ResponseWS{
 									Log.w("DETECT", "DETECT GET_MESSAGES");	
 									Messages mess = new Messages();
 									mess.list = result.messages;
-									return (T) mess;
+									return (T) mess;   
+								}
+								else if (obj == User.Settings.class) {
+									Log.w("DETECT", "DETECT GET_SETTINGS");	
+									return (T) result.settings;
 								}
 							//return gson.fromJson(gg, obj);						
 							}

@@ -24,6 +24,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -35,6 +37,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,11 +51,11 @@ import android.widget.Toast;
  * This class stock temporary the informations of the user. It is use for debugging case
  *@see User
  */
-public class EditInfoUser extends MainMenu {
+public class EditInfoUser extends Activity {
 	
 	Button btnOk;
 	Button btnChangePass;
-	Button btnDelete;
+	TextView btnDelete;
 	EditText username; 
 	EditText firstname;
 	EditText lastname; 
@@ -65,6 +70,9 @@ public class EditInfoUser extends MainMenu {
 	ResponseWS rep;
 	
 	List<EditText> list;
+	
+	private MenuItem item_loading;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +81,7 @@ public class EditInfoUser extends MainMenu {
 		
 		btnOk = (Button)findViewById(R.id.btnInfoUserValid);
 		btnChangePass = (Button)findViewById(R.id.btnInfoUserChangePass);
-		btnDelete = (Button)findViewById(R.id.btnInfoUserDelete);
+		btnDelete = (TextView)findViewById(R.id.btnInfoUserDelete);
 		username = (EditText)findViewById(R.id.EditTextInfoUserUsername);
 		firstname = (EditText)findViewById(R.id.EditTextInfoUserFirsname);
 		lastname = (EditText)findViewById(R.id.EditTextInfoUserLastname);
@@ -86,6 +94,8 @@ public class EditInfoUser extends MainMenu {
 		list.add(lastname);
 		list.add(mail);
 			
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
+		
 		if (Network.USER == null)
 		{
 			Intent intent = new Intent(this, Login.class);
@@ -117,7 +127,7 @@ public class EditInfoUser extends MainMenu {
 		@Override
 		public void onClick(View arg0) {
 		 	Intent getContentIntent = FileUtils.createGetContentIntent();
-		    Intent intent = Intent.createChooser(getContentIntent, "Select a file");
+		    Intent intent = Intent.createChooser(getContentIntent, "Choisissez un fichier");
 		    startActivityForResult(intent, 1234);  //private static final int REQUEST_CHOOSER = 1234;
 			}	
 		});
@@ -131,6 +141,9 @@ public class EditInfoUser extends MainMenu {
 			    	return;
 				//mProgressDialog = ProgressDialog.show(EditInfoUser.this, "Please wait",
 					//	"Long operation starts...", true);
+				
+				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				item_loading.setVisible(true);
 				
 				Thread thread1 = new Thread(){
 			        public void run(){
@@ -227,13 +240,16 @@ public class EditInfoUser extends MainMenu {
 		 
 					// set dialog message
 					alertDialogBuilder
-						.setMessage("Cliquez sur oui pour confirmer")
+						.setMessage("Cette action est irréversible !!")
 						.setCancelable(false)
 						.setPositiveButton("Oui", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,int id) {
 					
-								mProgressDialog = ProgressDialog.show(EditInfoUser.this, "Please wait",
-										"Long operation starts...", true);
+								//mProgressDialog = ProgressDialog.show(EditInfoUser.this, "Please wait",
+									//	"Long operation starts...", true);
+								item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+								item_loading.setVisible(true);
+								
 								Thread thread1 = new Thread(){
 							        public void run(){
 							        	
@@ -322,17 +338,25 @@ public class EditInfoUser extends MainMenu {
 		for (EditText field : list)
 		{
 			if (!MyRegex.check(field)) {
-		    	field.setText("");
-		    	field.setHintTextColor(Color.RED);
-		    	//field.setTextColor(Color.RED);
-		    	//field.setHint("Please enter a valid " + mail.getHint());
-		    	//field.setBackgroundColor(R.color.ErrorBackground);
-		    	error = true;
+				if (field.getId() != R.id.EditTextInfoUserFirsname && field.getId() != R.id.EditTextInfoUserLastname) {
+					field.setText("");
+					field.setHint("Valeur incorrecte");
+					field.setHintTextColor(Color.RED);
+					//field.setTextColor(Color.RED);
+					//field.setHint("Please enter a valid " + mail.getHint());
+					//field.setBackgroundColor(R.color.ErrorBackground);
+					error = true;
+				}
+				else {
+					if (field.getText().toString() == null || field.getText().toString() == "") {
+						error = false;
+					}
+				}
 		    }
 		}
 		if (error)
 		{
-			Toast.makeText(getApplicationContext(), "Svp entrer des valeurs correct", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "Svp entrez des valeurs corrects", Toast.LENGTH_SHORT).show();
 	    	return false;
 		}
 		else
@@ -367,16 +391,18 @@ public class EditInfoUser extends MainMenu {
 	    	{
 		    	case EDIT_USER:    		
 		    		if (Error == 1)
-		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+			    		Toast.makeText(getApplicationContext(), "Erreur de connection avec le WebService", Toast.LENGTH_LONG).show();
 			    	else if (Error == 2)
 			    	{
-		    			Toast.makeText(getApplicationContext(), "Update account error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+			    		Toast.makeText(getApplicationContext(), "Erreur lors de la mise à jour de vos informations: " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	}
 			    	else if (Error == 3)
-			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	else
 			    	{
-			    		Toast.makeText(getApplicationContext(), "Update account success", Toast.LENGTH_SHORT).show();
+			    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+			    		item_loading.setVisible(false);
+			    		//Toast.makeText(getApplicationContext(), "Update account success", Toast.LENGTH_SHORT).show();
 			    		Intent intent = new Intent(EditInfoUser.this, Menu2.class);
 						startActivity(intent);	    		
 			    	}
@@ -387,21 +413,27 @@ public class EditInfoUser extends MainMenu {
 		    		avatar.setAdjustViewBounds(true);
 		    		avatar.setMaxWidth(100);
 		    		avatar.setMaxHeight(100);
-		    		Toast.makeText(getApplicationContext(), "Update avatar success", Toast.LENGTH_SHORT).show();
+		    		//Toast.makeText(getApplicationContext(), "Update avatar success", Toast.LENGTH_SHORT).show();
+		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		    		item_loading.setVisible(false);
 		    	break;
+		    	
 		    	case DELETE_USER:
 		    		if (Error == 1)
-		    			Toast.makeText(getApplicationContext(), "Error: connection with WS fail", Toast.LENGTH_SHORT).show();
+			    		Toast.makeText(getApplicationContext(), "Erreur de connection avec le WebService", Toast.LENGTH_LONG).show();
 			    	else if (Error == 2)
 			    	{
-		    			Toast.makeText(getApplicationContext(), "Delete error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show();
+			    		Toast.makeText(getApplicationContext(), "Erreur, votre compte n'a pas pu être supprimé" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	}
 			    	else if (Error == 3)
-			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_SHORT).show(); 
+			    		Toast.makeText(getApplicationContext(), "Erreur du WebService : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
 			    	else
 			    	{
+			    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+			    		item_loading.setVisible(false);
+			    		
 			    		Network.USER = null;
-			    		Toast.makeText(getApplicationContext(), "Delete account success", Toast.LENGTH_SHORT).show();
+			    		//Toast.makeText(getApplicationContext(), "Delete account success", Toast.LENGTH_SHORT).show();
 			    		Intent intent = new Intent(EditInfoUser.this, Login.class);
 			    		startActivity(intent);
 			    	}
@@ -428,5 +460,41 @@ public class EditInfoUser extends MainMenu {
 	            }
 	            break;
 	    }
-	}   
+	}
+	
+	@Override
+	  public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.edit_info_user, menu);
+	    item_loading = menu.findItem(R.id.loading_zone);
+		item_loading.setVisible(false);
+		
+		//item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		//item_loading.setVisible(true);
+		
+		return true;
+	}
+	
+	 @Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	    case R.id.logo_menu:
+	    	item_loading = item;
+	    	//item_loading.setActionView(R.layout.progressbar);
+	    	//item_loading.expandActionView();
+	    	//TestTask task = new TestTask();
+	    	//task.execute("test");
+	    	
+	    	Intent intent;
+	    	if (Network.USER == null)
+	    		intent = new Intent(EditInfoUser.this, Login.class);
+	    	else
+	    		intent = new Intent(EditInfoUser.this, Menu2.class);
+	    	startActivity(intent);
+			break;
+	    default:
+	    	break;
+	    }
+	    return true;
+	}
 }

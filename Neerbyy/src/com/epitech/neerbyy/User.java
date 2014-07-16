@@ -39,7 +39,7 @@ public class User implements Serializable{
 	public String created_at;
 	@SerializedName("updated_at")
 	public String updated_at;
-	@SerializedName("settings")
+	@SerializedName("setting")
 	public Settings settings;
 	
 	/** This class describe the parameters of a user.

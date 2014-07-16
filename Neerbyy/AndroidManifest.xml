@@ -56,22 +56,22 @@
         </activity>
         <activity
             android:name="com.epitech.neerbyy.CreateAccount"
-            android:label="@string/title_activity_create_account"
+            android:label="Création d'un compte Neerbyy"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.epitech.neerbyy.LostPassword"
-            android:label="@string/title_activity_create_account" 
+            android:label="Réinitialiser votre mot de passe" 
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.epitech.neerbyy.EditInfoUser"
-            android:label="@string/title_activity_edit_info_user" 
+            android:label="Mon profil" 
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.epitech.neerbyy.ViewInfoUser"
-            android:label="@string/title_activity_edit_info_user" 
+            android:label="Profil utilisateur" 
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -118,11 +118,11 @@
         </activity>
         <activity
             android:name="com.epitech.neerbyy.Report_pub"
-            android:label="@string/title_activity_report_pub" >
+            android:label="Report de publication" >
         </activity>
         <activity
             android:name="com.epitech.neerbyy.Report_com"
-            android:label="@string/title_activity_report_com"
+            android:label="Report de commentaire"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -145,7 +145,7 @@
         </activity>
         <activity
             android:name="com.epitech.neerbyy.SearchUser"
-            android:label="Search User"
+            android:label="Recherche utilisateur"
             android:screenOrientation="portrait" >
             
         </activity>
@@ -154,7 +154,7 @@
 		    android:icon="@drawable/ic_chooser"
 		    android:enabled="@bool/use_activity"
 		    android:exported="true"
-		    android:label="@string/choose_file" >
+		    android:label="Choisissez un fichier" >
 		    <intent-filter>
 		        <action android:name="android.intent.action.GET_CONTENT" />
 		
