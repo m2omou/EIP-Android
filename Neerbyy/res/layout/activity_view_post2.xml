@@ -92,9 +92,13 @@
                 android:id="@+id/postViewListPost2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:divider="@drawable/separator_line"
-                android:dividerHeight="15dp"
+                
+                android:background="@drawable/my_listview"
+                android:dividerHeight="10.0sp"
+                 android:divider="@android:color/transparent"
+                 
+               
+                
                 app:listitem="@layout/view_item_list" >
             </ListView>
 

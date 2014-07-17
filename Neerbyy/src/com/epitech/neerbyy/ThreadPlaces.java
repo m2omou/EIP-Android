@@ -47,6 +47,8 @@ public class ThreadPlaces extends Thread {
         	if (locat != null){
         		url = Network.URL + Network.PORT + "/places.json?latitude=" + locat.latitude + "&longitude=" + locat.longitude
         				+ "&limit=" + mv.limit + "&radius=" + mv.radius;
+        		if (mv.categorieId != null)
+        			url += "&category_id=" + mv.categorieId;
         	}
         	else {        		
         		url = Network.URL + Network.PORT + "/places.json?latitude=45.75&longitude=-0.633333";

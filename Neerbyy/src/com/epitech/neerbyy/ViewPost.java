@@ -503,6 +503,13 @@ public class ViewPost extends Activity {
 				    		listView.requestLayout();
 				    	    listView.setAdapter(mSchedule);
 				    	    
+				    	    listView.setBackgroundResource(R.drawable.my_listview);
+				    	    //listView.setDividerHeight(10);
+				    	    //listView.setD)
+				    	    /*android:background="@drawable/my_listview"
+				                    android:dividerHeight="10.0sp"
+				                     android:divider="@android:color/transparent"*/
+				    	    
 			    			
 			    	        listView.setOnItemClickListener(new OnItemClickListener() {
 			    			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

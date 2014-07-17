@@ -107,7 +107,7 @@ public class ViewConv extends Activity {
 				alert.setPositiveButton("Envoyer", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					final String value = input.getText().toString();
-				  	Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
+				  	//Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
 				
 					if (Network.USER == null) {
 						Toast.makeText(getApplicationContext(), "Cette fonctionalité nécessite un compte Neerbyy", Toast.LENGTH_LONG).show();
@@ -320,6 +320,8 @@ public class ViewConv extends Activity {
 				    		
 				    		listView.requestLayout();
 				    	    listView.setAdapter(mSchedule);
+				    	    
+				    	    listView.setBackgroundResource(R.drawable.my_listview);
 				    	    	
 			    			listView.setOnItemClickListener(new OnItemClickListener() {
 			    			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -375,7 +377,7 @@ public class ViewConv extends Activity {
 			    		
 			    		List<CharSequence> charSequences = new ArrayList<CharSequence>();
 			    		for (int i = 0; i < users.list.length; i++) {
-			    			String tmp = new String(users.list[i].username + ":\n");
+			    			String tmp = new String(users.list[i].username + "\n");
 			    			if (users.list[i].firstname != null)
 			    				tmp += users.list[i].firstname;
 			    			if (users.list[i].lastname != null)
@@ -387,7 +389,7 @@ public class ViewConv extends Activity {
 			    		final CharSequence[] charSequenceArray = charSequences.toArray(new
 			    			    CharSequence[charSequences.size()]);
 			    		
-			    		Toast.makeText(getApplicationContext(),"Charsequence a " + charSequenceArray.length, Toast.LENGTH_SHORT).show();
+			    		//Toast.makeText(getApplicationContext(),"Charsequence a " + charSequenceArray.length, Toast.LENGTH_SHORT).show();
 
 			    		
 						AlertDialog.Builder builder = new AlertDialog.Builder(ViewConv.this);
@@ -396,14 +398,29 @@ public class ViewConv extends Activity {
 						          
 							@Override
 								public void onClick(DialogInterface dialog, int item) {
-						                Toast.makeText(getApplicationContext(), charSequenceArray[item], Toast.LENGTH_SHORT).show();
-						                Intent intent = new Intent(ViewConv.this, ViewMessages.class);
+						               // Toast.makeText(getApplicationContext(), charSequenceArray[item], Toast.LENGTH_SHORT).show();
+						               
+						                /////////////SOIT VERS PROFIL USER SOIT MESSAGE DIRECT
+						                
+						                Intent intent;
+						            	/*if (Network.USER != null && listPost.list[position].user.id == Network.USER.id)
+						            	   intent = new Intent(ViewPost.this, EditInfoUser.class);
+						            	else*/
+						            	   intent = new Intent(ViewConv.this, ViewInfoUser.class);
+						            	Bundle b = new Bundle();
+						            	b.putInt("userId", users.list[item].id);	
+						            	intent.putExtras(b);
+						            	startActivity(intent);	
+						                
+						                
+						                
+						                /*Intent intent = new Intent(ViewConv.this, ViewMessages.class);
 			    						Bundle b = new Bundle();		    					
 			    						//b.putSerializable("conv", (Serializable)listConv.list[position]);
 			    						b.putInt("convId", -1);
 			    						b.putInt("recipientId", users.list[item].id);
 			    						intent.putExtras(b);					
-			    						startActivity(intent);
+			    						startActivity(intent);*/
 			    						return;
 						          	}
 						        });

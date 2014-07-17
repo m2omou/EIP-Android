@@ -28,6 +28,7 @@
     <string name="str_btn_find">Find</string>
     <string name="hnt_et_location">Enter location</string>
 
+    <color name="trans">#00000000</color>
     <color name="white">#FFFFFF</color>
     <color name="blue">#0000FF</color>
     <color name="greenNeerbyy">#3eb88e</color>

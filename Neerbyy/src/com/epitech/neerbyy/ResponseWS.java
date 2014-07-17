@@ -5,6 +5,7 @@ import java.io.Serializable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.epitech.neerbyy.Categorie.CategorieInfos;
 import com.epitech.neerbyy.Conversations.Conversation;
 import com.epitech.neerbyy.Users;
 import com.epitech.neerbyy.User;
@@ -52,6 +53,9 @@ public class ResponseWS{
 		
 		@SerializedName("places")
 		public Place.PlaceInfo[] places;
+		
+		@SerializedName("categories")
+		public CategorieInfos[] categories;
 		
 		@SerializedName("publications")
 		public Post.PostInfos[] postes;
@@ -125,6 +129,13 @@ public class ResponseWS{
 									post.list = result.postes;
 									//return (T) result.places;
 									return (T) post;
+								}
+								else if (obj == Categorie.class) {
+									Log.w("DETECT", "DETECT Categorie");
+									Categorie cate = new Categorie();
+									cate.list = result.categories;
+									//return (T) result.places;
+									return (T) cate;
 								}
 								else if (obj == Commentary.class) {
 									Log.w("DETECT", "DETECT COMM_UPDATE");								

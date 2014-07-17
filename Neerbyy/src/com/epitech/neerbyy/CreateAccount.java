@@ -277,7 +277,7 @@ public class CreateAccount extends MainMenu {
 			    	{
 			    		//info.setText("Creating account success");
 			    		User user = (User)pack.getSerializable("user"); 
-			    		//Toast.makeText(getApplicationContext(), "Creating account success", Toast.LENGTH_SHORT).show();
+			    		Toast.makeText(getApplicationContext(), "Votre compte a bien été crée ;)", Toast.LENGTH_SHORT).show();
 			    		Network.USER = user;
 			    		Intent intent = new Intent(CreateAccount.this, Login.class);
 						startActivity(intent);

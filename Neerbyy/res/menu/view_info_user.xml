@@ -7,22 +7,7 @@
         android:title="Chargement"
         android:actionLayout="@layout/progressbar"
         />
-    
-    <item
-        android:id="@+id/filtre"
-        android:orderInCategory="100"
-        android:showAsAction="always"
-        android:title="Filtres"
-        android:icon="@drawable/filter"
-        />
-    
-     <item
-        android:id="@+id/search_add"
-        android:actionViewClass="android.widget.SearchView"
-        android:icon="@android:drawable/ic_menu_search"
-        android:showAsAction="always"
-        android:title="Rechercher un lieu"/>
-     
+
     <item
         android:id="@+id/logo_menu"
         android:icon="@drawable/logo_menu"

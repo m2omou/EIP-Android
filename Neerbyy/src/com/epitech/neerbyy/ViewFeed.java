@@ -228,6 +228,8 @@ public class ViewFeed extends Activity {
 				    		listView.requestLayout();
 				    	    listView.setAdapter(mSchedule); 
 			    	    	   			    		 
+				    	    listView.setBackgroundResource(R.drawable.my_listview);
+				    	    
 			    			listView.setOnItemClickListener(new OnItemClickListener() {
 			    			    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			    			    	

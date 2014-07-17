@@ -518,6 +518,7 @@ public class ViewMemory extends Activity {
 				    		listView.requestLayout();
 				    	    listView.setAdapter(mSchedule);
 				    	    
+				    	    listView.setBackgroundResource(R.drawable.my_listview);
 				    	    
 
 /////////////////////////////////////////////////////////////////

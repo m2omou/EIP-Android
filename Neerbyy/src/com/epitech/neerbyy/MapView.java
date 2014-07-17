@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.View;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -85,6 +86,9 @@ public class MapView extends FragmentActivity implements LocationListener{
 	public Place searchPlaces;
 	public ResponseWS rep;
 	
+	public Categorie categories;
+	public String categorieId;
+	
 	public int limit = 10;    //  def 10
 	public int radius = 800;    //  def 800
 	public int bufferPlace = 20;   //  def  20
@@ -96,6 +100,9 @@ public class MapView extends FragmentActivity implements LocationListener{
 	//EditText etLocation;
 	
 	private MenuItem item_loading;
+	private MenuItem item_filtre;
+	OnMenuItemClickListener changeFilter;
+	
 	SearchView mSearchView;
 	
     @Override
@@ -181,6 +188,71 @@ public class MapView extends FragmentActivity implements LocationListener{
         	}	
         };
         
+        Thread threadGetCate = new Thread(){
+            public void run(){	        	      
+                    Log.w("THREAD", "DEBUT THREAD GET CATE");
+                	try {
+                    	Gson gson = new Gson();
+                    	String url;
+                    	url = Network.URL + Network.PORT + "/categories.json";        	
+                    	
+                    	Message myMessage, msgPb;
+                    	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");
+                    	myHandler.sendMessage(msgPb);
+                    
+                    	Bundle messageBundle = new Bundle();
+            			messageBundle.putInt("action", ACTION.GET_CATE.getValue());
+            	        myMessage = myHandler.obtainMessage();	
+                   
+            	        InputStream input = Network.retrieveStream(url, METHOD.GET, null);
+                    	
+            	        if (input == null)
+            				messageBundle.putInt("error", 1);
+            			else
+            			{	
+            				Reader readerResp = new InputStreamReader(input);
+            				String ret = Network.checkInputStream(readerResp);
+            				
+            				if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+            				{
+            					messageBundle.putInt("error", 3);
+            					messageBundle.putString("msgError", ret);
+            				}
+            				else
+            				{
+            					try {		    
+            						rep = gson.fromJson(ret, ResponseWS.class);
+            						categories = rep.getValue(Categorie.class);
+            						
+            					}
+            					catch(JsonParseException e)
+            				    {
+            				        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
+            				    }
+            					if (rep.responseCode == 1)
+            					{
+            						messageBundle.putInt("error", 2);
+            						messageBundle.putString("msgError", rep.responseMessage);
+            					}
+            					else
+            						Log.w("RECUP", "JAI RECUP " + categories.list.length + " categories");       					
+            				}
+            			}
+            	       
+            	        myMessage.setData(messageBundle);
+                        myHandler.sendMessage(myMessage);
+                        
+                        msgPb = myHandler.obtainMessage(1, (Object) "Success");
+                        myHandler.sendMessage(msgPb);
+                	}
+                	catch (Exception e) {
+                        e.printStackTrace();}
+                	Log.w("THREAD", "FIN THREAD GET CATE");
+                }
+    	};
+        
+        
+        
         gMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			
 			@Override
@@ -219,8 +291,62 @@ public class MapView extends FragmentActivity implements LocationListener{
         
         limit = 20;
         radius = 1000;     
-         
+          
+    
+        changeFilter = new OnMenuItemClickListener() {
+
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				if (categories == null)
+				{
+					Toast.makeText(getApplicationContext(), "Désolé, les catégories ne sont pas encore disponible :(", Toast.LENGTH_SHORT).show();
+					return false;
+				}
+				
+				//List<String> list = new ArrayList<String>();
+				final CharSequence[] items = new CharSequence[categories.list.length]; //  = {"Autoriser les autres utilisateurs à me contacter"}//;, "Autoriser commentaires sur mes publications", "Autoriser commentaires sur mes messages"};
+				//final boolean[] check = new Boolean[categories.list.length];    //new ArrayList<Boolean>();      // = {false}
+							
+				for (int i = 0; i < categories.list.length; i++) {
+					items[i] = categories.list[i].name;
+					//check[i] = false;
+				}
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(MapView.this);
+				builder.setTitle("Choisissez un filtre :");
+				builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {     //(items, check, new DialogInterface.OnMultiChoiceClickListener() {
+				          
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					categorieId = categories.list[which].id;
+					
+				}
+				}).setNegativeButton("Annuler",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+					}
+				}).setPositiveButton("Valider", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						
+						//item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+						//item_loading.setVisible(true);
+					}
+
+				});
+				
+				AlertDialog alert = builder.create();
+				alert.setCancelable(true);
+				
+				alert.show();
+				
+				return false;				
+			}
+        };
+        
+        
+        threadGetCate.start();
     }
+    
     
     public double getDistance(LatLng oldPos, LatLng newPos) {
     	double lat1 = oldPos.latitude;
@@ -417,11 +543,11 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    		Toast.makeText(getApplicationContext(), "Ws error :\n" + pack.getString("msgError"), Toast.LENGTH_LONG).show();
     			    	else
     			    	{
-    			    		Toast.makeText(getApplicationContext(), "Search Places find : " + searchPlaces.list.length, Toast.LENGTH_SHORT).show();
+    			    		//Toast.makeText(getApplicationContext(), "Search Places find : " + searchPlaces.list.length, Toast.LENGTH_SHORT).show();
     			    		
     			    		if (searchPlaces.list.length == 0)
     			    		{
-        			    		Toast.makeText(getApplicationContext(), "list vide !!!!", Toast.LENGTH_SHORT).show();
+        			    		Toast.makeText(getApplicationContext(), "Aucune place trouvé :(", Toast.LENGTH_SHORT).show();
     			    			return;
     			    		}
     			    		
@@ -441,7 +567,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    		final CharSequence[] charSequenceArray = charSequences.toArray(new
     			    			    CharSequence[charSequences.size()]);
     			    		
-    			    		Toast.makeText(getApplicationContext(),"Charsequence a " + charSequenceArray.length, Toast.LENGTH_SHORT).show();
+    			    		//Toast.makeText(getApplicationContext(),"Charsequence a " + charSequenceArray.length, Toast.LENGTH_SHORT).show();
 
     			    		
 							AlertDialog.Builder builder = new AlertDialog.Builder(MapView.this);
@@ -450,7 +576,7 @@ public class MapView extends FragmentActivity implements LocationListener{
 							          
 								@Override
 									public void onClick(DialogInterface dialog, int item) {
-							                Toast.makeText(getApplicationContext(), charSequenceArray[item], Toast.LENGTH_SHORT).show();
+							                //Toast.makeText(getApplicationContext(), charSequenceArray[item], Toast.LENGTH_SHORT).show();
 							               
 							                CameraPosition cp = new CameraPosition(new LatLng(searchPlaces.list[item].lat, searchPlaces.list[item].lon), 15, 0, 0);
 							                //etLocation.setText("");						                
@@ -591,13 +717,16 @@ public class MapView extends FragmentActivity implements LocationListener{
     	@Override
   	  public boolean onCreateOptionsMenu(Menu menu) {
   	    MenuInflater inflater = getMenuInflater();
-  	    inflater.inflate(R.menu.map_view, menu);
+  	    inflater.inflate(R.menu.map_view, menu); 
   	    item_loading = menu.findItem(R.id.loading_zone);
   		item_loading.setVisible(false);
   		
   		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
   		item_loading.setVisible(true);
   		
+  		item_filtre = menu.findItem(R.id.filtre);
+  		item_filtre.setOnMenuItemClickListener(changeFilter);
+		
   	// SearchView
   		MenuItem itemSearch = menu.findItem(R.id.search_add);
   		mSearchView = (SearchView) itemSearch.getActionView();

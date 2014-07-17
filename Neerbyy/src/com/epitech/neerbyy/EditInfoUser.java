@@ -56,6 +56,7 @@ public class EditInfoUser extends Activity {
 	Button btnOk;
 	Button btnChangePass;
 	TextView btnDelete;
+	TextView txtUsername;
 	EditText username; 
 	EditText firstname;
 	EditText lastname; 
@@ -82,6 +83,7 @@ public class EditInfoUser extends Activity {
 		btnOk = (Button)findViewById(R.id.btnInfoUserValid);
 		btnChangePass = (Button)findViewById(R.id.btnInfoUserChangePass);
 		btnDelete = (TextView)findViewById(R.id.btnInfoUserDelete);
+		txtUsername = (TextView)findViewById(R.id.txtUserInfoViewUsername);
 		username = (EditText)findViewById(R.id.EditTextInfoUserUsername);
 		firstname = (EditText)findViewById(R.id.EditTextInfoUserFirsname);
 		lastname = (EditText)findViewById(R.id.EditTextInfoUserLastname);
@@ -109,6 +111,8 @@ public class EditInfoUser extends Activity {
 		firstname.setText(user.firstname);
 		lastname.setText(user.lastname);
 		mail.setText(user.mail);
+		
+		txtUsername.setText(user.username);
 		
 		btnChangePass.setOnClickListener(new View.OnClickListener() {
 			
