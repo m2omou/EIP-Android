@@ -146,8 +146,8 @@ public class ViewMemory extends Activity {
 				public boolean onMenuItemClick(MenuItem arg0) {
 				AlertDialog.Builder alert = new AlertDialog.Builder(ViewMemory.this);
 
-				alert.setTitle("Ajouter un message");
-				alert.setMessage("Ajouter votre message");
+				alert.setTitle("Ajouter un commentaire");
+				alert.setMessage("Ajouter votre commentaire");
 				
 				// Set an EditText view to get user input 
 				final EditText input = new EditText(ViewMemory.this);

@@ -29,13 +29,19 @@ public class ThreadUpdateMessages extends Thread {
 	 */
 	private ViewMessages vm;
 	
+	
     public ThreadUpdateMessages(ViewMessages vm) {
         super();
         this.vm = vm;
+        
     }
     
     public void run() {
         Log.w("THREAD", "DEBUT THREAD MESSAGES");
+        
+        while(vm.continu) {
+        
+        
     	try {
     		Gson gson = new Gson();
         	String url = Network.URL + Network.PORT + "/messages.json?conversation_id=" + vm.conv_id;
@@ -93,6 +99,18 @@ public class ThreadUpdateMessages extends Thread {
     	}
     	catch (Exception e) {
             e.printStackTrace();}
-    	Log.w("THREAD", "FIN THREAD UPDATE MESSAGES");  	
+    	Log.w("THREAD", "FIN THREAD UPDATE MESSAGES");
+    	
+    	
+    	try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+      }
+        
+        
     }
 }

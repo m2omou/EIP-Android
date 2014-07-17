@@ -58,6 +58,10 @@ public class ViewMessages extends Activity {
 	
 	private Conversation conv;
 	
+	Thread messUpdate;
+	Boolean continu;
+	int count;
+	
 	//private Thread threadGetMessages;
 	
 	ResponseWS rep;
@@ -172,7 +176,11 @@ public class ViewMessages extends Activity {
 		if (conv_id != -1) {
 			//mProgressDialog = ProgressDialog.show(ViewMessages.this, "Please wait",
 				//	"Long operation starts...", true);
-			new ThreadUpdateMessages(ViewMessages.this).start();
+			
+			count = 0;
+			continu = true;
+			messUpdate = new ThreadUpdateMessages(ViewMessages.this);
+			messUpdate.start();
 		}
 	}
 	
@@ -265,7 +273,8 @@ public class ViewMessages extends Activity {
 			    			    }
 			    			});
 			    		}
-			            Toast.makeText(getApplicationContext(), "Update messages success", Toast.LENGTH_LONG).show();
+			            //Toast.makeText(getApplicationContext(), "Mise a jour des messages terminer", Toast.LENGTH_LONG).show();
+			            
 			            item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 			    		item_loading.setVisible(false);
 			    	}
@@ -301,7 +310,7 @@ public class ViewMessages extends Activity {
 			    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 			    		item_loading.setVisible(true);
 			    		
-			    		new ThreadUpdateMessages(ViewMessages.this).start();
+			    		//new ThreadUpdateMessages(ViewMessages.this).start();
 			    	}
 			    	break;
 	    	} 	
@@ -321,6 +330,13 @@ public class ViewMessages extends Activity {
 	    return true;
 	  }
 	
+	 @Override
+	  public void onPause(){
+		 super.onPause();
+		 continu = false;
+		 
+	 }
+	  
 	 @Override
 	  public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
