@@ -32,6 +32,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -504,6 +505,11 @@ public class ViewPost extends Activity {
 				    	    listView.setAdapter(mSchedule);
 				    	    
 				    	    listView.setBackgroundResource(R.drawable.my_listview);
+				    	    //listView.setDivider(getResources().getColor(android.R.color.transparent));
+				    	    //listView.getDivider().setAlpha(0);
+				    	    
+				    	    //listView.getDivider().getPadding(new Rect(10, 10, 10, 10));
+				    	    
 				    	    //listView.setDividerHeight(10);
 				    	    //listView.setD)
 				    	    /*android:background="@drawable/my_listview"

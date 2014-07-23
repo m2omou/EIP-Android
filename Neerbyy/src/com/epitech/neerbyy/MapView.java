@@ -15,12 +15,15 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
@@ -33,6 +36,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -55,6 +59,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager.LayoutParams;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -105,6 +110,8 @@ public class MapView extends FragmentActivity implements LocationListener{
 	
 	SearchView mSearchView;
 	
+	
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,13 +122,30 @@ public class MapView extends FragmentActivity implements LocationListener{
         	Toast.makeText(this, "Erreur lors du chargement de la carte", Toast.LENGTH_LONG).show();	
         	return;
         }
-       
+       //////////////////////////////////////////NEXUS ???///////////
+        //ViewGroup topLayout = (ViewGroup) findViewById(R.id.map);
+        //topLayout.requestTransparentRegion(topLayout);
+        
+        
+        
+        
+        
+        
+        //SupportMapFragment mapFragment = SupportMapFragment.newInstance(new GoogleMapOptions().zOrderOnTop(true));
+        //mapFragment.setTargetFragment(((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)), 1);
+        
+        //gMap = mapFragment.getMap();
+        
+        //////////////////////////////////////////////////////////////
+        
       //  etLocation = (EditText) findViewById(R.id.et_location);
         
         gMap.setMyLocationEnabled(true);
         gMap.getUiSettings().setMyLocationButtonEnabled(true);
         gMap.getUiSettings().setZoomControlsEnabled(false);
         gMap.setOnCameraChangeListener(cc);
+        
+        
         
 		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
         
@@ -706,9 +730,21 @@ public class MapView extends FragmentActivity implements LocationListener{
     	
     	private boolean initCheckMap() {
     	    if (gMap == null) {
-    	    	gMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+    	    	
+    	    	SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+    	    	
+    	    	//CustomMapFragment mapFragment = (CustomMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
+    	    	
+    	    	//CustomMapFragment mapFragment = (CustomMapFragment) CustomMapFragment.newInstance(new GoogleMapOptions().zOrderOnTop(true));
+    	        //mapFragment.setTargetFragment(((CustomMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)), 1);
+    	    	
+    	    	
+    	    	gMap = mapFragment.getMap();
+    	    	
+    	    	//gMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
     	        if (gMap != null)
-    	            return true;
+    	            return true;    	       
     	        return false;
     	    }
     	    return true;

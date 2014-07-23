@@ -49,6 +49,8 @@ import android.widget.Toast;
 import com.epitech.neerbyy.Network.ACTION;
 import com.epitech.neerbyy.Network.METHOD;
 import com.epitech.neerbyy.Place.PlaceInfo;
+import com.epitech.neerbyy.Post.PostInfos;
+import com.epitech.neerbyy.Votes.VoteInfo;
 
 /**
  * This class represent the view associate to a place, and allow to list all posts of this place.
@@ -72,6 +74,8 @@ public class ViewMemory extends Activity {
 	//private Button btnSendComm;
 	
 	public Votes votes;
+	public VoteInfo vote;
+	public PostInfos pubVotes;
 	//public Thread threadGetLike;
 	
 	ResponseWS rep;
@@ -258,6 +262,11 @@ public class ViewMemory extends Activity {
 					//startActivity(intent);
 					return;
 				}
+				
+				if (memory.user.id == Network.USER.id) {
+					Toast.makeText(getApplicationContext(), "Vous ne pouvez pas voter pour vos propre publication.", Toast.LENGTH_LONG).show();
+					return;
+				}
 		
 				//mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
 					//	"Long operation starts...", true);
@@ -310,7 +319,8 @@ public class ViewMemory extends Activity {
 							{
 								try {		    
 									rep = gson.fromJson(ret, ResponseWS.class);
-									//user = rep.getValue(Post.class, 1);
+									vote = rep.getValue(VoteInfo.class);
+									pubVotes = rep.getValue(PostInfos.class);
 								}
 								catch(JsonParseException e)
 							    {
@@ -349,8 +359,10 @@ public class ViewMemory extends Activity {
 					return;
 				}
 		
-				//mProgressDialog = ProgressDialog.show(ViewMemory.this, "Please wait",
-					//	"Long operation starts...", true);
+				if (memory.user.id == Network.USER.id) {
+					Toast.makeText(getApplicationContext(), "Vous ne pouvez pas voter pour vos propre publication.", Toast.LENGTH_LONG).show();
+					return;
+				}
 				
 				item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 				item_loading.setVisible(true);
@@ -401,7 +413,8 @@ public class ViewMemory extends Activity {
 							{
 								try {		    
 									rep = gson.fromJson(ret, ResponseWS.class);
-									//user = rep.getValue(Post.class, 1);
+									vote = rep.getValue(VoteInfo.class);
+									pubVotes = rep.getValue(PostInfos.class);
 								}
 								catch(JsonParseException e)
 							    {
@@ -428,8 +441,7 @@ public class ViewMemory extends Activity {
 				}};
 			threadSendDislike.start();
 			}
-		});
-	
+		});	
 		new ThreadUpdateComm(ViewMemory.this).start();
 	}
 	
@@ -643,7 +655,7 @@ public class ViewMemory extends Activity {
 			    }
 			    break;
 			    	
-		    	case GET_VOTES:
+		    	case GET_VOTES:   //   pu utiliser  ?? ///////////////////////////
 		    		if (Error == 1)
 		    			Toast.makeText(getApplicationContext(), "Erreur de connexion avec le WebService", Toast.LENGTH_SHORT).show();
 			    	else if (Error == 2)
@@ -673,17 +685,27 @@ public class ViewMemory extends Activity {
 			    	else
 		    		{    		
 			    		Toast.makeText(getApplicationContext(), "Votre vote a bien été pris en compte", Toast.LENGTH_LONG).show();
-			    		if (actionVote == 1)
+			    		/*if (actionVote == 1)
 			    			viewLike.setText(Integer.toString(memory.upvotes + 1));   //  verif si auth
 			    		else if(actionVote == 0)
-			    			viewDislike.setText(Integer.toString(memory.downvotes + 1));   //  verif si auth
+			    			viewDislike.setText(Integer.toString(memory.downvotes + 1)); */  //  verif si auth
+			    		
+			    		memory.vote = vote;
+			    		//memory.vote.id = vote.id;
+			    		viewLike.setText(Integer.toString(pubVotes.upvotes));
+			    		viewDislike.setText(Integer.toString(pubVotes.downvotes));
+			    		
+			    		
+			    		
 			    		/*else if(actionVote == -2)
 			    			viewDislike.setText(Integer.toString(memory.upvotes - 1));
 			    		else if(actionVote == -3)
 			    			viewDislike.setText(Integer.toString(memory.downvotes - 1));*/
 			    		
-			    		new ThreadUpdateLike(ViewMemory.this).start();
+			    		//new ThreadUpdateLike(ViewMemory.this).start();
 			    	}
+		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+					item_loading.setVisible(false);
 			    	break;
 			    	
 		    	case CANCEL_VOTE:
@@ -698,10 +720,14 @@ public class ViewMemory extends Activity {
 			    	else
 			    	{   		
 			    		Toast.makeText(getApplicationContext(), "Votre annulation de vote a bien été pris en compte", Toast.LENGTH_LONG).show();
-			    		if(actionVote == -2)
+			    		/*if(actionVote == -2)
 			    			viewLike.setText(Integer.toString(memory.upvotes - 1));
 			    		else if(actionVote == -3)
-			    			viewDislike.setText(Integer.toString(memory.downvotes - 1));
+			    			viewDislike.setText(Integer.toString(memory.downvotes - 1));*/
+			    		
+			    		viewLike.setText(Integer.toString(pubVotes.upvotes));
+			    		viewDislike.setText(Integer.toString(pubVotes.downvotes));
+			    		
 			    	}
 		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 					item_loading.setVisible(false);

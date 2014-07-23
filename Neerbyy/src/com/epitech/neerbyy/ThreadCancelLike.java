@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.epitech.neerbyy.Network.ACTION;
 import com.epitech.neerbyy.Network.METHOD;
+import com.epitech.neerbyy.Post.PostInfos;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -65,7 +66,7 @@ public class ThreadCancelLike extends Thread {
 			{
 				try {		    
 					vm.rep = gson.fromJson(ret, ResponseWS.class);
-					//user = rep.getValue(Post.class, 1);
+					vm.pubVotes = vm.rep.getValue(PostInfos.class);
 				}
 				catch(JsonParseException e)
 			    {

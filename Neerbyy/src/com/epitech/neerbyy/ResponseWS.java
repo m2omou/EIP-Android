@@ -10,6 +10,7 @@ import com.epitech.neerbyy.Conversations.Conversation;
 import com.epitech.neerbyy.Users;
 import com.epitech.neerbyy.User;
 import com.epitech.neerbyy.Messages.Message;
+import com.epitech.neerbyy.Post.PostInfos;
 import com.epitech.neerbyy.Votes.VoteInfo;
 import com.google.gson.annotations.SerializedName;
 //import com.google.gson.Gson;
@@ -59,12 +60,18 @@ public class ResponseWS{
 		
 		@SerializedName("publications")
 		public Post.PostInfos[] postes;
+		
+		@SerializedName("publication")
+		public Post.PostInfos poste;
 	
 		@SerializedName("comments")
 		public Commentary.CommInfos[] comms;
 		
 		@SerializedName("votes")
 		public VoteInfo[] votes;
+		
+		@SerializedName("vote")
+		public VoteInfo vote;
 		
 		@SerializedName("conversations")
 		//public Conversations conversations;
@@ -130,6 +137,10 @@ public class ResponseWS{
 									//return (T) result.places;
 									return (T) post;
 								}
+								else if (obj == PostInfos.class) {
+									Log.w("DETECT", "DETECT POST_INFO_UPDATE");
+									return (T) result.poste;
+								}
 								else if (obj == Categorie.class) {
 									Log.w("DETECT", "DETECT Categorie");
 									Categorie cate = new Categorie();
@@ -148,6 +159,10 @@ public class ResponseWS{
 									Votes votes = new Votes();
 									votes.list = result.votes;
 									return (T) votes;
+								}
+								else if (obj == VoteInfo.class) {
+									Log.w("DETECT", "DETECT GET_VOTE");								
+									return (T) result.vote;
 								}
 								else if (obj == Conversations.class) {
 									Log.w("DETECT", "DETECT GET_CONV");	

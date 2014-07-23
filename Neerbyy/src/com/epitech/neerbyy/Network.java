@@ -153,8 +153,8 @@ public class Network {
 	 /**
 	  * The URL of the Web Service
 	  */
-	//static final public String URL = "http://api.neerbyy.com:";   
-	static final public String URL = "http://windows.neerbyy.com:";
+	static final public String URL = "http://dev.neerbyy.com:";   
+	//static final public String URL = "http://windows.neerbyy.com:";
 	/**
 	  * The default port of the Web Service 
 	 */
