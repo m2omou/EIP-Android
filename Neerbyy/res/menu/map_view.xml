@@ -24,7 +24,7 @@
         android:title="Rechercher un lieu"/>
      
     <item
-        android:id="@+id/logo_menu"
+        android:id="@+id/logo_menu2"
         android:icon="@drawable/logo_menu"
         android:orderInCategory="200"
         android:showAsAction="always"

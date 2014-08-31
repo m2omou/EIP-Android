@@ -289,7 +289,7 @@ public class CreateAccount extends MainMenu {
 	@Override
 	  public boolean onCreateOptionsMenu(Menu menu) {
 	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.view_conv, menu);
+	    inflater.inflate(R.menu.create_account, menu);
 	    item_loading = menu.findItem(R.id.loading_zone);
 		item_loading.setVisible(false);
 		

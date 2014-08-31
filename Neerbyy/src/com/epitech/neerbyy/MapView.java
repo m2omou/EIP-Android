@@ -14,7 +14,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -31,12 +33,15 @@ import android.widget.Toast;
 import com.epitech.neerbyy.Network.ACTION;
 import com.epitech.neerbyy.Network.METHOD;
 import com.epitech.neerbyy.Place.PlaceInfo;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -49,6 +54,8 @@ import com.google.gson.JsonParseException;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -126,11 +133,7 @@ public class MapView extends FragmentActivity implements LocationListener{
         //ViewGroup topLayout = (ViewGroup) findViewById(R.id.map);
         //topLayout.requestTransparentRegion(topLayout);
         
-        
-        
-        
-        
-        
+   
         //SupportMapFragment mapFragment = SupportMapFragment.newInstance(new GoogleMapOptions().zOrderOnTop(true));
         //mapFragment.setTargetFragment(((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)), 1);
         
@@ -351,6 +354,8 @@ public class MapView extends FragmentActivity implements LocationListener{
 					}
 				}).setPositiveButton("Valider", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
+					
+						new ThreadPlaces(MapView.this, new LatLng(gMap.getMyLocation().getLatitude(), gMap.getMyLocation().getLongitude())).start();
 						
 						//item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 						//item_loading.setVisible(true);
@@ -365,9 +370,7 @@ public class MapView extends FragmentActivity implements LocationListener{
 				
 				return false;				
 			}
-        };
-        
-        
+        };     
         threadGetCate.start();
     }
     
@@ -391,11 +394,11 @@ public class MapView extends FragmentActivity implements LocationListener{
     public void onResume() {
     	super.onResume();
         
-    	if (!initCheckMap())
+    	/*if (!initCheckMap())
         {
         	Toast.makeText(this, "Erreur lors du chargement de la carte", Toast.LENGTH_LONG).show();	
         	return;
-        }
+        }*/
     	
     	
         //Obtention de la référence du service
@@ -448,7 +451,14 @@ public class MapView extends FragmentActivity implements LocationListener{
      */
     public void desabonnementGPS() {
         //Si le GPS est disponible, on s'y abonne
-        locationManager.removeUpdates(this);
+        
+    	if (locationManager == null)
+    	{
+    		Toast.makeText(getApplicationContext(), "null", Toast.LENGTH_SHORT).show();
+    		return;
+    		
+    	}
+    	locationManager.removeUpdates(this);           //  verif si locationM is null
     }
     
     public void desabonnementWIFI() {
@@ -466,8 +476,8 @@ public class MapView extends FragmentActivity implements LocationListener{
     	Log.w("LOCATION_CHANGE", "iciiiiiiiiiiii");
     	//Toast.makeText(getApplicationContext(), "ON LOCATION_CHANGE", Toast.LENGTH_SHORT).show();
     	
-    	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-  		item_loading.setVisible(true);
+    //	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+  	//	item_loading.setVisible(true);
     	
     	if (location != null)
     	{ 		
@@ -495,7 +505,6 @@ public class MapView extends FragmentActivity implements LocationListener{
     @Override
     public void onProviderDisabled(final String provider) {
         //Si le GPS est désactivé on se désabonne
-    	// Log.w("Map", "iciiiiiiiiiiii8");
         if("GPS_PROVIDER".equals(provider))
             desabonnementGPS();
         if("NETWORK_PROVIDER".equals(provider))
@@ -729,29 +738,100 @@ public class MapView extends FragmentActivity implements LocationListener{
     	}
     	
     	private boolean initCheckMap() {
-    	    if (gMap == null) {
+    		 try {
+    	      
+    	 
+    	       
+    	  /*  if (gMap == null) {
     	    	
-    	    	SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+    	    	//Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.map);
+    	    	//SupportMapFragment mapFragment = (SupportMapFragment) fragment;
+    	    	//gMap = mapFragment.getMap();
+    	    	
+    	    	
+    	    	 android.support.v4.app.FragmentManager myFragmentManager = getSupportFragmentManager();
+    	    	 SupportMapFragment mySupportMapFragment = (SupportMapFragment)myFragmentManager.findFragmentById(R.id.map);
+    	         gMap = mySupportMapFragment.getMap();
+    	         if (gMap != null)
+    	        	 return true;*/
+    	    	
+
+    	       
+    	    	
+    	    	/*if (gMap == null) {
+        	    	gMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+        	        if (gMap != null)
+        	            return true;     	    
+        	    }
+        	    return false;*/
+    	    	
+    	    	
+    	    //	MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+
+    	    	//android.support.v4.app.FragmentManager myFragmentManager = getSupportFragmentManager();
+    	    	
+    	    	/*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+    	    	if (mapFragment == null)
+    	    	{
+    	    		Log.w("MAP", "merde");    		 
+    	    		mapFragment = SupportMapFragment.newInstance();
+    	    	}
+    	    	/*android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+    	    	android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+    	    	fragmentTransaction.add(R.id.map, mapFragment);  
+    	    	fragmentTransaction.commit();
+    	    	
+    	    	gMap = mapFragment.getMap();
+    	    	if (gMap != null)
+    	    		return true;
+    	    	Log.w("MAP", "merde2");*/
+     	        
+     	        
+    	    	//SupportMapFragment mySupportMapFragment = (SupportMapFragment)myFragmentManager.findFragmentById(R.id.map);
+
+    	    	
+    	    	/*FragmentManager fm = getFragmentManager();
+    	        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+    	        fragmentTransaction.add(R.id.map, mapFragment);  
+    	        fragmentTransaction.commit();*/
+    	        
+    	        
+    	        //gMap = mapFragment.getMap();
     	    	
     	    	//CustomMapFragment mapFragment = (CustomMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
     	    	
     	    	//CustomMapFragment mapFragment = (CustomMapFragment) CustomMapFragment.newInstance(new GoogleMapOptions().zOrderOnTop(true));
     	        //mapFragment.setTargetFragment(((CustomMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)), 1);
     	    	
-    	    	
-    	    	gMap = mapFragment.getMap();
+    	    	//gMap = mapFragment.getMap();
     	    	
     	    	//gMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-    	        if (gMap != null)
-    	            return true;    	       
-    	        return false;
-    	    }
-    	    return true;
+    	      //  if (gMap != null)
+    	        //    return true;
+    	         
+    	         if (gMap == null) {
+    	             gMap = ((MapFragment) getFragmentManager().findFragmentById(
+    	                     R.id.map)).getMap();
+    	  
+    	             // check if map is created successfully or not
+    	             if (gMap == null) {
+    	                 Toast.makeText(getApplicationContext(), "Desole, impossible de cree la carte", Toast.LENGTH_SHORT).show();
+    	                 return false;
+    	             }   	            
+    	         }
+    	         else
+	            	 return true;
+    		 } catch (Exception e) {
+    			 e.printStackTrace();
+                 Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+
+    			 
+ 	    	}
+    		return true;   //  nor false bug exeption when verif null
     	}
     	
     	@Override
-  	  public boolean onCreateOptionsMenu(Menu menu) {
+  	    public boolean onCreateOptionsMenu(Menu menu) {
   	    MenuInflater inflater = getMenuInflater();
   	    inflater.inflate(R.menu.map_view, menu); 
   	    item_loading = menu.findItem(R.id.loading_zone);
