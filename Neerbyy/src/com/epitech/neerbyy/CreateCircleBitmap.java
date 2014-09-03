@@ -58,7 +58,7 @@ public class CreateCircleBitmap extends Drawable
 	}
 	
 	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap    //  verif si nul ??
                 .getHeight(), Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 

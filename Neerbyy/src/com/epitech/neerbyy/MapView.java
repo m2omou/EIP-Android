@@ -680,8 +680,6 @@ public class MapView extends FragmentActivity implements LocationListener{
     				{
     					listAllMarker.add(places.list[i].marker);
     				}
-    				
-    				
     				new ThreadDownloadImage(MapView.this, i).start();
     				listAllPlaceInfos.add(places.list[i]);  				
     			}
@@ -818,11 +816,12 @@ public class MapView extends FragmentActivity implements LocationListener{
     	                 Toast.makeText(getApplicationContext(), "Desole, impossible de cree la carte", Toast.LENGTH_SHORT).show();
     	                 return false;
     	             }   	            
-    	         }
+    	         } 
     	         else
 	            	 return true;
     		 } catch (Exception e) {
     			 e.printStackTrace();
+    			 Log.e("ERROR", e.getMessage());
                  Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 
     			 

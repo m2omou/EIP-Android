@@ -259,7 +259,8 @@ public class Login extends Activity {
 			    		Toast.makeText(getApplicationContext(), "Erreur de connection avec le WebService", Toast.LENGTH_LONG).show();
 			    	else if (Error == 2)
 			    	{
-			    		Toast.makeText(getApplicationContext(), "Erreur : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
+			    		//Toast.makeText(getApplicationContext(), "Erreur : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();
+			    		Toast.makeText(getApplicationContext(), "Erreur : Mot de passe ou login incorrecte.", Toast.LENGTH_LONG).show();
 			    	}
 			    	else if (Error == 3)
 			    		Toast.makeText(getApplicationContext(), "Erreur du WebService : " + pack.getString("msgError"), Toast.LENGTH_LONG).show();

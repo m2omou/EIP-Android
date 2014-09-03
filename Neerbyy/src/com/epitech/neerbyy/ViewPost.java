@@ -686,7 +686,7 @@ public class ViewPost extends Activity {
 
 			        	
 			    		favorite.setTitle("Ne plus suivre ce lieu");
-						favorite.setIcon(R.drawable.favorite_less);
+						favorite.setIcon(R.drawable.favorite_less2);
 						favorite.setOnMenuItemClickListener(uf);
 			    		
 			    		//place.followed_place_id = 1;   //  mettre la vrai avec ret requ
@@ -748,7 +748,7 @@ public class ViewPost extends Activity {
 			    		//btnFallow.setBackgroundResource(R.color.greenNeerbyy);
 			    		
 			    		favorite.setTitle("Suivre ce lieu");
-						favorite.setIcon(R.drawable.favorite_add);
+						favorite.setIcon(R.drawable.favorite_add2);
 						
 						favorite.setOnMenuItemClickListener(f);
 						
@@ -818,7 +818,7 @@ public class ViewPost extends Activity {
 		{
 			favorite.setOnMenuItemClickListener(uf);  
 			favorite.setTitle("Ne plus suivre ce lieu");
-			favorite.setIcon(R.drawable.favorite_less);
+			favorite.setIcon(R.drawable.favorite_less2);
     	}
 	    return true;
 	  }

@@ -261,7 +261,7 @@ public class ViewFeed extends Activity {
 			    			    }
 			    			});
 			    		}
-			            Toast.makeText(getApplicationContext(), "Update feed success", Toast.LENGTH_LONG).show();
+			           // Toast.makeText(getApplicationContext(), "Update feed success", Toast.LENGTH_LONG).show();
 			    	}
 		    		item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 		    		item_loading.setVisible(false);

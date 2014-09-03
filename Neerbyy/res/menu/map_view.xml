@@ -13,7 +13,7 @@
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="Filtres"
-        android:icon="@drawable/filter"
+        android:icon="@drawable/filter2"
         />
     
      <item
@@ -24,8 +24,8 @@
         android:title="Rechercher un lieu"/>
      
     <item
-        android:id="@+id/logo_menu2"
-        android:icon="@drawable/logo_menu"
+        android:id="@+id/logo_menu"
+        android:icon="@drawable/logo_menu2"
         android:orderInCategory="200"
         android:showAsAction="always"
         android:title="Menu"/>
