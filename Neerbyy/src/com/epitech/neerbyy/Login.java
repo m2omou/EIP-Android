@@ -14,6 +14,9 @@ import com.epitech.neerbyy.Network.ACTION;
 import com.epitech.neerbyy.Network.METHOD;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.parse.Parse;
+import com.parse.ParseAnalytics;
+import com.parse.PushService;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -64,6 +67,15 @@ public class Login extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login2);
 		
+		
+
+		// Track app opens.
+	//	ParseAnalytics.trackAppOpened(getIntent());
+		
+//		ParseAnalytics.trackAppOpened(getIntent());
+
+		  
+		  
 		createAccount = (Button)findViewById(R.id.btnGoCreateAccount2);
 		login = (Button)findViewById(R.id.btnLogin2);
 		map = (Button)findViewById(R.id.btnLoginMapView);

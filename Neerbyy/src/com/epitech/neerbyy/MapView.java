@@ -41,6 +41,7 @@ import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -57,8 +58,10 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -84,6 +87,12 @@ import android.widget.Toast;
  */
 public class MapView extends FragmentActivity implements LocationListener{
 	
+	//----------------------------------------NEW----------------------------------------
+	private Context mContext;
+	//protected PlaceActivity activity;
+	private FollowMeLocationSource followMeLocationSource;
+	//-----------------------------------------------------------------------------------   
+	
 	private LocationManager locationManager;
 	private GoogleMap gMap;
 	private Marker posMarker;
@@ -93,7 +102,7 @@ public class MapView extends FragmentActivity implements LocationListener{
 	
 	private List<Place.PlaceInfo> listAllPlaceInfos;
 	public Location locat = null;
-	private Location centerScreen = null;
+	//private Location centerScreen = null;
 	public Place places;
 	public Place searchPlaces;
 	public ResponseWS rep;
@@ -117,6 +126,56 @@ public class MapView extends FragmentActivity implements LocationListener{
 	
 	SearchView mSearchView;
 	
+	private void GetCurrentLocation() {
+		double[] d = getlocation();
+	    //gMap.addMarker(new MarkerOptions().position(new LatLng(d[0], d[1])).title("Current Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_menu2)));
+	    //gMap.addMarker(new MarkerOptions().position(new LatLng(d[0], d[1])).title("Current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+	    latLng = new LatLng(d[0], d[1]);
+	    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(d[0], d[1]), 16));
+	    new ThreadPlaces(MapView.this, latLng).start();  
+	}
+	
+	public double[] getlocation() {
+	    LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+	    List<String> providers = lm.getProviders(true);
+
+	    Location l = null;
+	    for (int i = 0; i < providers.size(); i++) {
+	        l = lm.getLastKnownLocation(providers.get(i));
+	        if (l != null)
+	            break;
+	    }
+	    double[] gps = new double[2];
+
+	    if (l != null) {
+	        gps[0] = l.getLatitude();
+	        gps[1] = l.getLongitude();
+	    }
+	    return gps;
+	}
+	  
+	private void setUpMapIfNeeded() {
+	    if (gMap == null) {
+	        Log.e("", "map is null");
+	        gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+
+	        if (gMap != null) {
+	            Log.e("", "map is full");
+	            gMap.setMapType(gMap.MAP_TYPE_NORMAL);
+	            
+	            // Replace the (default) location source of the my-location layer with our custom LocationSource
+                //gMap.setLocationSource(followMeLocationSource);
+                gMap.setMyLocationEnabled(true);
+                gMap.getUiSettings().setMyLocationButtonEnabled(true);
+                gMap.getUiSettings().setZoomControlsEnabled(false);
+                gMap.setOnCameraChangeListener(cc);
+                
+                // Set default zoom
+                //gMap.moveCamera(CameraUpdateFactory.zoomTo(15f));
+	            //gMap.getUiSettings().setZoomControlsEnabled(false);
+	        }
+	    }
+	}
 	
 	
     @Override
@@ -124,162 +183,68 @@ public class MapView extends FragmentActivity implements LocationListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
         
-        if (!initCheckMap())
+//-----------------------NEW-------------------------------------------
+        mContext = getApplicationContext();
+        //followMeLocationSource = new FollowMeLocationSource(); 
+ 
+//-------------------------------------------------------------------------
+        
+        /*if (!initCheckMap())
         {
         	Toast.makeText(this, "Erreur lors du chargement de la carte", Toast.LENGTH_LONG).show();	
         	return;
-        }
-       //////////////////////////////////////////NEXUS ???///////////
-        //ViewGroup topLayout = (ViewGroup) findViewById(R.id.map);
-        //topLayout.requestTransparentRegion(topLayout);
+        }*/
         
-   
-        //SupportMapFragment mapFragment = SupportMapFragment.newInstance(new GoogleMapOptions().zOrderOnTop(true));
-        //mapFragment.setTargetFragment(((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)), 1);
-        
-        //gMap = mapFragment.getMap();
-        
-        //////////////////////////////////////////////////////////////
-        
-      //  etLocation = (EditText) findViewById(R.id.et_location);
-        
-        gMap.setMyLocationEnabled(true);
-        gMap.getUiSettings().setMyLocationButtonEnabled(true);
-        gMap.getUiSettings().setZoomControlsEnabled(false);
-        gMap.setOnCameraChangeListener(cc);
-        
-        
+         
         
 		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
-        
+		    
         cc = new OnCameraChangeListener(){
         	@Override
         	public void onCameraChange(CameraPosition newPos)
         	{
-        		if (centerScreen == null)
+        		Log.w("DISTANCE", "CAMERA CHANGGGGGEEEEEE");
+        		if (latLng == null) { 
+        			Log.e("Error", "latLng null !!!!");
         			return;
-        		double dist = getDistance(new LatLng(centerScreen.getLatitude(),  centerScreen.getLongitude()), newPos.target);
-        		Log.w("DISTANCE", Double.toString(dist));
+        		}
         		
-        		/////////////////////POUR DETECT CLIC ON MY LOCATION /////////////////////////////
-        		double latDelta = newPos.target.latitude;
-                double lonDelta = newPos.target.longitude;  	
-                Location l = gMap.getMyLocation();
-                if (l != null) {
-                    latDelta = Math.abs(latDelta - l.getLatitude());
-                    lonDelta = Math.abs(lonDelta - l.getLongitude());
-                }               
-        		if (latDelta <= .000001 && lonDelta <= .000001) {
-                    //Log.i("MAP", String.format("myLocation: %f,%f", latDelta, lonDelta));
-                	//Toast.makeText(getApplicationContext(), "My Location clicked", Toast.LENGTH_SHORT).show();
-                	abonnementWIFI();
-                	abonnementGPS();
-                	abonnement3G();
-                	
-                	//gMap.clear();  
-                	Log.w("LANCE", "t5");
-                	
-        			
-        			/*if (l != null)
-        			{
-        				//centerScreen.setLatitude(l.getLatitude());  ??
-            			//centerScreen.setLongitude(l.getLongitude()); ??
-        				new ThreadPlaces(MapView.this, new LatLng(l.getLatitude(), l.getLongitude())).start();
-        			
-        			}
-        			else*/
-        				new ThreadPlaces(MapView.this, newPos.target).start();
+        		double dist = getDistance(new LatLng(latLng.latitude,  latLng.longitude), newPos.target);
+        		Log.w("DISTANCE", Double.toString(dist));
+        		if (dist > radius || listAllPlaceInfos.isEmpty())
+		        	{	
+        				latLng = new LatLng(newPos.target.latitude, newPos.target.longitude);
         				
+        				gMap.clear();
+			        	listAllPlaceInfos.clear();
+			        	listAllMarker.clear();
+			        	//listGreenMarker.clear();
+			        					        			
+			            Log.w("LANCE", "t3.1");
+			        	new ThreadPlaces(MapView.this, newPos.target).start();
+		        	}   				
         		}
-        		//////////////////////////////////////////////////////////////////////////////
-        		else
-        			{
-		        		//////////////////////////////////////////////////////////////
-        				desabonnementGPS();
-		        		desabonnement3G();
-		        		desabonnementWIFI();
-        				
-        				if (dist > radius || listAllPlaceInfos.isEmpty())
-		        		{	
-		        			centerScreen.setLatitude(newPos.target.latitude);
-		        			centerScreen.setLongitude(newPos.target.longitude);
-		        			
-		        			//listAllPlaceInfos.clear();
-		        			//listAllMarker.clear();
-		        			//listGreenMarker.clear();
-		        					        			
-		               	 	Log.w("LANCE", "t3.1");
-		        			new ThreadPlaces(MapView.this, newPos.target).start();
-		        		}   				
-        		}
-        	}	
         };
         
-        Thread threadGetCate = new Thread(){
-            public void run(){	        	      
-                    Log.w("THREAD", "DEBUT THREAD GET CATE");
-                	try {
-                    	Gson gson = new Gson();
-                    	String url;
-                    	url = Network.URL + Network.PORT + "/categories.json";        	
-                    	
-                    	Message myMessage, msgPb;
-                    	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");
-                    	myHandler.sendMessage(msgPb);
-                    
-                    	Bundle messageBundle = new Bundle();
-            			messageBundle.putInt("action", ACTION.GET_CATE.getValue());
-            	        myMessage = myHandler.obtainMessage();	
-                   
-            	        InputStream input = Network.retrieveStream(url, METHOD.GET, null);
-                    	
-            	        if (input == null)
-            				messageBundle.putInt("error", 1);
-            			else
-            			{	
-            				Reader readerResp = new InputStreamReader(input);
-            				String ret = Network.checkInputStream(readerResp);
-            				
-            				if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
-            				{
-            					messageBundle.putInt("error", 3);
-            					messageBundle.putString("msgError", ret);
-            				}
-            				else
-            				{
-            					try {		    
-            						rep = gson.fromJson(ret, ResponseWS.class);
-            						categories = rep.getValue(Categorie.class);
-            						
-            					}
-            					catch(JsonParseException e)
-            				    {
-            				        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
-            				    }
-            					if (rep.responseCode == 1)
-            					{
-            						messageBundle.putInt("error", 2);
-            						messageBundle.putString("msgError", rep.responseMessage);
-            					}
-            					else
-            						Log.w("RECUP", "JAI RECUP " + categories.list.length + " categories");       					
-            				}
-            			}
-            	       
-            	        myMessage.setData(messageBundle);
-                        myHandler.sendMessage(myMessage);
-                        
-                        msgPb = myHandler.obtainMessage(1, (Object) "Success");
-                        myHandler.sendMessage(msgPb);
-                	}
-                	catch (Exception e) {
-                        e.printStackTrace();}
-                	Log.w("THREAD", "FIN THREAD GET CATE");
-                }
-    	};
-        
-        
-        
+        setUpMapIfNeeded();
+    ///////////////////////////CLICK  ON  LOCAT  BUTTON////////////////////////////////////  
+        gMap.setOnMyLocationButtonClickListener(new OnMyLocationButtonClickListener() {
+
+			@Override
+		    public boolean onMyLocationButtonClick() {
+				gMap.clear();
+				listAllPlaceInfos.clear();
+	        	listAllMarker.clear();
+	        	//listGreenMarker.clear();
+	        	
+	        	GetCurrentLocation();
+				//new ThreadPlaces(MapView.this, new LatLng(latLng.latitude, latLng.longitude)).start();
+		        return false;
+		    }
+		});
+	///////////////////////////////////////////////////////////////////////////////////////
+        GetCurrentLocation();   
+    
         gMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			
 			@Override
@@ -309,15 +274,15 @@ public class MapView extends FragmentActivity implements LocationListener{
 			}
 		});
         
-        gMap.setOnCameraChangeListener(cc);    
+       
         //posMarker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(45.75, -0.633333)));
         listAllMarker = new ArrayList<Marker>();
         listGreenMarker = new ArrayList<Marker>();
         listAllPlaceInfos = new ArrayList<Place.PlaceInfo>();
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         
-        limit = 20;
-        radius = 1000;     
+        limit = 70;
+        radius = 200;     
           
     
         changeFilter = new OnMenuItemClickListener() {
@@ -355,19 +320,17 @@ public class MapView extends FragmentActivity implements LocationListener{
 				}).setPositiveButton("Valider", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 					
-						new ThreadPlaces(MapView.this, new LatLng(gMap.getMyLocation().getLatitude(), gMap.getMyLocation().getLongitude())).start();
+						//  jai remplace gMap.getLocation.getLon lat
+						new ThreadPlaces(MapView.this, new LatLng(latLng.latitude, latLng.longitude)).start(); 
 						
 						//item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 						//item_loading.setVisible(true);
 					}
-
 				});
 				
 				AlertDialog alert = builder.create();
 				alert.setCancelable(true);
-				
 				alert.show();
-				
 				return false;				
 			}
         };     
@@ -393,91 +356,71 @@ public class MapView extends FragmentActivity implements LocationListener{
     @Override
     public void onResume() {
     	super.onResume();
+
+        // Get a reference to the map/GoogleMap object
+        setUpMapIfNeeded();
+        /* Enable the my-location layer (this causes our LocationSource to be automatically activated.)
+         * While enabled, the my-location layer continuously draws an indication of a user's
+         * current location and bearing, and displays UI controls that allow a user to interact
+         * with their location (for example, to enable or disable camera tracking of their location and bearing).*/
+        gMap.setMyLocationEnabled(true);
+        getBestProvider();
+    }
+    
+    public void getBestProvider() {
+    	 //LocationManager locationManager2;
+         Criteria criteria = new Criteria();
+         String bestAvailableProvider;
+         int minTime = 10000;     // minimum time interval between location updates, in milliseconds
+         int minDistance = 10;    // minimum distance between location updates, in meters
+         
+        locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+
+        //Specify Location Provider criteria
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        //criteria.setPowerRequirement(Criteria.POWER_MEDIUM);
+        //criteria.setAltitudeRequired(false);
+        //criteria.setBearingRequired(false);
+        //criteria.setSpeedRequired(false);
+        //criteria.setCostAllowed(true);
+   
+        /* The preffered way of specifying the location provider (e.g. GPS, NETWORK) to use 
+         * is to ask the Location Manager for the one that best satisfies our criteria.
+         * By passing the 'true' boolean we ask for the best available (enabled) provider. */
+        bestAvailableProvider = locationManager.getBestProvider(criteria, true);
         
-    	/*if (!initCheckMap())
-        {
-        	Toast.makeText(this, "Erreur lors du chargement de la carte", Toast.LENGTH_LONG).show();	
-        	return;
-        }*/
+    
+        if (bestAvailableProvider != null) {
+        	locationManager.requestLocationUpdates(bestAvailableProvider, minTime, minDistance, this);     
+        	//Location location = locationManager.getLastKnownLocation(bestAvailableProvider);
+        	//gMap.get         
+        } 
+        else {
+        	Log.w("Error", "No Location Providers currently available !!!!!");
+        	// (Display a message/dialog) No Location Providers currently available.
+        }
     	
-    	
-        //Obtention de la référence du service
-        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
- 
-        //Si le wifi est disponible, on s'y abonne
-        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
-        {
-        	abonnementWIFI();
-        }
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            abonnementGPS();
-        }
-        if(locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
-            abonnement3G();
-        }
     }
     
     @Override
     public void onPause() {
     	super.onPause();
-        desabonnementGPS();
-        desabonnementWIFI();
-        desabonnement3G();
+    	//--------------------------------------MAP----------------------------------------------
+    	  /* Disable the my-location layer (this causes our LocationSource to be automatically deactivated.) */   
+        //-------------------------------------------------------------------------------------
+    	gMap.setMyLocationEnabled(false);
+    	locationManager.removeUpdates(this);
     }
-    
-    /**
-     * Méthode permettant de s'abonner à la localisation par GPS.
-     */
-    public void abonnementGPS() {
-    	 Log.w("MAP", "iciiiiiiiiiiii gps");
-        //On s'abonne
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, this);
-    }
-    
-    public void abonnementWIFI() {
-        //On s'abonne
-    	Log.w("MAP", "iciiiiiiiiiiii wifi");
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, this);
-    }
-    
-    public void abonnement3G() {
-        //On s'abonne
-    	Log.w("MAP", "iciiiiiiiiiiii 3g");
-        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 5000, 10, this);
-    }
- 
-    /**
-     * Méthode permettant de se désabonner de la localisation par GPS.
-     */
-    public void desabonnementGPS() {
-        //Si le GPS est disponible, on s'y abonne
-        
-    	if (locationManager == null)
-    	{
-    		Toast.makeText(getApplicationContext(), "null", Toast.LENGTH_SHORT).show();
-    		return;
-    		
-    	}
-    	locationManager.removeUpdates(this);           //  verif si locationM is null
-    }
-    
-    public void desabonnementWIFI() {
-        //Si le GPS est disponible, on s'y abonne
-        locationManager.removeUpdates(this);
-    }
-    
-    public void desabonnement3G() {
-        //Si le GPS est disponible, on s'y abonne
-        locationManager.removeUpdates(this);
-    }
-    
+         
     @Override
     public void onLocationChanged(final Location location) {
     	Log.w("LOCATION_CHANGE", "iciiiiiiiiiiii");
+    //	if (1 == 1)
+    	//	return;
     	//Toast.makeText(getApplicationContext(), "ON LOCATION_CHANGE", Toast.LENGTH_SHORT).show();
     	
-    //	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-  	//	item_loading.setVisible(true);
+    	//	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    	//	item_loading.setVisible(true);
     	
     	if (location != null)
     	{ 		
@@ -486,9 +429,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     		//gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.858093f, 2.294694f), 15));
 	 
     		locat = location;
-            if (centerScreen == null)
-            	centerScreen = locat;
-           
+          
             if (locat == null)
             {	
            	 	Log.w("LANCE", "t1");
@@ -504,37 +445,23 @@ public class MapView extends FragmentActivity implements LocationListener{
  
     @Override
     public void onProviderDisabled(final String provider) {
-        //Si le GPS est désactivé on se désabonne
-        if("GPS_PROVIDER".equals(provider))
-            desabonnementGPS();
-        if("NETWORK_PROVIDER".equals(provider))
-            desabonnementWIFI();
-        if("PASSIVE_PROVIDER".equals(provider))
-            desabonnement3G();
+    	locationManager.removeUpdates(this);
     }
  
     @Override
     public void onProviderEnabled(final String provider) {
-    	Log.d("Map", "Provider = " + provider);
-    	if("GPS_PROVIDER".equals(provider))
-            abonnementGPS();
-        if("NETWORK_PROVIDER".equals(provider))
-        	abonnementWIFI();
-        if("PASSIVE_PROVIDER".equals(provider))
-            abonnement3G();
+    	int minTime = 10000;     // minimum time interval between location updates, in milliseconds
+        int minDistance = 10;    // minimum distance between location updates, in meters
+    	
+        Log.d("Map", "Provider Detecter= " + provider);
+    	locationManager.requestLocationUpdates(provider, minTime, minDistance, this);
     }
     
-    //  onMyLocation not implemented yet in the api
-   /* public void OnMyLocationButtonClickListener() {
-    	Toast.makeText(getApplicationContext(), "ICIIII   la", Toast.LENGTH_SHORT).show();
-
-    }*/
-    
- 
     @Override
     public void onStatusChanged(final String provider, final int status, final Bundle extras) {}
     
-     Handler myHandler = new Handler()
+     
+    Handler myHandler = new Handler()
     	{
     	    @Override 
     	    public void handleMessage(Message msg)
@@ -614,7 +541,7 @@ public class MapView extends FragmentActivity implements LocationListener{
 							                CameraPosition cp = new CameraPosition(new LatLng(searchPlaces.list[item].lat, searchPlaces.list[item].lon), 15, 0, 0);
 							                //etLocation.setText("");						                
 							                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cp.target, 15));
-							                desabonnementGPS();
+							                locationManager.removeUpdates(MapView.this);   //   changer ici   new
 							               // new ThreadPlaces(MapView.this, cp.target).start();
 							          	}
 							        });
@@ -644,7 +571,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     			    				Log.w("MAP", "MAR");
     			    			if (places.list[indice].bitmap == null)
     			    				Log.w("MAP", "BIT");*/
-    			    			places.list[indice].marker.setIcon(BitmapDescriptorFactory.fromBitmap(places.list[indice].bitmap));	    		
+    	//A  REMETTRE  			//places.list[indice].marker.setIcon(BitmapDescriptorFactory.fromBitmap(places.list[indice].bitmap));	    		
     			    		}
     			    	}
     			    	item_loading.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
@@ -660,10 +587,11 @@ public class MapView extends FragmentActivity implements LocationListener{
     		{	
     			if (!isAlreadyHere(places.list[i]))
     			{
-    				places.list[i].markerDef = gMap.addMarker(new MarkerOptions().position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.greenpin1)));
-    				places.list[i].marker = gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).snippet(places.list[i].address).icon(BitmapDescriptorFactory.fromResource(R.drawable.greenpin1)));
+    				//places.list[i].markerDef = gMap.addMarker(new MarkerOptions().position(new LatLng(places.list[i].lat, places.list[i].lon)).icon(BitmapDescriptorFactory.fromResource(R.drawable.greenpin1)));
+    				places.list[i].marker = gMap.addMarker(new MarkerOptions().title(places.list[i].name).position(new LatLng(places.list[i].lat, places.list[i].lon)).snippet(places.list[i].address).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_dark_green)));
     				
-    				if (places.list[i].markerDef == null)
+    				//  A  REMETTRE
+    				/*if (places.list[i].markerDef == null)
     					Log.w("MAP", "MARDEF null");
     				else 
     				{
@@ -672,15 +600,17 @@ public class MapView extends FragmentActivity implements LocationListener{
     					//places.list[i].markerDef.setFlat(true);
         				//places.list[i].markerDef.setInfoWindowAnchor(-1, -1);
         				//places.list[i].markerDef.setAnchor(-1, -1);
-    					listGreenMarker.add(places.list[i].markerDef);
-    				}
+    					
+    					//  A  REMETTRE listGreenMarker.add(places.list[i].markerDef);
+    				}*/
+    				
     				if (places.list[i].marker == null)
     					Log.w("MAP", "MARK null");
     				else 
     				{
     					listAllMarker.add(places.list[i].marker);
     				}
-    				new ThreadDownloadImage(MapView.this, i).start();
+    				//  A  REMETTRE     new ThreadDownloadImage(MapView.this, i).start();
     				listAllPlaceInfos.add(places.list[i]);  				
     			}
     			
@@ -698,9 +628,10 @@ public class MapView extends FragmentActivity implements LocationListener{
 				m.remove();
 				listAllMarker.remove(0);
 				
-				m = listGreenMarker.get(0);
+				//A  REMETTRE
+				/*m = listGreenMarker.get(0);
 				m.remove();		
-				listGreenMarker.remove(0);
+				listGreenMarker.remove(0);*/
 			}
 			Log.d("DELM", "FIN VEC " + listAllMarker.size() + "/" + bufferPlace);
     	}
@@ -737,9 +668,7 @@ public class MapView extends FragmentActivity implements LocationListener{
     	
     	private boolean initCheckMap() {
     		 try {
-    	      
-    	 
-    	       
+    	     
     	  /*  if (gMap == null) {
     	    	
     	    	//Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.map);
@@ -884,4 +813,178 @@ public class MapView extends FragmentActivity implements LocationListener{
   	    }
   	    return true;
   	 }
+  	 
+  	 
+  	 //-----------------------------------------------------------NEW-----------------------------
+  	 
+  	 
+  	 /* Our custom LocationSource. 
+      * We register this class to receive location updates from the Location Manager
+      * and for that reason we need to also implement the LocationListener interface. */
+     private class FollowMeLocationSource implements LocationSource, LocationListener {
+
+         private OnLocationChangedListener mListener;
+         private LocationManager locationManager;
+         private final Criteria criteria = new Criteria();
+         private String bestAvailableProvider;
+         /* Updates are restricted to one every 10 seconds, and only when
+          * movement of more than 10 meters has been detected.*/
+         private final int minTime = 10000;     // minimum time interval between location updates, in milliseconds
+         private final int minDistance = 10;    // minimum distance between location updates, in meters
+
+         private FollowMeLocationSource() {
+             // Get reference to Location Manager
+             locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+
+             // Specify Location Provider criteria
+             criteria.setAccuracy(Criteria.ACCURACY_FINE);
+             //criteria.setPowerRequirement(Criteria.POWER_MEDIUM);
+             //criteria.setAltitudeRequired(false);
+             //criteria.setBearingRequired(false);
+             //criteria.setSpeedRequired(false);
+             //criteria.setCostAllowed(true);
+             
+            
+
+         }
+
+         private void getBestAvailableProvider() {
+             /* The preffered way of specifying the location provider (e.g. GPS, NETWORK) to use 
+              * is to ask the Location Manager for the one that best satisfies our criteria.
+              * By passing the 'true' boolean we ask for the best available (enabled) provider. */
+             bestAvailableProvider = locationManager.getBestProvider(criteria, true);
+             
+         }
+
+         /* Activates this provider. This provider will notify the supplied listener
+          * periodically, until you call deactivate().
+          * This method is automatically invoked by enabling my-location layer. */
+         @Override
+         public void activate(OnLocationChangedListener listener) {
+             // We need to keep a reference to my-location layer's listener so we can push forward
+             // location updates to it when we receive them from Location Manager.
+             mListener = listener;
+             
+
+             // Request location updates from Location Manager
+             if (bestAvailableProvider != null) {
+                 locationManager.requestLocationUpdates(bestAvailableProvider, minTime, minDistance, this);
+             
+                 //Location location = locationManager.getLastKnownLocation(bestAvailableProvider);
+                 //gMap.get
+             
+             } else {
+                 // (Display a message/dialog) No Location Providers currently available.
+             }
+         }
+
+         /* Deactivates this provider.
+          * This method is automatically invoked by disabling my-location layer. */
+         @Override
+         public void deactivate() {
+             // Remove location updates from Location Manager
+             locationManager.removeUpdates(this);
+
+             mListener = null;
+         }
+
+         @Override
+         public void onLocationChanged(Location location) {
+        	 
+     		Log.w("DISTANCE", "CAMERA CHANGGGGGEEEEEE2");
+
+             /* Push location updates to the registered listener..
+              * (this ensures that my-location layer will set the blue dot at the new/received location) */
+             if (mListener != null) {
+                 mListener.onLocationChanged(location);
+             }
+
+             /* ..and Animate camera to center on that location !
+              * (the reason for we created this custom Location Source !) */
+             gMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
+         }
+
+         @Override
+         public void onStatusChanged(String s, int i, Bundle bundle) {
+
+         }
+
+         @Override
+         public void onProviderEnabled(String s) {
+
+         }
+
+         @Override
+         public void onProviderDisabled(String s) {
+
+         }
+     }
+  	 
+     
+     
+     
+     Thread threadGetCate = new Thread(){
+         public void run(){	        	      
+                 Log.w("THREAD", "DEBUT THREAD GET CATE");
+             	try {
+                 	Gson gson = new Gson();
+                 	String url;
+                 	url = Network.URL + Network.PORT + "/categories.json";        	
+                 	
+                 	Message myMessage, msgPb;
+                 	msgPb = myHandler.obtainMessage(0, (Object) "Please wait");
+                 	myHandler.sendMessage(msgPb);
+                 
+                 	Bundle messageBundle = new Bundle();
+         			messageBundle.putInt("action", ACTION.GET_CATE.getValue());
+         	        myMessage = myHandler.obtainMessage();	
+                
+         	        InputStream input = Network.retrieveStream(url, METHOD.GET, null);
+                 	
+         	        if (input == null)
+         				messageBundle.putInt("error", 1);
+         			else
+         			{	
+         				Reader readerResp = new InputStreamReader(input);
+         				String ret = Network.checkInputStream(readerResp);
+         				
+         				if (ret.charAt(0) != '{' && ret.charAt(0) != '[')
+         				{
+         					messageBundle.putInt("error", 3);
+         					messageBundle.putString("msgError", ret);
+         				}
+         				else
+         				{
+         					try {		    
+         						rep = gson.fromJson(ret, ResponseWS.class);
+         						categories = rep.getValue(Categorie.class);
+         						
+         					}
+         					catch(JsonParseException e)
+         				    {
+         				        System.out.println("Exception in check_exitrestrepWSResponse::"+e.toString());
+         				    }
+         					if (rep.responseCode == 1)
+         					{
+         						messageBundle.putInt("error", 2);
+         						messageBundle.putString("msgError", rep.responseMessage);
+         					}
+         					else
+         						Log.w("RECUP", "JAI RECUP " + categories.list.length + " categories");       					
+         				}
+         			}
+         	       
+         	        myMessage.setData(messageBundle);
+                     myHandler.sendMessage(myMessage);
+                     
+                     msgPb = myHandler.obtainMessage(1, (Object) "Success");
+                     myHandler.sendMessage(msgPb);
+             	}
+             	catch (Exception e) {
+                     e.printStackTrace();}
+             	Log.w("THREAD", "FIN THREAD GET CATE");
+             }
+ 	};
+     
+     
 }

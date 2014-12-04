@@ -12,6 +12,7 @@
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:apiKey="AIzaSyC-wPwhcJVC2TW_TzdQ2t1Z-7TrDCZKYws"
         class="com.google.android.gms.maps.MapFragment" />
  
 </LinearLayout>

@@ -3,40 +3,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ViewMemory" >
+
+    <LinearLayout
+        android:id="@+id/linearViewMem1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp">
+        
+	    <TextView
+	        android:id="@+id/commContentMemory2"
+	        android:layout_marginBottom="10dp"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textAppearance="?android:attr/textAppearanceMedium"
+	        android:textSize="20sp"
+	        android:textStyle="bold" />
+	
+	    <ImageView
+	        android:id="@+id/imgMemoryImg"
+	        android:layout_width="fill_parent"
+	        android:layout_height="200dp"
+	        android:maxHeight="200dp"
+	        />
+    
+   	</LinearLayout>
     
     <LinearLayout
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
-    
-     <TextView
-        android:id="@+id/commContentMemory2"
+        android:id="@+id/linearViewMem2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-       	android:layout_marginBottom="15dp"
-       	android:layout_gravity="center_horizontal"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <ImageView
-        android:id="@+id/imgMemoryImg"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/commContentMemory2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:maxHeight="150dp" />
+        android:orientation="vertical"
+        android:layout_below="@+id/linearViewMem1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" >
     
-    <RelativeLayout 
-    android:orientation="horizontal"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    >
+	    <RelativeLayout 
+		    android:orientation="horizontal"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+	    >
     
      <TextView
         android:id="@+id/commViewLike2"
@@ -79,14 +87,15 @@
     </RelativeLayout >
     
     <ListView
+        android:scrollbars="vertical"
         android:id="@+id/postViewListCommentary2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
  		android:layout_marginTop="15dp"
        	android:dividerHeight="1dp"
         tools:listitem="@layout/view_item_list" 
-       />
-  
+       /> 
+    
     </LinearLayout>
 
 </RelativeLayout>

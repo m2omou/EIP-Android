@@ -13,7 +13,7 @@
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="Ajouter un commentaire"
-        android:icon="@drawable/addtextblack"
+        android:icon="@drawable/addtextblack2"
         />
      
     <item

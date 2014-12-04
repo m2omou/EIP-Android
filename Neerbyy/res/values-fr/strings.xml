@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
+    <string name="app_name">Neerbyy</string>
     <string name="btnCreateAccount">INSCRIPTION</string>
     <string name="btnRejoin">REJOINDRE NEERBYY</string>
     <string name="btnLogin">SE CONNECTER</string>

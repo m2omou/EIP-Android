@@ -27,6 +27,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
+/**
+ * this class allow to download all little image on a given view, avatar for exemple... 
+ * This class can be instantiated as a Thread
+ */
 public class ThreadDownloadImage extends Thread {
 	
 	int mode;                   // 0 = avatar listview  / 1 bitmap editInfoUser / 2 ViewFeed / 3 view memory
@@ -332,7 +336,7 @@ public class ThreadDownloadImage extends Thread {
      		e.printStackTrace();
      	}
      	try {
-     		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());
+     		bitmap = BitmapFactory.decodeStream(pictureURL.openStream());   //  out of memory ??
      	} 
      	catch (IOException e) {
      		e.printStackTrace();
@@ -569,6 +573,12 @@ public class ThreadDownloadImage extends Thread {
         vmess.myHandler.sendMessage(myMessage);
 	}
 	
+	/**
+	 * Theses class allow to format messages's date on a listView. 
+	 * @see ViewMemory
+	 * @see ViewMessage
+	 * @see ViewPost
+	 */
 	public String formatDate(String date) {
 		String newDate;
 		

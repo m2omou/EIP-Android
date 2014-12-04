@@ -41,6 +41,8 @@ public class ThreadUpdateAdresse extends Thread {
         	Gson gson = new Gson();
     
         	String url;
+        	
+        	add = add.replaceAll(" ", "_"); 
         	if (mv.locat != null)
         		url = Network.URL + Network.PORT + "/search/places.json?query=" +add + "&user_latitude=" + mv.locat.getLatitude() + "&user_longitude=" + mv.locat.getLongitude();
         	else

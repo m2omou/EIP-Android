@@ -32,7 +32,7 @@ public class Commentary implements Serializable {
     	@SerializedName("user")
     	public User user;      // or InfoUserCommentary
     	
-    	/** This class represent the data of the user associate of the coentary
+    	/** This class represent the data of the user associate of the comentary
     	 * @author Seb
     	 */
     	private class InfoUserCommentary {

@@ -5,6 +5,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter.ViewBinder;
 
+/**
+ * It is a temporally debugging class
+ */
 public class MyViewBinder implements ViewBinder {
 	@Override
 	public boolean setViewValue(View view, Object data,String textRepresentation) {
