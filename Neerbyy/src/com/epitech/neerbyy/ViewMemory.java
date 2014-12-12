@@ -129,6 +129,7 @@ public class ViewMemory extends Activity {
 		
 		Bundle b  = this.getIntent().getExtras();
 		memory = (Post.PostInfos)b.getSerializable("post");
+		
 		memoryContent.setText(memory.content);
 		
 		place_id = (String)b.getString("Place_id");  //  inut  deja dans mem.pla	

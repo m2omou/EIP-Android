@@ -110,8 +110,8 @@ public class MapView extends FragmentActivity implements LocationListener{
 	public Categorie categories;
 	public String categorieId;
 	
-	public int limit = 10;    //  def 10
-	public int radius = 800;    //  def 800
+	public int limit = 50;    //  def 10
+	public int radius = 100;    //  def 800
 	public int bufferPlace = 20;   //  def  20
 	OnCameraChangeListener cc;
 	
