@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/LocateMe" 
+	      android:title="LocateMe"
+	      android:icon="@drawable/ic_launcher"/>
+	<item android:id="@+id/Menu" 
+	      android:title="Menu"
+	      android:icon="@drawable/neerbyy"/>
+	
+	<item android:id="@+id/User" 
+	     android:title="User"
+	     android:icon="@drawable/ic_launcher" >
+	         
+	     <menu android:id="@+id/sousmenu">
+		 <item android:id="@+id/Login"
+		       android:title="Login"   />
+		 <item android:id="@+id/CreateAccount"
+		       android:title="Create account"   />		 
+		 <item android:id="@+id/getUser"
+		       android:title="Edit user info"  />
+		 <item android:id="@+id/Feed"
+		       android:title="View feed"   />
+		 <item android:id="@+id/Conv"
+		       android:title="View conversation"   />		
+	     </menu>
+	   
+	</item>
+	<item android:id="@+id/quit"
+		  android:title="Quit"  />
+	<item android:id="@+id/testToken"
+		  android:title="Token"  />
+	<item android:id="@+id/mapView"
+		  android:title="mapView"  />
+</menu>

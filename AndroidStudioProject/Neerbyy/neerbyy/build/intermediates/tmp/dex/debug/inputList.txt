@@ -1,0 +1,17 @@
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\classes\debug
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\support-annotations-21.0.0-f8d2b1ed9bedea9c7480aa027bd8b74f0c25834e.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\classes-8f8a7c80fddfea7180101ad45de641845421a9aa.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\httpmime-4.3.4-891d33bc637015a52440a4a160995e0d7f1fef91.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\fluent-hc-4.3.4-e4cdc81d7243a232c109f493e531ef79d4e79c95.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\bolts-android-1.1.3-0b81ea6da9fd2bc5a6675332418aba03a8703fcf.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\commons-logging-1.1.3-ebe1b041068cb7f8ea0f4923120739242a73ffd7.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\httpclient-cache-4.3.4-bfa0bc249c75cc5e6831783bb3a84a0b1442b9a4.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\internal_impl-21.0.0-a3906e1d704ca05461481f05c12f62f12e7d7c57.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\gson-2.3-53c1f256deaf2833767df94bc53d1dda6efaa9c9.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\httpcore-4.3.2-07803cb326bbe6396051fd2aa10f69853e4525cc.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\apache-mime4j-0.6-37da2d7ef57ab218995a0eef1c51334c086d2edc.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\commons-codec-1.6-82d417f433ca8dba7ebad9b83cf0392f0a232432.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\httpclient-4.3.4-7433290aa872cde2299960289203c660ceb14582.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\Parse-1.7.1-154e672b40c3189af33433c85326f76bbc0b0f49.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\classes-ac170932e2ce0174fd5d2a1bd83a23d83bfb04a0.jar
+C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\classes-e33998bbbb3cd6d1d3b71ad9c3ba0fc42917b1f7.jar

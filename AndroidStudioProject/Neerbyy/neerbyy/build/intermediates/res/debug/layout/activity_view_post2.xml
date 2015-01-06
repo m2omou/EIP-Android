@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/tools">
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_vertical|center_horizontal"
+            android:paddingTop="30dp" >
+
+            <TextView
+                android:id="@+id/PostTextInfo2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           	android:gravity="top|center_vertical|center_horizontal"
+            android:paddingTop="15dp" >
+
+            <Button
+                android:id="@+id/btnFallowPost2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/greenNeerbyy"
+                android:padding="5dp"
+                android:text="Ajouter le lieu aux favoris"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_vertical|center_horizontal"
+            android:paddingTop="15dp" >
+
+            <Button
+                android:id="@+id/btnLoginLostPasswordMail2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greenNeerbyy"
+                android:padding="5dp"
+                android:text="Ajouter un souvenir"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_vertical|center_horizontal"
+            android:paddingTop="15dp" >
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_vertical|center_horizontal" >
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_vertical|center_horizontal"
+            android:paddingTop="25dp" >
+
+            <ListView
+                android:id="@+id/postViewListPost2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                
+                android:background="@drawable/my_listview"
+                android:dividerHeight="10.0sp"
+                 android:divider="@android:color/transparent"
+                 
+               
+                
+                app:listitem="@layout/view_item_list" >
+            </ListView>
+
+        </TableRow>
+
+    </TableLayout>
+
+</TableLayout>
+<!-- From: file:/C:/AndroidStudioProjects/Neerbyy/neerbyy/src/main/res/layout/activity_view_post2.xml -->

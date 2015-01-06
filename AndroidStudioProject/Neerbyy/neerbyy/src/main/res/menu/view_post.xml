@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item
+        android:id="@+id/loading_zone"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Chargement"
+        android:actionLayout="@layout/progressbar"
+        />
+
+     <item
+        android:id="@+id/favorite"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Ajouter au favorie"
+        android:icon="@drawable/favorite_add2"
+        />
+     
+    <item
+        android:id="@+id/logo_menu"
+        android:icon="@drawable/new_menu2"
+        android:orderInCategory="200"
+        android:showAsAction="always"
+        android:title="Menu"/>
+    
+</menu>

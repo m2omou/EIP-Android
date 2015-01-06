@@ -1,0 +1,111 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".ViewMemory" >
+
+    <ImageButton
+        android:id="@+id/btnCreateComm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/iconmortel" />
+
+    <EditText
+        android:id="@+id/postEditCommentary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/postViewListCommentary"
+        android:layout_alignRight="@+id/btnCreateComm"
+        android:layout_below="@+id/btnCreateComm"
+        android:layout_marginTop="43dp"
+        android:ems="10"
+        android:hint="@string/hintPostComment"
+        android:inputType="textMultiLine"
+        android:minHeight="90dp" >
+
+    <requestFocus />
+    </EditText>
+
+    <ListView
+        android:id="@+id/postViewListCommentary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/btnCreateComm"
+        android:layout_below="@+id/postEditCommentary"
+        android:layout_marginTop="48dp"
+        android:background="@color/white"
+        android:divider="@drawable/separator_line"
+        android:dividerHeight="15dp"
+        tools:listitem="@android:layout/simple_expandable_list_item_1" >
+
+    </ListView>
+    
+    <TextView
+        android:id="@+id/postSendCommentary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/postEditCommentary"
+        android:layout_below="@+id/postEditCommentary"
+        android:text="@string/postSendPost"
+        android:textColor="@color/blue" />
+
+    <TextView
+        android:id="@+id/commTextInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btnCreateComm"
+        android:layout_toLeftOf="@+id/postEditCommentary"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <TextView
+        android:id="@+id/commContentMemory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnCreateComm"
+        android:layout_alignLeft="@+id/commTextInfo"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ImageButton
+        android:id="@+id/commBtnDislike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnCreateComm"
+        android:layout_marginLeft="17dp"
+        android:layout_toRightOf="@+id/commBtnLike"
+        android:src="@drawable/dislike" />
+
+    <TextView
+        android:id="@+id/commViewLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/commContentMemory"
+        android:layout_alignBottom="@+id/commBtnDislike"
+        android:layout_marginLeft="21dp"
+     
+        android:text="0"
+        android:textColor="@color/greenNeerbyy" />
+
+    <TextView
+        android:id="@+id/commViewDislike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/commBtnDislike"
+        android:layout_toRightOf="@+id/commBtnDislike"
+        android:text="0"
+        android:textColor="@color/redNeerbyy" />
+
+    <ImageButton
+        android:id="@+id/commBtnLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/commBtnDislike"
+        android:layout_toRightOf="@+id/commViewLike"
+        android:src="@drawable/like" />
+
+</RelativeLayout><!-- From: file:/C:/AndroidStudioProjects/Neerbyy/neerbyy/src/main/res/layout/activity_view_memory.xml -->

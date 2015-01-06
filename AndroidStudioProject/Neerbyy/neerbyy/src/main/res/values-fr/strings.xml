@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name">Neerbyy</string>
+    <string name="btnCreateAccount">INSCRIPTION</string>
+    <string name="btnRejoin">REJOINDRE NEERBYY</string>
+    <string name="btnLogin">SE CONNECTER</string>
+    <string name="btnLoginLostPassword">MOT DE PASSE OUBLIÉ ?</string>
+    <string name="btnLostPassword">REINITIALISER</string>
+    
+    <string name="hintUsername">Nom d\'utilisateur</string>
+    <string name="hintFirstname">Prénom</string>
+    <string name="hintLastname">Nom</string>
+    <string name="hintMail">Mail</string>
+    <string name="hintMailLogin">Mail ou nom utilisateur</string>
+    <string name="hintConfirmMail">Confirmer mail</string>
+    <string name="hintPassword">Mot de passe</string>
+    <string name="hintConfirmPassword">Confirmer Mot De Passe</string>
+    <string name="loginDefaultInfo">Entrez vos identifiants:</string>
+    <string name="hintPostMemory">Ajouter un souvenir</string>
+    <string name="hintPostComment">Ajouter un commentaire</string>
+    <string name="postSendPost">envoyez</string>
+    <string name="loginMessageInscr">Pas encore de compte ? Inscrivez vous !</string>
+    <string name="loginMessageCGU">Pour l\'inscription je déclare accepter les CGU</string>
+    <string name="msgLostPassword">Une procédure pour réinitialiser votre mot de passe vous sera envoyé à votre adresse email.</string>
+
+	<string name="str_btn_find">Cherche</string>
+    <string name="hnt_et_location">Entrer une adresse</string>
+
+</resources>

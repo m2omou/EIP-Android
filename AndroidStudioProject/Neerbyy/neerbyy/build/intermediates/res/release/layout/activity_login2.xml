@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="30dp" >
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:src="@drawable/logo_green" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="15dp" >
+
+            <EditText
+                android:id="@+id/txtLoginMail2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
+                
+                android:gravity="center_vertical|center_horizontal"
+                android:hint="@string/hintMailLogin"
+                android:inputType="textEmailAddress|textPersonName"
+                android:padding="10dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="15dp" >
+
+            <EditText
+                android:id="@+id/txtLoginPassword2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
+                android:ems="10"
+                android:gravity="center_vertical|center_horizontal"
+                android:hint="@string/hintPassword"
+                android:inputType="textPassword"
+                android:padding="10dp" >
+
+                <requestFocus />
+            </EditText>
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="15dp"
+             >
+            
+            <LinearLayout
+    		android:orientation="vertical"
+    		android:layout_width="fill_parent"
+    		android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnLogin2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/my_button"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:text="@string/btnLogin"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+            <TextView
+                android:id="@+id/txtLoginLostPasswordMail2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Mot de passe oublié ?" 
+                android:textSize="17sp"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                />
+
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="25dp" >
+
+            <TextView
+                android:id="@+id/txtLoginMessageInsc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pas encore de compte ? Inscrivez vous"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="15sp" 
+                android:gravity="center_horizontal"/>
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="10dp" >
+
+            <Button
+                android:id="@+id/btnGoCreateAccount2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/my_button"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:text="@string/btnCreateAccount"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:gravity="center"
+            android:paddingTop="25dp" >
+
+            <Button
+                android:id="@+id/btnLoginMapView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/my_orange_button"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:text="CONTINUER SANS COMPTE"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+    </TableLayout>
+
+</TableLayout>
+<!-- From: file:/C:/AndroidStudioProjects/Neerbyy/neerbyy/src/main/res/layout/activity_login2.xml -->

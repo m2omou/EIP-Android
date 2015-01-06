@@ -1,0 +1,353 @@
+-- Merging decision tree log ---
+manifest
+ADDED from AndroidManifest.xml:2:1
+	package
+		ADDED from AndroidManifest.xml:3:5
+		INJECTED from AndroidManifest.xml:0:0
+		INJECTED from AndroidManifest.xml:0:0
+	android:versionName
+		ADDED from AndroidManifest.xml:5:5
+	android:versionCode
+		ADDED from AndroidManifest.xml:4:5
+		INJECTED from AndroidManifest.xml:0:0
+		INJECTED from AndroidManifest.xml:0:0
+	xmlns:android
+		ADDED from AndroidManifest.xml:2:11
+uses-sdk
+ADDED from AndroidManifest.xml:7:5
+MERGED from Neerbyy:aFileChooser:unspecified:20:5
+MERGED from com.android.support:support-v4:21.0.0:15:5
+MERGED from com.google.android.gms:play-services:6.5.87:18:5
+MERGED from com.android.support:support-v4:21.0.0:15:5
+	android:targetSdkVersion
+		ADDED from AndroidManifest.xml:9:9
+		INJECTED from AndroidManifest.xml:0:0
+		INJECTED from AndroidManifest.xml:0:0
+	android:minSdkVersion
+		ADDED from AndroidManifest.xml:8:9
+		INJECTED from AndroidManifest.xml:0:0
+		INJECTED from AndroidManifest.xml:0:0
+uses-feature#0x00020000
+ADDED from AndroidManifest.xml:12:5
+	android:glEsVersion
+		ADDED from AndroidManifest.xml:13:9
+	android:required
+		ADDED from AndroidManifest.xml:14:9
+permission#com.epitech.neerbyy.permission.MAPS_RECEIVE
+ADDED from AndroidManifest.xml:16:5
+	android:protectionLevel
+		ADDED from AndroidManifest.xml:18:9
+	android:name
+		ADDED from AndroidManifest.xml:17:9
+uses-permission#com.epitech.neerbyy.permission.MAPS_RECEIVE
+ADDED from AndroidManifest.xml:20:5
+	android:name
+		ADDED from AndroidManifest.xml:20:22
+uses-permission#android.permission.INTERNET
+ADDED from AndroidManifest.xml:22:5
+	android:name
+		ADDED from AndroidManifest.xml:22:22
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from AndroidManifest.xml:24:5
+	android:name
+		ADDED from AndroidManifest.xml:24:22
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from AndroidManifest.xml:25:5
+	android:name
+		ADDED from AndroidManifest.xml:25:22
+uses-permission#com.google.android.providers.gsf.permission.READ_GSERVICES
+ADDED from AndroidManifest.xml:26:5
+	android:name
+		ADDED from AndroidManifest.xml:26:22
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from AndroidManifest.xml:27:5
+	android:name
+		ADDED from AndroidManifest.xml:27:22
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from AndroidManifest.xml:29:5
+	android:name
+		ADDED from AndroidManifest.xml:29:22
+uses-permission#android.permission.WAKE_LOCK
+ADDED from AndroidManifest.xml:33:2
+	android:name
+		ADDED from AndroidManifest.xml:33:19
+uses-permission#android.permission.VIBRATE
+ADDED from AndroidManifest.xml:34:2
+	android:name
+		ADDED from AndroidManifest.xml:34:19
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from AndroidManifest.xml:35:2
+	android:name
+		ADDED from AndroidManifest.xml:35:19
+uses-permission#android.permission.GET_ACCOUNTS
+ADDED from AndroidManifest.xml:36:2
+	android:name
+		ADDED from AndroidManifest.xml:36:19
+uses-permission#com.google.android.c2dm.permission.RECEIVE
+ADDED from AndroidManifest.xml:37:2
+	android:name
+		ADDED from AndroidManifest.xml:37:19
+permission#com.epitech.neerbyy.permission.C2D_MESSAGE
+ADDED from AndroidManifest.xml:43:2
+	android:protectionLevel
+		ADDED from AndroidManifest.xml:43:14
+	android:name
+		ADDED from AndroidManifest.xml:44:6
+uses-permission#com.epitech.neerbyy.permission.C2D_MESSAGE
+ADDED from AndroidManifest.xml:45:2
+	android:name
+		ADDED from AndroidManifest.xml:45:19
+application
+ADDED from AndroidManifest.xml:49:5
+MERGED from com.android.support:support-v4:21.0.0:16:5
+MERGED from com.google.android.gms:play-services:6.5.87:20:5
+MERGED from com.android.support:support-v4:21.0.0:16:5
+	android:label
+		ADDED from AndroidManifest.xml:53:9
+	android:allowBackup
+		ADDED from AndroidManifest.xml:51:9
+	android:icon
+		ADDED from AndroidManifest.xml:52:9
+	android:theme
+		ADDED from AndroidManifest.xml:54:9
+	android:name
+		ADDED from AndroidManifest.xml:50:9
+meta-data#com.google.android.gms.version
+ADDED from AndroidManifest.xml:57:9
+MERGED from com.google.android.gms:play-services:6.5.87:21:9
+	android:value
+		ADDED from AndroidManifest.xml:59:13
+	android:name
+		ADDED from AndroidManifest.xml:58:13
+meta-data#com.google.android.maps.v2.API_KEY
+ADDED from AndroidManifest.xml:60:9
+	android:value
+		ADDED from AndroidManifest.xml:62:13
+	android:name
+		ADDED from AndroidManifest.xml:61:13
+activity#com.epitech.neerbyy.GetUserById
+ADDED from AndroidManifest.xml:65:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:68:13
+	android:label
+		ADDED from AndroidManifest.xml:67:13
+	android:name
+		ADDED from AndroidManifest.xml:66:13
+activity#com.epitech.neerbyy.Login
+ADDED from AndroidManifest.xml:70:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:73:13
+	android:label
+		ADDED from AndroidManifest.xml:72:13
+	android:name
+		ADDED from AndroidManifest.xml:71:13
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from AndroidManifest.xml:74:14
+action#android.intent.action.MAIN
+ADDED from AndroidManifest.xml:75:8
+	android:name
+		ADDED from AndroidManifest.xml:75:16
+category#android.intent.category.LAUNCHER
+ADDED from AndroidManifest.xml:76:8
+	android:name
+		ADDED from AndroidManifest.xml:76:18
+activity#com.epitech.neerbyy.Geoloc
+ADDED from AndroidManifest.xml:80:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:83:13
+	android:label
+		ADDED from AndroidManifest.xml:82:13
+	android:name
+		ADDED from AndroidManifest.xml:81:13
+activity#com.epitech.neerbyy.CreateAccount
+ADDED from AndroidManifest.xml:85:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:88:13
+	android:label
+		ADDED from AndroidManifest.xml:87:13
+	android:name
+		ADDED from AndroidManifest.xml:86:13
+activity#com.epitech.neerbyy.LostPassword
+ADDED from AndroidManifest.xml:90:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:93:13
+	android:label
+		ADDED from AndroidManifest.xml:92:13
+	android:name
+		ADDED from AndroidManifest.xml:91:13
+activity#com.epitech.neerbyy.EditInfoUser
+ADDED from AndroidManifest.xml:95:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:98:13
+	android:label
+		ADDED from AndroidManifest.xml:97:13
+	android:name
+		ADDED from AndroidManifest.xml:96:13
+activity#com.epitech.neerbyy.ViewInfoUser
+ADDED from AndroidManifest.xml:100:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:103:13
+	android:label
+		ADDED from AndroidManifest.xml:102:13
+	android:name
+		ADDED from AndroidManifest.xml:101:13
+activity#com.epitech.neerbyy.MainMenu
+ADDED from AndroidManifest.xml:105:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:108:13
+	android:label
+		ADDED from AndroidManifest.xml:107:13
+	android:name
+		ADDED from AndroidManifest.xml:106:13
+activity#com.epitech.neerbyy.Map
+ADDED from AndroidManifest.xml:110:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:113:13
+	android:label
+		ADDED from AndroidManifest.xml:112:13
+	android:name
+		ADDED from AndroidManifest.xml:111:13
+activity#com.epitech.neerbyy.MapView
+ADDED from AndroidManifest.xml:115:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:118:13
+	android:label
+		ADDED from AndroidManifest.xml:117:13
+	android:name
+		ADDED from AndroidManifest.xml:116:13
+activity#com.epitech.neerbyy.ViewPost
+ADDED from AndroidManifest.xml:120:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:125:13
+	android:label
+		ADDED from AndroidManifest.xml:123:13
+	android:windowSoftInputMode
+		ADDED from AndroidManifest.xml:124:13
+	android:configChanges
+		ADDED from AndroidManifest.xml:122:13
+	android:name
+		ADDED from AndroidManifest.xml:121:13
+activity#com.epitech.neerbyy.ViewFeed
+ADDED from AndroidManifest.xml:127:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:130:13
+	android:label
+		ADDED from AndroidManifest.xml:129:13
+	android:name
+		ADDED from AndroidManifest.xml:128:13
+activity#com.epitech.neerbyy.ViewMemory
+ADDED from AndroidManifest.xml:132:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:137:13
+	android:label
+		ADDED from AndroidManifest.xml:135:13
+	android:windowSoftInputMode
+		ADDED from AndroidManifest.xml:136:13
+	android:configChanges
+		ADDED from AndroidManifest.xml:134:13
+	android:name
+		ADDED from AndroidManifest.xml:133:13
+activity#com.epitech.neerbyy.Report_pub
+ADDED from AndroidManifest.xml:139:9
+	android:label
+		ADDED from AndroidManifest.xml:141:13
+	android:name
+		ADDED from AndroidManifest.xml:140:13
+activity#com.epitech.neerbyy.Report_com
+ADDED from AndroidManifest.xml:143:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:146:13
+	android:label
+		ADDED from AndroidManifest.xml:145:13
+	android:name
+		ADDED from AndroidManifest.xml:144:13
+activity#com.epitech.neerbyy.ViewConv
+ADDED from AndroidManifest.xml:148:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:151:13
+	android:label
+		ADDED from AndroidManifest.xml:150:13
+	android:name
+		ADDED from AndroidManifest.xml:149:13
+activity#com.epitech.neerbyy.ViewMessages
+ADDED from AndroidManifest.xml:153:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:158:13
+	android:label
+		ADDED from AndroidManifest.xml:156:13
+	android:windowSoftInputMode
+		ADDED from AndroidManifest.xml:157:13
+	android:configChanges
+		ADDED from AndroidManifest.xml:155:13
+	android:name
+		ADDED from AndroidManifest.xml:154:13
+activity#com.epitech.neerbyy.Menu2
+ADDED from AndroidManifest.xml:160:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:163:13
+	android:label
+		ADDED from AndroidManifest.xml:162:13
+	android:name
+		ADDED from AndroidManifest.xml:161:13
+activity#com.epitech.neerbyy.SearchUser
+ADDED from AndroidManifest.xml:166:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:169:13
+	android:label
+		ADDED from AndroidManifest.xml:168:13
+	android:name
+		ADDED from AndroidManifest.xml:167:13
+activity#com.ipaulpro.afilechooser.FileChooserActivity
+ADDED from AndroidManifest.xml:172:9
+	android:enabled
+		ADDED from AndroidManifest.xml:175:7
+	android:label
+		ADDED from AndroidManifest.xml:177:7
+	android:exported
+		ADDED from AndroidManifest.xml:176:7
+	android:icon
+		ADDED from AndroidManifest.xml:174:7
+	android:name
+		ADDED from AndroidManifest.xml:173:7
+intent-filter#android.intent.action.GET_CONTENT+android.intent.category.DEFAULT+android.intent.category.OPENABLE
+ADDED from AndroidManifest.xml:178:7
+action#android.intent.action.GET_CONTENT
+ADDED from AndroidManifest.xml:179:11
+	android:name
+		ADDED from AndroidManifest.xml:179:19
+category#android.intent.category.DEFAULT
+ADDED from AndroidManifest.xml:181:11
+	android:name
+		ADDED from AndroidManifest.xml:181:21
+category#android.intent.category.OPENABLE
+ADDED from AndroidManifest.xml:182:11
+	android:name
+		ADDED from AndroidManifest.xml:182:21
+data
+ADDED from AndroidManifest.xml:184:11
+	android:mimeType
+		ADDED from AndroidManifest.xml:184:17
+receiver#com.epitech.neerbyy.GcmBroadcastReceiver
+ADDED from AndroidManifest.xml:191:1
+	android:permission
+		ADDED from AndroidManifest.xml:192:5
+	android:name
+		ADDED from AndroidManifest.xml:191:11
+intent-filter#com.epitech.neerbyy+com.google.android.c2dm.intent.RECEIVE+com.google.android.c2dm.intent.REGISTRATION
+ADDED from AndroidManifest.xml:193:3
+action#com.google.android.c2dm.intent.RECEIVE
+ADDED from AndroidManifest.xml:194:5
+	android:name
+		ADDED from AndroidManifest.xml:194:13
+action#com.google.android.c2dm.intent.REGISTRATION
+ADDED from AndroidManifest.xml:195:5
+	android:name
+		ADDED from AndroidManifest.xml:195:13
+category#com.epitech.neerbyy
+ADDED from AndroidManifest.xml:196:5
+	android:name
+		ADDED from AndroidManifest.xml:196:15
+service#com.epitech.neerbyy.GcmIntentService
+ADDED from AndroidManifest.xml:199:5
+	android:name
+		ADDED from AndroidManifest.xml:199:14

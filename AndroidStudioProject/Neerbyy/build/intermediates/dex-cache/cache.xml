@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Sébastien\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.0\support-annotations-21.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1a578b9607b36266c63d43a4fa0ab5664dbe911e">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\support-annotations-21.0.0-f8d2b1ed9bedea9c7480aa027bd8b74f0c25834e.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\libs\Parse-1.7.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="87c45f9f66da531a65f065ee32f603c7e6db1528">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\Parse-1.7.1-154e672b40c3189af33433c85326f76bbc0b0f49.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\exploded-aar\Neerbyy\aFileChooser\unspecified\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5b24e2a4bd18b17f7dfeab69119938fa03a485fa">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\classes-8f8a7c80fddfea7180101ad45de641845421a9aa.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\libs\httpclient-cache-4.3.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ad6c1e2533fe6099e8c8ca182914dd025425f24d">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\httpclient-cache-4.3.4-bfa0bc249c75cc5e6831783bb3a84a0b1442b9a4.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="686344a780033e4ba22b926cd225f8d4941247e6">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\classes-ac170932e2ce0174fd5d2a1bd83a23d83bfb04a0.jar" />
+    </item>
+    <item
+        jar="C:\Users\Sébastien\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.3\5fc52c41ef0239d1093a1eb7c3697036183677ce\gson-2.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5fc52c41ef0239d1093a1eb7c3697036183677ce">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\gson-2.3-53c1f256deaf2833767df94bc53d1dda6efaa9c9.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\libs\httpmime-4.3.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="54ffde537682aea984c22fbcf0106f21397c5f9b">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\httpmime-4.3.4-891d33bc637015a52440a4a160995e0d7f1fef91.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\libs\httpcore-4.3.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="31fbbff1ddbf98f3aa7377c94d33b0447c646b6e">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\httpcore-4.3.2-07803cb326bbe6396051fd2aa10f69853e4525cc.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\libs\commons-codec-1.6.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="b7f0fc8f61ecadeb3695f0b9464755eee44374d4">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\commons-codec-1.6-82d417f433ca8dba7ebad9b83cf0392f0a232432.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\libs\fluent-hc-4.3.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="51e9902595f5802e49b620869ebe249f5ff41f08">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\fluent-hc-4.3.4-e4cdc81d7243a232c109f493e531ef79d4e79c95.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\libs\bolts-android-1.1.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e61e3dfc57eaa5c97f9e7061db5608fc7d02d39e">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\bolts-android-1.1.3-0b81ea6da9fd2bc5a6675332418aba03a8703fcf.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\libs\httpclient-4.3.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a9a1fef2faefed639ee0d0fba5b3b8e4eb2ff2d8">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\httpclient-4.3.4-7433290aa872cde2299960289203c660ceb14582.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0\libs\internal_impl-21.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1609e6d42d0480b0f4188e2c29f75388fa12a8f0">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\internal_impl-21.0.0-a3906e1d704ca05461481f05c12f62f12e7d7c57.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.5.87\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="dd9247ea0fabe8ee479638c4b4a23e93752be256">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\classes-e33998bbbb3cd6d1d3b71ad9c3ba0fc42917b1f7.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\libs\apache-mime4j-0.6.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="945007627e8d12275d755081a9e609c018e1210d">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\apache-mime4j-0.6-37da2d7ef57ab218995a0eef1c51334c086d2edc.jar" />
+    </item>
+    <item
+        jar="C:\AndroidStudioProjects\Neerbyy\neerbyy\libs\commons-logging-1.1.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f6f66e966c70a83ffbdb6f17a0919eaf7c8aca7f">
+        <dex dex="C:\AndroidStudioProjects\Neerbyy\neerbyy\build\intermediates\pre-dexed\debug\commons-logging-1.1.3-ebe1b041068cb7f8ea0f4923120739242a73ffd7.jar" />
+    </item>
+
+</items>

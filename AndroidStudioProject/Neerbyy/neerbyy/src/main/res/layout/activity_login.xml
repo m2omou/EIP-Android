@@ -1,0 +1,100 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".Login" >
+
+    <EditText
+        android:id="@+id/txtLoginMail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="31dp"
+        android:layout_marginTop="92dp"
+        android:ems="10"
+        android:hint="@string/hintMail"
+        android:inputType="textEmailAddress" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/btnGoCreateAccount"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnLogin"
+        android:layout_alignBottom="@+id/btnLogin"
+        android:layout_alignRight="@+id/txtPassword"
+        android:text="@string/btnCreateAccount" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtPassword"
+        android:layout_below="@+id/txtPassword"
+        android:layout_marginTop="16dp"
+        android:text="@string/btnLogin" />
+
+    <TextView
+        android:id="@+id/txtLoginInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/txtLoginMail"
+        android:layout_alignLeft="@+id/txtLoginMail"
+        android:layout_marginBottom="73dp"
+        android:text="@string/loginDefaultInfo"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/txtPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtLoginMail"
+        android:layout_alignRight="@+id/txtLoginMail"
+        android:layout_below="@+id/txtLoginMail"
+        android:layout_marginTop="17dp"
+        android:ems="10"
+        android:hint="@string/hintPassword"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/txtLostPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnLogin"
+        android:layout_below="@+id/btnLogin"
+        android:layout_marginTop="19dp"
+        android:text="@string/btnLoginLostPassword"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/blue" />
+
+    <EditText
+        android:id="@+id/txtLoginLostPasswordMail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtLostPassword"
+        android:layout_below="@+id/txtLostPassword"
+        android:layout_marginTop="18dp"
+        android:ems="10"
+        android:hint="@string/hintMail"
+        android:inputType="textEmailAddress" />
+
+    <Button
+        android:id="@+id/btnLoginLostPasswordMail"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtLoginLostPasswordMail"
+        android:layout_below="@+id/txtLoginLostPasswordMail"
+        android:text="@string/ok" />
+
+</RelativeLayout>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp" >
+
+            <TextView
+                android:id="@+id/txtCreateAccountInfo2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="10dp" >
+
+            <EditText
+                android:id="@+id/txtCreateUsername2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
+                android:ems="10"
+                android:hint="@string/hintUsername"
+                android:inputType="textPersonName"
+                android:padding="10dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="20dp" >
+
+            <EditText
+                android:id="@+id/txtCreateMail2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
+                android:ems="10"
+                android:hint="@string/hintMail"
+                android:inputType="textEmailAddress"
+                android:padding="10dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="15dp" >
+
+            <EditText
+                android:id="@+id/txtCreateConfirmMail2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
+                android:ems="10"
+                android:hint="@string/hintConfirmMail"
+                android:inputType="textEmailAddress"
+                android:padding="10dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="15dp" >
+
+            <EditText
+                android:id="@+id/txtCreatePassword2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
+                android:ems="10"
+                android:hint="@string/hintPassword"
+                android:inputType="textPassword"
+                android:padding="10dp" >
+
+                <requestFocus />
+            </EditText>
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="15dp" >
+
+            <EditText
+                android:id="@+id/txtCreateConfirmPassword2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/greyNeerbyy"
+                android:ems="10"
+                android:hint="@string/hintConfirmPassword"
+                android:inputType="textPassword"
+                android:padding="10dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="25dp" >
+
+            <TextView
+                android:id="@+id/txtCguCreateAccount2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loginMessageCGU"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="14sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="15dp" >
+
+            <Button
+                android:id="@+id/btnGoCreateAccount2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/my_button"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:text="@string/btnRejoin"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+        </TableRow>
+
+    </TableLayout>
+
+</TableLayout>

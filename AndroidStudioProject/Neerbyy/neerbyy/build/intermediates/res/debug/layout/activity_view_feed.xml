@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".ViewFeed" >
+
+     <TextView
+        android:id="@+id/feedNamePlace"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/feedEditFeed"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+     
+    <ListView
+        android:id="@+id/feedViewListFeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:dividerHeight="1dp"
+        android:layout_below="@+id/feedNamePlace"
+        tools:listitem="@layout/view_item_list" /> 
+
+
+</RelativeLayout><!-- From: file:/C:/AndroidStudioProjects/Neerbyy/neerbyy/src/main/res/layout/activity_view_feed.xml -->

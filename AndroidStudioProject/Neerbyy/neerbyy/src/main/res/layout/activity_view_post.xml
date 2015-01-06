@@ -1,0 +1,89 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".ViewPost" >
+
+    <EditText
+        android:id="@+id/postEditPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/postViewListPost"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:hint="@string/hintPostMemory"
+        android:inputType="textMultiLine"
+        android:minHeight="90dp" >
+
+        <requestFocus />
+    </EditText>
+
+
+
+    <ImageView
+        android:id="@+id/imgPostSendPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/postEditPost"
+        android:layout_below="@+id/postEditPost"
+        android:src="@drawable/send3"
+  	 />
+
+     <ImageView
+        android:id="@+id/imgPostAddFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/postEditPost"
+        android:layout_alignLeft="@+id/postEditPost"
+        android:src="@drawable/add_file2"
+        />
+
+    <ImageView
+        android:id="@+id/imgPostAddLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/postEditPost"
+        android:layout_toRightOf="@+id/imgPostAddFile"
+        android:src="@drawable/new_link"
+        android:layout_marginLeft="20dp"
+        />
+
+      <ImageView
+        android:id="@+id/imgPostDelFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/postEditPost"
+        android:layout_toRightOf="@+id/imgPostAddLink"
+        android:src="@drawable/red_cross2"
+        android:layout_marginLeft="20dp"
+        />
+
+    <TextView
+        android:id="@+id/postNamePlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/postTextInfo"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        />
+
+
+    <ListView
+        android:id="@+id/postViewListPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/postEditPost"
+        android:layout_marginTop="55dp"
+        android:dividerHeight="1dp"
+        tools:listitem="@layout/view_item_list" >
+    </ListView>
+
+</RelativeLayout>
+
+
